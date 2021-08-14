@@ -1,0 +1,18 @@
+trigger: none
+
+pool:
+  vmImage: windows-2019
+
+steps:
+- checkout: self
+  lfs: true
+
+- pwsh: |
+    & '$(Build.SourcesDirectory)/example/initialize.ps1'
+  workingDirectory: $(Build.SourcesDirectory)/example
+  displayName: Run 'example/initialize.ps1'
+
+- pwsh: |
+    & '$(Build.SourcesDirectory)/example/build.ps1'
+  workingDirectory: $(Build.SourcesDirectory)/example
+  displayName: Run 'example/build.ps1'

@@ -1,0 +1,84 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "windows",
+      "hidden": true,
+      "displayName": "Windows-only configuration",
+      "description": "This build is only available on Windows",
+      "generator": "Ninja Multi-Config",
+      "cacheVariables": {
+        "CMAKE_MAKE_PROGRAM": {
+          "type": "STRING",
+          "value": "${sourceDir}/__tools/ninja/ninja.exe"
+        }
+      },
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "toolchainFile": "../Windows.MSVC.toolchain.cmake",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "windows-x64",
+      "inherits": "windows",
+      "displayName": "Configure for 'windows-x64'",
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "x64"
+      }
+    },
+    {
+      "name": "windows-x86",
+      "inherits": "windows",
+      "displayName": "Configure for 'windows-x86'",
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "x86"
+      }
+    },
+    {
+      "name": "windows-arm64",
+      "inherits": "windows",
+      "displayName": "Configure for 'windows-arm64'",
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "arm64"
+      }
+    },
+    {
+      "name": "windows-arm",
+      "inherits": "windows",
+      "displayName": "Configure for 'windows-arm'",
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "arm"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-x64",
+      "configurePreset": "windows-x64"
+    },
+    {
+      "name": "windows-x86",
+      "configurePreset": "windows-x86"
+    },
+    {
+      "name": "windows-arm64",
+      "configurePreset": "windows-arm64"
+    },
+    {
+      "name": "windows-arm",
+      "configurePreset": "windows-arm"
+    }
+  ]
+}
