@@ -80,19 +80,38 @@ find_program(VSWHERE_PATH
     REQUIRED
 )
 
-function(getVSWhereProperty VSWHERE_OUTPUT FIELD_NAME PROPERTY_NAME)
-    string(REGEX MATCH "${FIELD_NAME}: [^\r\n]*" VS_WHERE_PROPERTY "${VSWHERE_OUTPUT}")
-    string(REPLACE "${FIELD_NAME}: " "" VS_WHERE_PROPERTY "${VS_WHERE_PROPERTY}")
-    set(${PROPERTY_NAME} "${VS_WHERE_PROPERTY}" PARENT_SCOPE)
+function(getVSWhereProperty VSWHERE_OUTPUT VSWHERE_PROPERTY VARIABLE_NAME)
+    string(REGEX MATCH "${VSWHERE_PROPERTY}: [^\r\n]*" VSWHERE_VALUE "${VSWHERE_OUTPUT}")
+    string(REPLACE "${VSWHERE_PROPERTY}: " "" VSWHERE_VALUE "${VSWHERE_VALUE}")
+    set(${VARIABLE_NAME} "${VSWHERE_VALUE}" PARENT_SCOPE)
 endfunction()
 
-execute_process(
-    COMMAND "${VSWHERE_PATH}" -latest
-    OUTPUT_VARIABLE VSWHERE_OUTPUT
+function(findVisualStudio)
+    set(OPTIONS ";")
+    set(ONE_VALUE_KEYWORDS ";")
+    set(MULTI_VALUE_KEYWORDS "PROPERTIES")
+
+    cmake_parse_arguments(PARSE_ARGV 0 FIND_VS "${OPTIONS}" "${ONE_VALUE_KEYWORDS}" "${MULTI_VALUE_KEYWORDS}")
+
+    execute_process(
+        COMMAND ${VSWHERE_PATH} -latest
+        OUTPUT_VARIABLE VSWHERE_OUTPUT
+        )
+
+    while(FIND_VS_PROPERTIES)
+        list(POP_FRONT FIND_VS_PROPERTIES VSWHERE_PROPERTY)
+        list(POP_FRONT FIND_VS_PROPERTIES VSWHERE_CMAKE_VARIABLE)
+        getVSWhereProperty(${VSWHERE_OUTPUT} ${VSWHERE_PROPERTY} VSWHERE_VALUE)
+        set(${VSWHERE_CMAKE_VARIABLE} ${VSWHERE_VALUE} PARENT_SCOPE)
+    endwhile()
+endfunction()
+
+findVisualStudio(
+    PROPERTIES
+        installationVersion VS_INSTALLATION_VERSION
+        installationPath VS_INSTALLATION_PATH
 )
 
-getVSWhereProperty(${VSWHERE_OUTPUT} installationVersion VS_INSTALLATION_VERSION)
-getVSWhereProperty(${VSWHERE_OUTPUT} installationPath VS_INSTALLATION_PATH)
 cmake_path(NORMAL_PATH VS_INSTALLATION_PATH)
 
 set(VS_MSVC_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC")
