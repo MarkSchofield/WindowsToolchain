@@ -60,9 +60,7 @@ set(CMAKE_CROSSCOMPILING TRUE)
 set(WIN32 1)
 set(MSVC 1)
 
-if(NOT CMAKE_SYSTEM_VERSION)
-    set(CMAKE_SYSTEM_VERSION 10.0.19041.0)
-endif()
+include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
 
 if(NOT CMAKE_SYSTEM_PROCESSOR)
     set(CMAKE_SYSTEM_PROCESSOR x64)
@@ -109,30 +107,6 @@ set(VS_TOOLSET_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC/${VS_TOOLSET_VERSION}
 
 message(VERBOSE "VS_INSTALLATION_VERSION = ${VS_INSTALLATION_VERSION}")
 message(VERBOSE "VS_INSTALLATION_PATH = ${VS_INSTALLATION_PATH}")
-
-# Find the Windows Kits
-#
-if(NOT CMAKE_WINDOWS_KITS_10_DIR)
-    get_filename_component(CMAKE_WINDOWS_KITS_10_DIR "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v10.0;InstallationFolder]" ABSOLUTE CACHE)
-endif()
-
-set(WINDOWS_KITS_PATH "${CMAKE_WINDOWS_KITS_10_DIR}")
-set(WINDOWS_KITS_VERSION "${CMAKE_SYSTEM_VERSION}")
-set(WINDOWS_KITS_BIN_PATH "${WINDOWS_KITS_PATH}/bin/${WINDOWS_KITS_VERSION}")
-set(WINDOWS_KITS_INCLUDE_PATH "${WINDOWS_KITS_PATH}/include/${WINDOWS_KITS_VERSION}")
-set(WINDOWS_KITS_LIB_PATH "${WINDOWS_KITS_PATH}/lib/${WINDOWS_KITS_VERSION}")
-
-if(NOT EXISTS ${WINDOWS_KITS_BIN_PATH})
-    message(FATAL_ERROR "Windows SDK ${WINDOWS_KITS_VERSION} cannot be found: Folder '${WINDOWS_KITS_BIN_PATH}' does not exist.")
-endif()
-
-if(NOT EXISTS ${WINDOWS_KITS_INCLUDE_PATH})
-    message(FATAL_ERROR "Windows SDK ${WINDOWS_KITS_VERSION} cannot be found: Folder '${WINDOWS_KITS_INCLUDE_PATH}' does not exist.")
-endif()
-
-if(NOT EXISTS ${WINDOWS_KITS_LIB_PATH})
-    message(FATAL_ERROR "Windows SDK ${WINDOWS_KITS_VERSION} cannot be found: Folder '${WINDOWS_KITS_LIB_PATH}' does not exist.")
-endif()
 
 # Set the tooling variables, include_directories and link_directories
 #
