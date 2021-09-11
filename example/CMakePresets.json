@@ -7,7 +7,7 @@
   },
   "configurePresets": [
     {
-      "name": "windows",
+      "name": "windows-msvc",
       "hidden": true,
       "displayName": "Windows-only configuration",
       "description": "This build is only available on Windows",
@@ -16,69 +16,93 @@
         "CMAKE_MAKE_PROGRAM": {
           "type": "STRING",
           "value": "${sourceDir}/__tools/ninja/ninja.exe"
-        }
+        },
+        "CMAKE_TOOLCHAIN_FILE": "../Windows.MSVC.toolchain.cmake"
       },
-      "binaryDir": "${sourceDir}/__output/${presetName}",
-      "toolchainFile": "../Windows.MSVC.toolchain.cmake",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      }
+      "binaryDir": "${sourceDir}/__output/${presetName}"
     },
     {
-      "name": "windows-x64",
-      "inherits": "windows",
-      "displayName": "Configure for 'windows-x64'",
+      "name": "windows-clang",
+      "hidden": true,
+      "displayName": "Windows-only configuration",
+      "description": "This build is only available on Windows",
+      "generator": "Ninja Multi-Config",
+      "cacheVariables": {
+        "CMAKE_MAKE_PROGRAM": {
+          "type": "STRING",
+          "value": "${sourceDir}/__tools/ninja/ninja.exe"
+        },
+        "CMAKE_TOOLCHAIN_FILE": "../Windows.Clang.toolchain.cmake"
+      },
+      "binaryDir": "${sourceDir}/__output/${presetName}"
+    },
+    {
+      "name": "windows-msvc-x64",
+      "inherits": "windows-msvc",
+      "displayName": "Configure for 'windows-msvc-x64'",
       "binaryDir": "${sourceDir}/__output/${presetName}",
       "cacheVariables": {
         "CMAKE_SYSTEM_PROCESSOR": "x64"
       }
     },
     {
-      "name": "windows-x86",
-      "inherits": "windows",
-      "displayName": "Configure for 'windows-x86'",
+      "name": "windows-msvc-x86",
+      "inherits": "windows-msvc",
+      "displayName": "Configure for 'windows-msvc-x86'",
       "binaryDir": "${sourceDir}/__output/${presetName}",
       "cacheVariables": {
         "CMAKE_SYSTEM_PROCESSOR": "x86"
       }
     },
     {
-      "name": "windows-arm64",
-      "inherits": "windows",
-      "displayName": "Configure for 'windows-arm64'",
+      "name": "windows-msvc-arm64",
+      "inherits": "windows-msvc",
+      "displayName": "Configure for 'windows-msvc-arm64'",
       "binaryDir": "${sourceDir}/__output/${presetName}",
       "cacheVariables": {
         "CMAKE_SYSTEM_PROCESSOR": "arm64"
       }
     },
     {
-      "name": "windows-arm",
-      "inherits": "windows",
-      "displayName": "Configure for 'windows-arm'",
+      "name": "windows-msvc-arm",
+      "inherits": "windows-msvc",
+      "displayName": "Configure for 'windows-msvc-arm'",
       "binaryDir": "${sourceDir}/__output/${presetName}",
       "cacheVariables": {
         "CMAKE_SYSTEM_PROCESSOR": "arm"
+      }
+    },
+    {
+      "name": "windows-clang-x64",
+      "inherits": "windows-clang",
+      "displayName": "Configure for 'windows-clang-x64'",
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "x64",
+        "CLANG_TIDY_CHECKS": "bugprone*"
       }
     }
   ],
   "buildPresets": [
     {
-      "name": "windows-x64",
-      "configurePreset": "windows-x64"
+      "name": "windows-msvc-x64",
+      "configurePreset": "windows-msvc-x64"
     },
     {
-      "name": "windows-x86",
-      "configurePreset": "windows-x86"
+      "name": "windows-msvc-x86",
+      "configurePreset": "windows-msvc-x86"
     },
     {
-      "name": "windows-arm64",
-      "configurePreset": "windows-arm64"
+      "name": "windows-msvc-arm64",
+      "configurePreset": "windows-msvc-arm64"
     },
     {
-      "name": "windows-arm",
-      "configurePreset": "windows-arm"
+      "name": "windows-msvc-arm",
+      "configurePreset": "windows-msvc-arm"
+    },
+    {
+      "name": "windows-clang-x64",
+      "configurePreset": "windows-clang-x64"
     }
   ]
 }

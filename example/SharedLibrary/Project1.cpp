@@ -6,12 +6,9 @@
 
 PROJECT1_API int nProject1 = 0;
 
-PROJECT1_API int fnProject1(void)
+PROJECT1_API int fnProject1()
 {
     return 0;
 }
 
-CProject1::CProject1()
-{
-    return;
-}
+CProject1::CProject1() = default;

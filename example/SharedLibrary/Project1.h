@@ -17,4 +17,4 @@ public:
 
 extern PROJECT1_API int nProject1;
 
-PROJECT1_API int fnProject1(void);
+PROJECT1_API int fnProject1();

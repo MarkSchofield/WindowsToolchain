@@ -1,8 +1,8 @@
-# A CMake Toolchain file for Windows MSVC
+# A CMake Toolchain file for Windows MSVC and Windows Clang
 
-A CMake toolchain file describes the set of tools and utilities for compiling code in CMake. This repo provides a
-toolchain that descibes how to compile using MSVC in CMake, with the goal of making Windows CMake builds more canonical
-to reduce the 'barrier-to-entry' to build code for Windows.
+A CMake toolchain file describes the set of tools and utilities for compiling code in CMake. This repo provides
+toolchains that descibes how to compile using MSVC and Clang in CMake, with the goal of making Windows CMake builds more
+canonical to reduce the 'barrier-to-entry' to build code for Windows.
 
 ## But I can build with MSVC in CMake already...?
 
@@ -29,10 +29,12 @@ conversation.
 
 ## How do I use this?
 
-Specify the 'Windows.MSVC.toolchain.cmake' file as a toolchain file to your CMake builds. See [the documentation for CMake toolchains][cmake-toolchains]
-for more details on Toolchain files and how to consume them.
+Specify the 'Windows.MSVC.toolchain.cmake' or 'Windows.Clang.toolchain.cmake' file as a toolchain file to your CMake
+builds. See [the documentation for CMake toolchains][cmake-toolchains] for more details on Toolchain files and how to
+consume them.
 
-The ['Windows.MSVC.toolchain.cmake'](./Windows.MSVC.toolchain.cmake) file has details on the various CMake variables
+The ['Windows.MSVC.toolchain.cmake'](./Windows.MSVC.toolchain.cmake) and
+['Windows.Clang.toolchain.cmake'](./Windows.Clang.toolchain.cmake) file has details on the various CMake variables
 that can be used to configure the build. And [the example folder](./example) provides a CMake project that builds a
 variety of Windows projects.
 

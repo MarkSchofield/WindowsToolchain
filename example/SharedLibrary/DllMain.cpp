@@ -4,7 +4,7 @@
 #include <Process.h>
 #include <Windows.h>
 
-int APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved)
+int APIENTRY DllMain(HMODULE /*hModule*/, DWORD reason, LPVOID /*lpReserved*/)
 {
     switch (reason)
     {
@@ -12,6 +12,7 @@ int APIENTRY DllMain(HMODULE hModule, DWORD reason, LPVOID lpReserved)
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
+    default:
         break;
     }
     return 0;

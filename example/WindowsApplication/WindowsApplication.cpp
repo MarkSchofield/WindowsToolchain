@@ -10,8 +10,8 @@ static HINSTANCE g_hInstance;
 static wchar_t szTitle[100];
 static wchar_t szWindowClass[100];
 
-LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
-INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK WndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 static ATOM RegisterClasses(HINSTANCE hInstance)
 {
@@ -33,7 +33,7 @@ static ATOM RegisterClasses(HINSTANCE hInstance)
     return RegisterClassExW(&wcex);
 }
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nCmdShow)
+int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
     static_cast<void>(hPrevInstance);
     static_cast<void>(lpCmdLine);
@@ -43,12 +43,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     RegisterClasses(hInstance);
 
     HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
-    if (!hWnd)
+    if (hWnd == nullptr)
     {
         return FALSE;
     }
 
-    ShowWindow(hWnd, nCmdShow);
+    ShowWindow(hWnd, nShowCmd);
     UpdateWindow(hWnd);
 
     HACCEL hAccelTable = LoadAcceleratorsW(hInstance, MAKEINTRESOURCE(IDC_WINDOWSAPPLICATION));
@@ -91,6 +91,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
 
+            static_cast<void>(hdc);
+
             EndPaint(hWnd, &ps);
             break;
         }
@@ -118,6 +120,8 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                 EndDialog(hDlg, LOWORD(wParam));
                 return TRUE;
             }
+            break;
+        default:
             break;
     }
 
