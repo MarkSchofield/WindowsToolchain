@@ -60,6 +60,7 @@ set(CMAKE_CROSSCOMPILING TRUE)
 set(WIN32 1)
 set(MSVC 1)
 
+include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
 
 if(NOT CMAKE_SYSTEM_PROCESSOR)
@@ -72,40 +73,6 @@ endif()
 
 # Find Visual Studio
 #
-set(_ProgramFiles "ProgramFiles(x86)")
-find_program(VSWHERE_PATH
-    vswhere.exe
-    HINTS
-        "$ENV{${_ProgramFiles}}/Microsoft Visual Studio/Installer"
-    REQUIRED
-)
-
-function(getVSWhereProperty VSWHERE_OUTPUT VSWHERE_PROPERTY VARIABLE_NAME)
-    string(REGEX MATCH "${VSWHERE_PROPERTY}: [^\r\n]*" VSWHERE_VALUE "${VSWHERE_OUTPUT}")
-    string(REPLACE "${VSWHERE_PROPERTY}: " "" VSWHERE_VALUE "${VSWHERE_VALUE}")
-    set(${VARIABLE_NAME} "${VSWHERE_VALUE}" PARENT_SCOPE)
-endfunction()
-
-function(findVisualStudio)
-    set(OPTIONS ";")
-    set(ONE_VALUE_KEYWORDS ";")
-    set(MULTI_VALUE_KEYWORDS "PROPERTIES")
-
-    cmake_parse_arguments(PARSE_ARGV 0 FIND_VS "${OPTIONS}" "${ONE_VALUE_KEYWORDS}" "${MULTI_VALUE_KEYWORDS}")
-
-    execute_process(
-        COMMAND ${VSWHERE_PATH} -latest
-        OUTPUT_VARIABLE VSWHERE_OUTPUT
-        )
-
-    while(FIND_VS_PROPERTIES)
-        list(POP_FRONT FIND_VS_PROPERTIES VSWHERE_PROPERTY)
-        list(POP_FRONT FIND_VS_PROPERTIES VSWHERE_CMAKE_VARIABLE)
-        getVSWhereProperty(${VSWHERE_OUTPUT} ${VSWHERE_PROPERTY} VSWHERE_VALUE)
-        set(${VSWHERE_CMAKE_VARIABLE} ${VSWHERE_VALUE} PARENT_SCOPE)
-    endwhile()
-endfunction()
-
 findVisualStudio(
     PROPERTIES
         installationVersion VS_INSTALLATION_VERSION
