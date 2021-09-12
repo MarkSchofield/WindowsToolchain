@@ -35,15 +35,44 @@ function(getVSWhereProperty VSWHERE_OUTPUT VSWHERE_PROPERTY VARIABLE_NAME)
     set(${VARIABLE_NAME} "${VSWHERE_VALUE}" PARENT_SCOPE)
 endfunction()
 
+#[[====================================================================================================================
+    findVisualStudio
+    ----------------
+
+    Finds a Visual Studio instance, and sets CMake variables based on properties of the found instance.
+
+        findVisualStudio(
+            [VERSION <version range>]
+            [PRERELEASE]
+            [REQUIRES <vs component>...]
+            PROPERTIES
+                <<vswhere property> <cmake variable>>
+            )
+====================================================================================================================]]#
 function(findVisualStudio)
-    set(OPTIONS ";")
-    set(ONE_VALUE_KEYWORDS ";")
-    set(MULTI_VALUE_KEYWORDS "PROPERTIES")
+    set(OPTIONS PRERELEASE)
+    set(ONE_VALUE_KEYWORDS VERSION)
+    set(MULTI_VALUE_KEYWORDS REQUIRES PROPERTIES)
 
     cmake_parse_arguments(PARSE_ARGV 0 FIND_VS "${OPTIONS}" "${ONE_VALUE_KEYWORDS}" "${MULTI_VALUE_KEYWORDS}")
 
+    set(VSWHERE_COMMAND ${VSWHERE_PATH} -latest)
+    if(FIND_VS_VERSION)
+        list(APPEND VSWHERE_COMMAND -version ${FIND_VS_VERSION})
+    endif()
+
+    if(FIND_VS_PRERELEASE)
+        list(APPEND VSWHERE_COMMAND -prerelease)
+    endif()    
+
+    if(FIND_VS_REQUIRES)
+        list(APPEND VSWHERE_COMMAND -requires ${FIND_VS_REQUIRES})
+    endif()
+
+    message(VERBOSE "findVisualStudio: VSWHERE_COMMAND = ${VSWHERE_COMMAND}")
+
     execute_process(
-        COMMAND ${VSWHERE_PATH} -latest
+        COMMAND ${VSWHERE_COMMAND}
         OUTPUT_VARIABLE VSWHERE_OUTPUT
         )
 

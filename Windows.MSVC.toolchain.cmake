@@ -74,10 +74,14 @@ endif()
 # Find Visual Studio
 #
 findVisualStudio(
+    VERSION "[16.0,17.0)"
     PROPERTIES
         installationVersion VS_INSTALLATION_VERSION
         installationPath VS_INSTALLATION_PATH
 )
+if(NOT VS_INSTALLATION_PATH)
+    message(FATAL_ERROR "Unable to find Visual Studio")
+endif()
 
 cmake_path(NORMAL_PATH VS_INSTALLATION_PATH)
 
