@@ -59,11 +59,21 @@ if(NOT CMAKE_SYSTEM_PROCESSOR)
     set(CMAKE_SYSTEM_PROCESSOR x64)
 endif()
 
+if(NOT CMAKE_VS_VERSION_RANGE)
+    set(CMAKE_VS_VERSION_RANGE "[16.0,17.0)")
+endif()
+
+if(NOT CMAKE_VS_VERSION_PRERELEASE)
+    set(CMAKE_VS_VERSION_PRERELEASE OFF)
+endif()
+
 include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
 
 # Find Clang
 #
 findVisualStudio(
+    VERSION ${CMAKE_VS_VERSION_RANGE}
+    PRERELEASE ${CMAKE_VS_VERSION_PRERELEASE}
     REQUIRES
         Microsoft.VisualStudio.Component.VC.Llvm.Clang
     PROPERTIES
