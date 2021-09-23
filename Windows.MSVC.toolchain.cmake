@@ -61,7 +61,6 @@ set(WIN32 1)
 set(MSVC 1)
 
 include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
 
 if(NOT CMAKE_SYSTEM_PROCESSOR)
     set(CMAKE_SYSTEM_PROCESSOR x64)
@@ -137,10 +136,6 @@ if(NOT MSVC_VERSION)
     message(FATAL_ERROR "Unable to obtain the compiler version from: ${CMAKE_CXX_COMPILER}")
 endif()
 
-set(CMAKE_MT "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/mt.exe")
-set(CMAKE_RC_COMPILER "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/rc.exe")
-set(CMAKE_RC_FLAGS_INIT "/nologo")
-
 # Compiler
 include_directories(SYSTEM "${VS_TOOLSET_PATH}/ATLMFC/include")
 include_directories(SYSTEM "${VS_TOOLSET_PATH}/include")
@@ -148,13 +143,5 @@ link_directories("${VS_TOOLSET_PATH}/ATLMFC/lib/${CMAKE_SYSTEM_PROCESSOR}")
 link_directories("${VS_TOOLSET_PATH}/lib/${CMAKE_SYSTEM_PROCESSOR}")
 link_directories("${VS_TOOLSET_PATH}/lib/x86/store/references")
 
-# Windows SDK
-include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/ucrt")
-include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/shared")
-include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/um")
-include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/winrt")
-include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/cppwinrt")
-link_directories("${WINDOWS_KITS_LIB_PATH}/ucrt/${CMAKE_SYSTEM_PROCESSOR}")
-link_directories("${WINDOWS_KITS_LIB_PATH}/um/${CMAKE_SYSTEM_PROCESSOR}")
-link_directories("${WINDOWS_KITS_PATH}/References/${CMAKE_SYSTEM_PROCESSOR}")
-link_directories("${WINDOWS_KITS_PATH}/UnionMetadata/${CMAKE_SYSTEM_PROCESSOR}")
+# Windows Kits
+include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")

@@ -59,11 +59,6 @@ if(NOT CMAKE_SYSTEM_PROCESSOR)
     set(CMAKE_SYSTEM_PROCESSOR x64)
 endif()
 
-if(NOT CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE)
-    set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE x64)
-endif()
-
-include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
 
 # Find Clang
@@ -98,22 +93,10 @@ set(CMAKE_CXX_COMPILER_FRONTEND_VARIANT "GNU")
 set(CMAKE_C_COMPILER_ID "Clang")
 set(CMAKE_C_COMPILER_FRONTEND_VARIANT "GNU")
 
-set(CMAKE_MT "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/mt.exe")
-set(CMAKE_RC_COMPILER "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/rc.exe")
-set(CMAKE_RC_FLAGS_INIT "/nologo")
-
 if(CLANG_TIDY_CHECKS)
     get_filename_component(CLANG_PATH ${CMAKE_CXX_COMPILER} DIRECTORY CACHE)
     set(CMAKE_CXX_CLANG_TIDY "${CLANG_PATH}/clang-tidy.exe;-checks=${CLANG_TIDY_CHECKS}")
 endif()
 
-# Windows SDK
-include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/ucrt")
-include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/shared")
-include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/um")
-include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/winrt")
-include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/cppwinrt")
-link_directories("${WINDOWS_KITS_LIB_PATH}/ucrt/${CMAKE_SYSTEM_PROCESSOR}")
-link_directories("${WINDOWS_KITS_LIB_PATH}/um/${CMAKE_SYSTEM_PROCESSOR}")
-link_directories("${WINDOWS_KITS_PATH}/References/${CMAKE_SYSTEM_PROCESSOR}")
-link_directories("${WINDOWS_KITS_PATH}/UnionMetadata/${CMAKE_SYSTEM_PROCESSOR}")
+# Windows Kits
+include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
