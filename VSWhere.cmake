@@ -57,16 +57,17 @@ function(findVisualStudio)
     cmake_parse_arguments(PARSE_ARGV 0 FIND_VS "${OPTIONS}" "${ONE_VALUE_KEYWORDS}" "${MULTI_VALUE_KEYWORDS}")
 
     set(VSWHERE_COMMAND ${VSWHERE_PATH} -latest)
-    if(FIND_VS_VERSION)
-        list(APPEND VSWHERE_COMMAND -version ${FIND_VS_VERSION})
-    endif()
 
     if(FIND_VS_PRERELEASE)
         list(APPEND VSWHERE_COMMAND -prerelease)
-    endif()    
+    endif()
 
     if(FIND_VS_REQUIRES)
         list(APPEND VSWHERE_COMMAND -requires ${FIND_VS_REQUIRES})
+    endif()
+
+    if(FIND_VS_VERSION)
+        list(APPEND VSWHERE_COMMAND -version "${FIND_VS_VERSION}")
     endif()
 
     message(VERBOSE "findVisualStudio: VSWHERE_COMMAND = ${VSWHERE_COMMAND}")
@@ -75,6 +76,8 @@ function(findVisualStudio)
         COMMAND ${VSWHERE_COMMAND}
         OUTPUT_VARIABLE VSWHERE_OUTPUT
         )
+
+    message(VERBOSE "findVisualStudio: VSWHERE_OUTPUT = ${VSWHERE_OUTPUT}")
 
     while(FIND_VS_PROPERTIES)
         list(POP_FRONT FIND_VS_PROPERTIES VSWHERE_PROPERTY)
