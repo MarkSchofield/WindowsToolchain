@@ -44,6 +44,7 @@ endfunction()
         findVisualStudio(
             [VERSION <version range>]
             [PRERELEASE <ON|OFF>]
+            [PRODUCTS <products>]
             [REQUIRES <vs component>...]
             PROPERTIES
                 <<vswhere property> <cmake variable>>
@@ -51,7 +52,7 @@ endfunction()
 ====================================================================================================================]]#
 function(findVisualStudio)
     set(OPTIONS)
-    set(ONE_VALUE_KEYWORDS VERSION PRERELEASE)
+    set(ONE_VALUE_KEYWORDS VERSION PRERELEASE PRODUCTS)
     set(MULTI_VALUE_KEYWORDS REQUIRES PROPERTIES)
 
     cmake_parse_arguments(PARSE_ARGV 0 FIND_VS "${OPTIONS}" "${ONE_VALUE_KEYWORDS}" "${MULTI_VALUE_KEYWORDS}")
@@ -60,6 +61,10 @@ function(findVisualStudio)
 
     if(FIND_VS_PRERELEASE)
         list(APPEND VSWHERE_COMMAND -prerelease)
+    endif()
+
+    if(FIND_VS_PRODUCTS)
+        list(APPEND VSWHERE_COMMAND -products ${FIND_VS_PRODUCTS})
     endif()
 
     if(FIND_VS_REQUIRES)
