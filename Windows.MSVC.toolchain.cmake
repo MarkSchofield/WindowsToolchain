@@ -63,6 +63,8 @@ set(CMAKE_CROSSCOMPILING TRUE)
 set(WIN32 1)
 set(MSVC 1)
 
+include("${CMAKE_CURRENT_LIST_DIR}/CppWinRT.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/NuGet.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
 
 if(NOT CMAKE_SYSTEM_PROCESSOR)
