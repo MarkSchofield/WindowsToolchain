@@ -68,3 +68,19 @@ if (-not (IsUpToDate $NinjaExecutablePath $NinjaArchivePath)) {
     Expand-Archive -Path $NinjaArchivePath -DestinationPath $NinjaOutputPath -Force
     Touch $NinjaExecutablePath
 }
+
+# Get NuGet
+$NuGetVersion = '5.11.0'
+$NuGetUrl = "https://dist.nuget.org/win-x86-commandline/v$NuGetVersion/nuget.exe"
+$NuGetExecutableSha256Hash = '3FCC2A11ED713ABF5D36320DF821B326CB1AAC51EFEDC77E1F55B0184C0A5822'
+$NuGetOutputPath = Join-Path -Path $ToolsPath -ChildPath 'nuget.exe'
+
+if (-not (IsUpToDate $NuGetOutputPath)) {
+    Write-Output "Installing NuGet $NuGetVersion"
+    DownloadFile $NuGetUrl $NuGetOutputPath
+    $Hash = (Get-FileHash -Path $NuGetOutputPath -Algorithm SHA256).Hash
+    if ($NuGetExecutableSha256Hash -ne $Hash) {
+        Remove-Item -Force -Path $NuGetOutputPath
+        Write-Error "Invalid Hash ($Hash)"
+    }
+}
