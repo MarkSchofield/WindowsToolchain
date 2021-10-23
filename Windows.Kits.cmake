@@ -21,6 +21,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #----------------------------------------------------------------------------------------------------------------------
+include_guard()
+
 if(NOT CMAKE_SYSTEM_VERSION)
     set(CMAKE_SYSTEM_VERSION 10.0.19041.0)
 endif()
@@ -32,6 +34,10 @@ endif()
 if(NOT CMAKE_WINDOWS_KITS_10_DIR)
     get_filename_component(CMAKE_WINDOWS_KITS_10_DIR "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v10.0;InstallationFolder]" ABSOLUTE CACHE)
 endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/NuGet.cmake")
+
+install_nuget_package(Microsoft.Windows.CppWinRT 2.0.210930.14 NUGET_MICROSOFT_WINDOWS_CPPWINRT)
 
 set(WINDOWS_KITS_PATH "${CMAKE_WINDOWS_KITS_10_DIR}" CACHE PATH "" FORCE)
 set(WINDOWS_KITS_VERSION "${CMAKE_SYSTEM_VERSION}" CACHE STRING "" FORCE)
@@ -54,6 +60,13 @@ endif()
 set(CMAKE_MT "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/mt.exe")
 set(CMAKE_RC_COMPILER "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/rc.exe")
 set(CMAKE_RC_FLAGS_INIT "/nologo")
+
+set(MIDL_COMPILER "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/midl.exe")
+set(MDMERGE_TOOL "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/mdmerge.exe")
+set(WINRT_METADATA_PATH "${WINDOWS_KITS_PATH}/References/${CMAKE_SYSTEM_VERSION}/windows.foundation.foundationcontract/4.0.0.0")
+
+# Add the 'Support' folder to the search path so that projects can opt-in to other functionality
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/Support")
 
 # Windows SDK
 include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/ucrt")

@@ -21,6 +21,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #----------------------------------------------------------------------------------------------------------------------
+include_guard()
+
 set(_ProgramFiles "ProgramFiles(x86)")
 find_program(VSWHERE_PATH
     vswhere.exe
