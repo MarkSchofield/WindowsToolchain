@@ -21,10 +21,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #----------------------------------------------------------------------------------------------------------------------
+#
+# | CMake Variable                                      | Description                                                                                                              |
+# |-----------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+# | CMAKE_SYSTEM_VERSION                                | The version of the operating system for which CMake is to build. Defaults to the host version.                           |
+# | CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE         | The architecture of the tooling to use. Defaults to x64.                                                                 |
+# | CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION            | The version of the Windows SDK to use. Defaults to the highest installed, that is no higher than the host OS version.    |
+# | CMAKE_WINDOWS_KITS_10_DIR                           | The location of the root of the Windows Kits 10 directory.                                                               |
+#
+# The following variables will be set:
+#
+# | CMake Variable                              | Description                                                                                           |
+# |---------------------------------------------|-------------------------------------------------------------------------------------------------------|
+# | CMAKE_MT                                    | The path to the 'mt' tool.                                                                            |
+# | CMAKE_RC_COMPILER                           | The path to the 'rc' tool.                                                                            |
+# | CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION    | The version of the Windows SDK to be used.                                                            |
+# | MDMERGE_TOOL                                | The path to the 'mdmerge' tool.                                                                       |
+# | MIDL_COMPILER                               | The path to the 'midl' compiler.                                                                      |
+# | WINDOWS_KITS_BIN_PATH                       | The path to the folder containing the Windows Kits binaries.                                          |
+# | WINDOWS_KITS_INCLUDE_PATH                   | The path to the folder containing the Windows Kits include files.                                     |
+# | WINDOWS_KITS_LIB_PATH                       | The path to the folder containing the Windows Kits library files.                                     |
+# | WINDOWS_KITS_REFERENCES_PATH                | The path to the folder containing the Windows Kits references.                                        |
+# | WINRT_METADATA_PATH                         |                                                                                                       |
+#
 include_guard()
 
 if(NOT CMAKE_SYSTEM_VERSION)
-    set(CMAKE_SYSTEM_VERSION 10.0.19041.0)
+    set(CMAKE_SYSTEM_VERSION ${CMAKE_HOST_SYSTEM_VERSION})
 endif()
 
 if(NOT CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE)
@@ -35,26 +58,39 @@ if(NOT CMAKE_WINDOWS_KITS_10_DIR)
     get_filename_component(CMAKE_WINDOWS_KITS_10_DIR "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v10.0;InstallationFolder]" ABSOLUTE CACHE)
 endif()
 
-include("${CMAKE_CURRENT_LIST_DIR}/NuGet.cmake")
+if(NOT CMAKE_WINDOWS_KITS_10_DIR)
+    message(FATAL_ERROR "Unable to find an installed Windows SDK, and one wasn't specified.")
+endif()
 
-install_nuget_package(Microsoft.Windows.CppWinRT 2.0.210930.14 NUGET_MICROSOFT_WINDOWS_CPPWINRT)
+# If a CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION wasn't specified, find the highest installed version that is no higher
+# than the host version
+if(NOT CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
+    file(GLOB WINDOWS_KITS_VERSIONS RELATIVE "${CMAKE_WINDOWS_KITS_10_DIR}/lib" "${CMAKE_WINDOWS_KITS_10_DIR}/lib/*")
+    list(SORT WINDOWS_KITS_VERSIONS COMPARE NATURAL ORDER DESCENDING)
+    while(WINDOWS_KITS_VERSIONS)
+        list(POP_FRONT WINDOWS_KITS_VERSIONS CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
+        if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION VERSION_LESS_EQUAL CMAKE_HOST_SYSTEM_VERSION)
+            break()
+        endif()
+    endwhile()
+endif()
 
-set(WINDOWS_KITS_PATH "${CMAKE_WINDOWS_KITS_10_DIR}" CACHE PATH "" FORCE)
-set(WINDOWS_KITS_VERSION "${CMAKE_SYSTEM_VERSION}" CACHE STRING "" FORCE)
-set(WINDOWS_KITS_BIN_PATH "${WINDOWS_KITS_PATH}/bin/${WINDOWS_KITS_VERSION}" CACHE PATH "" FORCE)
-set(WINDOWS_KITS_INCLUDE_PATH "${WINDOWS_KITS_PATH}/include/${WINDOWS_KITS_VERSION}" CACHE PATH "" FORCE)
-set(WINDOWS_KITS_LIB_PATH "${WINDOWS_KITS_PATH}/lib/${WINDOWS_KITS_VERSION}" CACHE PATH "" FORCE)
+set(WINDOWS_KITS_BIN_PATH "${CMAKE_WINDOWS_KITS_10_DIR}/bin/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}" CACHE PATH "" FORCE)
+set(WINDOWS_KITS_INCLUDE_PATH "${CMAKE_WINDOWS_KITS_10_DIR}/include/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}" CACHE PATH "" FORCE)
+set(WINDOWS_KITS_LIB_PATH "${CMAKE_WINDOWS_KITS_10_DIR}/lib/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}" CACHE PATH "" FORCE)
+set(WINDOWS_KITS_REFERENCES_PATH "${CMAKE_WINDOWS_KITS_10_DIR}/References" CACHE PATH "" FORCE)
+set(WINDOWS_KITS_PLATFORM_PATH "${CMAKE_WINDOWS_KITS_10_DIR}/Platforms/UAP/${CMAKE_SYSTEM_VERSION}/Platform.xml" CACHE PATH "" FORCE)
 
 if(NOT EXISTS ${WINDOWS_KITS_BIN_PATH})
-    message(FATAL_ERROR "Windows SDK ${WINDOWS_KITS_VERSION} cannot be found: Folder '${WINDOWS_KITS_BIN_PATH}' does not exist.")
+    message(FATAL_ERROR "Windows SDK ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION} cannot be found: Folder '${WINDOWS_KITS_BIN_PATH}' does not exist.")
 endif()
 
 if(NOT EXISTS ${WINDOWS_KITS_INCLUDE_PATH})
-    message(FATAL_ERROR "Windows SDK ${WINDOWS_KITS_VERSION} cannot be found: Folder '${WINDOWS_KITS_INCLUDE_PATH}' does not exist.")
+    message(FATAL_ERROR "Windows SDK ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION} cannot be found: Folder '${WINDOWS_KITS_INCLUDE_PATH}' does not exist.")
 endif()
 
 if(NOT EXISTS ${WINDOWS_KITS_LIB_PATH})
-    message(FATAL_ERROR "Windows SDK ${WINDOWS_KITS_VERSION} cannot be found: Folder '${WINDOWS_KITS_LIB_PATH}' does not exist.")
+    message(FATAL_ERROR "Windows SDK ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION} cannot be found: Folder '${WINDOWS_KITS_LIB_PATH}' does not exist.")
 endif()
 
 set(CMAKE_MT "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/mt.exe")
@@ -63,7 +99,8 @@ set(CMAKE_RC_FLAGS_INIT "/nologo")
 
 set(MIDL_COMPILER "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/midl.exe")
 set(MDMERGE_TOOL "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/mdmerge.exe")
-set(WINRT_METADATA_PATH "${WINDOWS_KITS_PATH}/References/${CMAKE_SYSTEM_VERSION}/windows.foundation.foundationcontract/4.0.0.0")
+
+set(WINRT_METADATA_PATH "${WINDOWS_KITS_REFERENCES_PATH}/${CMAKE_SYSTEM_VERSION}/windows.foundation.foundationcontract/4.0.0.0")
 
 # Add the 'Support' folder to the search path so that projects can opt-in to other functionality
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/Support")
@@ -76,5 +113,4 @@ include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/winrt")
 include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/cppwinrt")
 link_directories("${WINDOWS_KITS_LIB_PATH}/ucrt/${CMAKE_SYSTEM_PROCESSOR}")
 link_directories("${WINDOWS_KITS_LIB_PATH}/um/${CMAKE_SYSTEM_PROCESSOR}")
-link_directories("${WINDOWS_KITS_PATH}/References/${CMAKE_SYSTEM_PROCESSOR}")
-link_directories("${WINDOWS_KITS_PATH}/UnionMetadata/${CMAKE_SYSTEM_PROCESSOR}")
+link_directories("${WINDOWS_KITS_REFERENCES_PATH}/${CMAKE_SYSTEM_PROCESSOR}")

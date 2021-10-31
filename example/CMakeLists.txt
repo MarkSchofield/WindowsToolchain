@@ -5,8 +5,9 @@ cmake_minimum_required(VERSION 3.20)
 
 project(WindowsToolchainExample)
 
+include(CppWinRT)
+
 generate_winrt_projection(
-    EXECUTABLE_PATH ${NUGET_MICROSOFT_WINDOWS_CPPWINRT}/bin/cppwinrt.exe
     INPUT local
     OPTIMIZE
 )

@@ -21,6 +21,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #----------------------------------------------------------------------------------------------------------------------
+include_guard()
+
+include("${CMAKE_CURRENT_LIST_DIR}/../NuGet.cmake")
+
+if(NOT CPPWINRT_VERSION)
+    set(CPPWINRT_VERSION "2.0.210930.14")
+endif()
+
+install_nuget_package(Microsoft.Windows.CppWinRT ${CPPWINRT_VERSION} NUGET_MICROSOFT_WINDOWS_CPPWINRT)
 
 #[[====================================================================================================================
     generate_winrt_projection
@@ -28,8 +37,8 @@
     .
 
         generate_winrt_projection(
-            EXECUTABLE_PATH <path>
             INPUT <spec>+
+            [EXECUTABLE_PATH <path>]
             [PCH_NAME <pch name>]
             [OPTIMIZE]
         )
@@ -46,6 +55,10 @@ function(generate_winrt_projection)
     endif()
 
     if(NOT EXISTS "${CPPWINRT_PROJECTION_ROOT_PATH}/winrt")
+        if(NOT CPPWINRT_EXECUTABLE_PATH)
+            set(CPPWINRT_EXECUTABLE_PATH ${NUGET_MICROSOFT_WINDOWS_CPPWINRT}/bin/cppwinrt.exe)
+        endif()
+
         set(CPPWINRT_COMMAND ${CPPWINRT_EXECUTABLE_PATH})
 
         list(APPEND CPPWINRT_COMMAND -output ${CPPWINRT_PROJECTION_ROOT_PATH})
