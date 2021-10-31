@@ -14,7 +14,7 @@
         "NUGET_PATH": "${sourceDir}/__tools/nuget.exe",
         "CPPWINRT_VERSION": "2.0.210930.14",
         "CPPWINRT_PROJECTION_ROOT_PATH": "${sourceDir}/__cppwinrt",
-        "CMAKE_SYSTEM_VERSION": "10.0.19041.0"
+        "CMAKE_SYSTEM_VERSION": "10.0.17134.0"
       }
     },
     {

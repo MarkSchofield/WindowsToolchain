@@ -23,50 +23,27 @@
 #----------------------------------------------------------------------------------------------------------------------
 include_guard()
 
+include("${CMAKE_CURRENT_LIST_DIR}/PowerShell.cmake")
+
 set(MIDL_PLATFORM_RESPONSE_FILE "${CMAKE_BINARY_DIR}/midl.platform.rsp")
 set(MDMERGE_PLATFORM_RESPONSE_FILE "${CMAKE_BINARY_DIR}/mdmerge.platform.rsp")
 
-# PLATFORM_REFERENCES - The set of references for the targeted platform
-# TODO: This is the 10.0.19041.0 list. It should be read from Platform.xml
-set(PLATFORM_REFERENCES
-    Windows.AI.MachineLearning.MachineLearningContract 3.0.0.0
-    Windows.AI.MachineLearning.Preview.MachineLearningPreviewContract 2.0.0.0
-    Windows.ApplicationModel.Calls.Background.CallsBackgroundContract 2.0.0.0
-    Windows.ApplicationModel.Calls.CallsPhoneContract 5.0.0.0
-    Windows.ApplicationModel.Calls.CallsVoipContract 4.0.0.0
-    Windows.ApplicationModel.CommunicationBlocking.CommunicationBlockingContract 2.0.0.0
-    Windows.ApplicationModel.SocialInfo.SocialInfoContract 2.0.0.0
-    Windows.ApplicationModel.StartupTaskContract 3.0.0.0
-    Windows.Devices.Custom.CustomDeviceContract 1.0.0.0
-    Windows.Devices.DevicesLowLevelContract 3.0.0.0
-    Windows.Devices.Printers.PrintersContract 1.0.0.0
-    Windows.Devices.SmartCards.SmartCardBackgroundTriggerContract 3.0.0.0
-    Windows.Devices.SmartCards.SmartCardEmulatorContract 6.0.0.0
-    Windows.Foundation.FoundationContract 4.0.0.0
-    Windows.Foundation.UniversalApiContract 10.0.0.0
-    Windows.Gaming.XboxLive.StorageApiContract 1.0.0.0
-    Windows.Graphics.Printing3D.Printing3DContract 4.0.0.0
-    Windows.Networking.Connectivity.WwanContract 2.0.0.0
-    Windows.Networking.Sockets.ControlChannelTriggerContract 3.0.0.0
-    Windows.Security.Isolation.IsolatedWindowsEnvironmentContract 2.0.0.0
-    Windows.Services.Maps.GuidanceContract 3.0.0.0
-    Windows.Services.Maps.LocalSearchContract 4.0.0.0
-    Windows.Services.Store.StoreContract 4.0.0.0
-    Windows.Services.TargetedContent.TargetedContentContract 1.0.0.0
-    Windows.Storage.Provider.CloudFilesContract 4.0.0.0
-    Windows.System.Profile.ProfileHardwareTokenContract 1.0.0.0
-    Windows.System.Profile.ProfileSharedModeContract 2.0.0.0
-    Windows.System.Profile.SystemManufacturers.SystemManufacturersContract 3.0.0.0
-    Windows.System.SystemManagementContract 7.0.0.0
-    Windows.UI.ViewManagement.ViewManagementViewScalingContract 1.0.0.0
-    Windows.UI.Xaml.Core.Direct.XamlDirectContract 2.0.0.0
-)
-
-list(APPEND PLATFORM_METADATA_PATHS "${WINDOWS_KITS_REFERENCES_PATH}/${CMAKE_SYSTEM_VERSION}/Windows.Foundation.FoundationContract/4.0.0.0")
+# Read the PLATFORM_REFERENCES from the WINDOWS_KITS_PLATFORM_PATH file.
+execute_powershell("
+[xml]$Platform = Get-Content \"${WINDOWS_KITS_PLATFORM_PATH}\"
+$Platform.ApplicationPlatform.ContainedApiContracts.ApiContract |
+    ForEach-Object { $_.name, $_.version }
+"
+    OUTPUT_VARIABLE PLATFORM_REFERENCES)
+string(REPLACE "\n" ";" PLATFORM_REFERENCES ${PLATFORM_REFERENCES})
 
 while(PLATFORM_REFERENCES)
     list(POP_FRONT PLATFORM_REFERENCES PLATFORM_REFERENCE_NAME)
     list(POP_FRONT PLATFORM_REFERENCES PLATFORM_REFERENCE_VERSION)
+
+    if(PLATFORM_REFERENCE_NAME STREQUAL Windows.Foundation.FoundationContract)
+        list(APPEND PLATFORM_METADATA_PATHS "${WINDOWS_KITS_REFERENCES_PATH}/${CMAKE_SYSTEM_VERSION}/${PLATFORM_REFERENCE_NAME}/${PLATFORM_REFERENCE_VERSION}")
+    endif()
 
     list(APPEND PLATFORM_REFERENCE_WINMDS "${WINDOWS_KITS_REFERENCES_PATH}/${CMAKE_SYSTEM_VERSION}/${PLATFORM_REFERENCE_NAME}/${PLATFORM_REFERENCE_VERSION}/${PLATFORM_REFERENCE_NAME}.winmd")
     list(APPEND PLATFORM_REFERENCE_PATHS "${WINDOWS_KITS_REFERENCES_PATH}/${CMAKE_SYSTEM_VERSION}/${PLATFORM_REFERENCE_NAME}/${PLATFORM_REFERENCE_VERSION}")

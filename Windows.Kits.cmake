@@ -42,7 +42,6 @@
 # | WINDOWS_KITS_INCLUDE_PATH                   | The path to the folder containing the Windows Kits include files.                                     |
 # | WINDOWS_KITS_LIB_PATH                       | The path to the folder containing the Windows Kits library files.                                     |
 # | WINDOWS_KITS_REFERENCES_PATH                | The path to the folder containing the Windows Kits references.                                        |
-# | WINRT_METADATA_PATH                         |                                                                                                       |
 #
 include_guard()
 
@@ -99,8 +98,6 @@ set(CMAKE_RC_FLAGS_INIT "/nologo")
 
 set(MIDL_COMPILER "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/midl.exe")
 set(MDMERGE_TOOL "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/mdmerge.exe")
-
-set(WINRT_METADATA_PATH "${WINDOWS_KITS_REFERENCES_PATH}/${CMAKE_SYSTEM_VERSION}/windows.foundation.foundationcontract/4.0.0.0")
 
 # Add the 'Support' folder to the search path so that projects can opt-in to other functionality
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/Support")
