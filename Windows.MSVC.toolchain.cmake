@@ -56,6 +56,8 @@
 #
 cmake_minimum_required(VERSION 3.20)
 
+include_guard()
+
 set(UNUSED ${CMAKE_TOOLCHAIN_FILE})
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES
