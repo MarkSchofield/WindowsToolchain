@@ -70,9 +70,9 @@ if (-not (IsUpToDate $NinjaExecutablePath $NinjaArchivePath)) {
 }
 
 # Get NuGet
-$NuGetVersion = '5.11.0'
+$NuGetVersion = '6.0.0'
 $NuGetUrl = "https://dist.nuget.org/win-x86-commandline/v$NuGetVersion/nuget.exe"
-$NuGetExecutableSha256Hash = '3FCC2A11ED713ABF5D36320DF821B326CB1AAC51EFEDC77E1F55B0184C0A5822'
+$NuGetExecutableSha256Hash = '04EB6C4FE4213907E2773E1BE1BBBD730E9A655A3C9C58387CE8D4A714A5B9E1'
 $NuGetOutputPath = Join-Path -Path $ToolsPath -ChildPath 'nuget.exe'
 
 if (-not (IsUpToDate $NuGetOutputPath)) {
