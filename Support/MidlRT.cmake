@@ -23,7 +23,7 @@
 #----------------------------------------------------------------------------------------------------------------------
 include_guard()
 
-include("${CMAKE_CURRENT_LIST_DIR}/PowerShell.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/../PowerShell.cmake")
 
 set(MIDL_PLATFORM_RESPONSE_FILE "${CMAKE_BINARY_DIR}/midl.platform.rsp")
 set(MDMERGE_PLATFORM_RESPONSE_FILE "${CMAKE_BINARY_DIR}/mdmerge.platform.rsp")
