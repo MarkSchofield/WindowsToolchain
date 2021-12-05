@@ -91,8 +91,7 @@ _generateMdMergePlatformResponseFile()
 #----------------------------------------------------------------------------------------------------------------------
 #
 #----------------------------------------------------------------------------------------------------------------------
-function(add_library)
-    _add_library(${ARGV})
+function(enable_midlrt)
     cmake_language(EVAL CODE "cmake_language(DEFER CALL _process_target_midl [[${ARGV0}]])")
 endfunction()
 

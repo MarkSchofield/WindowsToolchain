@@ -21,3 +21,5 @@ target_precompile_headers(RuntimeComponent
     PRIVATE
         pch.h
 )
+
+enable_midlrt(RuntimeComponent)
