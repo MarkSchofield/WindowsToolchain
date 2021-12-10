@@ -59,7 +59,7 @@ function(findVisualStudio)
 
     cmake_parse_arguments(PARSE_ARGV 0 FIND_VS "${OPTIONS}" "${ONE_VALUE_KEYWORDS}" "${MULTI_VALUE_KEYWORDS}")
 
-    set(VSWHERE_COMMAND ${VSWHERE_PATH} -latest)
+    set(VSWHERE_COMMAND ${VSWHERE_PATH})
 
     if(FIND_VS_PRERELEASE)
         list(APPEND VSWHERE_COMMAND -prerelease)
@@ -73,8 +73,11 @@ function(findVisualStudio)
         list(APPEND VSWHERE_COMMAND -requires ${FIND_VS_REQUIRES})
     endif()
 
-    if(FIND_VS_VERSION)
-        list(APPEND VSWHERE_COMMAND -version "${FIND_VS_VERSION}")
+    if(NOT FIND_VS_VERSION)
+        # use the latest MSVC if a varsion is not specified
+        list(APPEND VSWHERE_COMMAND -latest)
+    else()
+        list(APPEND VSWHERE_COMMAND -latest -version "${FIND_VS_VERSION}")
     endif()
 
     message(VERBOSE "findVisualStudio: VSWHERE_COMMAND = ${VSWHERE_COMMAND}")
