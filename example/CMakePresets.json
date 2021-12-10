@@ -30,7 +30,6 @@
           "value": "${sourceDir}/__tools/ninja/ninja.exe"
         },
         "CMAKE_TOOLCHAIN_FILE": "../Windows.MSVC.toolchain.cmake",
-        "CMAKE_VS_VERSION_RANGE": "[16.0,18.0)",
         "CMAKE_VS_VERSION_PRERELEASE": "ON"
       },
       "binaryDir": "${sourceDir}/__output/${presetName}"
