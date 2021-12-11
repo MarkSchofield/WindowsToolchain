@@ -10,6 +10,7 @@
       "name": "windows",
       "hidden": true,
       "cacheVariables": {
+        "TOOLCHAIN_TOOLS_PATH": "${sourceDir}/__tools",
         "NUGET_PACKAGE_ROOT_PATH": "${sourceDir}/__packages",
         "NUGET_PATH": "${sourceDir}/__tools/nuget.exe",
         "CPPWINRT_VERSION": "2.0.210930.14",
@@ -25,10 +26,6 @@
       "description": "This build is only available on Windows",
       "generator": "Ninja Multi-Config",
       "cacheVariables": {
-        "CMAKE_MAKE_PROGRAM": {
-          "type": "STRING",
-          "value": "${sourceDir}/__tools/ninja/ninja.exe"
-        },
         "CMAKE_TOOLCHAIN_FILE": "../Windows.MSVC.toolchain.cmake",
         "CMAKE_VS_VERSION_PRERELEASE": "ON"
       },
@@ -42,10 +39,6 @@
       "description": "This build is only available on Windows",
       "generator": "Ninja Multi-Config",
       "cacheVariables": {
-        "CMAKE_MAKE_PROGRAM": {
-          "type": "STRING",
-          "value": "${sourceDir}/__tools/ninja/ninja.exe"
-        },
         "CMAKE_TOOLCHAIN_FILE": "../Windows.Clang.toolchain.cmake",
         "CMAKE_VS_VERSION_RANGE": "[16.0,18.0)",
         "CMAKE_VS_VERSION_PRERELEASE": "ON"
