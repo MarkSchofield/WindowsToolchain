@@ -11,7 +11,7 @@ From a PowerShell Core command prompt, run:
 ./initialize.ps1
 ```
 
-to download 'ninja.exe'. Then run:
+to download 'nuget.exe'. Then run:
 
 ```pwsh
 ./build.ps1
