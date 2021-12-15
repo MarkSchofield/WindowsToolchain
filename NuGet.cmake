@@ -75,9 +75,14 @@ function(install_nuget_package NUGET_PACKAGE_NAME NUGET_PACKAGE_VERSION VARIABLE
         execute_process(
             COMMAND ${NUGET_COMMAND}
             OUTPUT_VARIABLE NUGET_OUTPUT
+            ERROR_VARIABLE NUGET_ERROR
+            RESULT_VARIABLE NUGET_RESULT
             )
 
         message(VERBOSE "install_nuget_package: NUGET_OUTPUT = ${NUGET_OUTPUT}")
+        if(NOT (NUGET_RESULT STREQUAL 0))
+            message(FATAL_ERROR "install_nuget_package: Install failed with: ${NUGET_ERROR}")
+        endif()
     endif()
 
     set(${VARIABLE_NAME} "${NUGET_PACKAGE_PATH}" PARENT_SCOPE)
