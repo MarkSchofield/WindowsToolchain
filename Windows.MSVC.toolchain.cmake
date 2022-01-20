@@ -37,6 +37,7 @@
 # | CMAKE_VS_PLATFORM_TOOLSET_VERSION           | The version of the MSVC toolset to use. For example, 14.29.30133. Defaults to the highest available.                     |
 # | CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE | The architecture of the toolset to use. Defaults to 'x64'.                                                               |
 # | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                               |
+# | VS_USE_SPECTRE_MITIGATION_RUNTIME           | Whether the compiler should link with a runtime that uses 'Spectre' mitigations. Defaults to 'OFF'.                      |
 #
 # The toolchain file will set the following variables:
 #
@@ -94,6 +95,10 @@ endif()
 
 if(NOT CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE)
     set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE x64)
+endif()
+
+if(NOT VS_USE_SPECTRE_MITIGATION_RUNTIME)
+    set(VS_USE_SPECTRE_MITIGATION_RUNTIME OFF)
 endif()
 
 # Find Visual Studio
@@ -161,9 +166,19 @@ endif()
 # Compiler
 include_directories(SYSTEM "${VS_TOOLSET_PATH}/ATLMFC/include")
 include_directories(SYSTEM "${VS_TOOLSET_PATH}/include")
-link_directories("${VS_TOOLSET_PATH}/ATLMFC/lib/${CMAKE_SYSTEM_PROCESSOR}")
-link_directories("${VS_TOOLSET_PATH}/lib/${CMAKE_SYSTEM_PROCESSOR}")
+
+if(VS_USE_SPECTRE_MITIGATION_RUNTIME)
+    set(TOOLCHAIN_SPECTRE_TOKEN "/spectre")
+else()
+    set(TOOLCHAIN_SPECTRE_TOKEN)
+endif()
+
+link_directories("${VS_TOOLSET_PATH}/ATLMFC/lib${TOOLCHAIN_SPECTRE_TOKEN}/${CMAKE_SYSTEM_PROCESSOR}")
+link_directories("${VS_TOOLSET_PATH}/lib${TOOLCHAIN_SPECTRE_TOKEN}/${CMAKE_SYSTEM_PROCESSOR}")
+
 link_directories("${VS_TOOLSET_PATH}/lib/x86/store/references")
 
 # Windows Kits
 include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
+
+set(TOOLCHAIN_SPECTRE_TOKEN)

@@ -27,7 +27,8 @@
       "generator": "Ninja Multi-Config",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "../Windows.MSVC.toolchain.cmake",
-        "CMAKE_VS_VERSION_PRERELEASE": "ON"
+        "CMAKE_VS_VERSION_PRERELEASE": "ON",
+        "VS_USE_SPECTRE_MITIGATION_RUNTIME": "ON"
       },
       "binaryDir": "${sourceDir}/__output/${presetName}"
     },
