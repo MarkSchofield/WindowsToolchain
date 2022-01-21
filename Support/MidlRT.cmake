@@ -105,9 +105,10 @@ function(_generateUnmergedWinMd TARGET IDL_FILES WINMD_FILES_VARIABLE)
     list(APPEND MIDL_COMMAND "\"${MIDL_COMPILER}\"")
     list(APPEND MIDL_COMMAND "@\"${MIDL_PLATFORM_RESPONSE_FILE}\"")
     list(APPEND MIDL_COMMAND /winrt)
-    list(APPEND MIDL_COMMAND /W1)
+    list(APPEND MIDL_COMMAND /W3 /WX)
     list(APPEND MIDL_COMMAND /char signed)
     list(APPEND MIDL_COMMAND /env x64)
+    list(APPEND MIDL_COMMAND /error all)
     list(APPEND MIDL_COMMAND /h nul /dlldata nul /iid nul /proxy nul /notlb)
     list(APPEND MIDL_COMMAND /client none /server none)
     list(APPEND MIDL_COMMAND /enum_class)
@@ -121,14 +122,13 @@ function(_generateUnmergedWinMd TARGET IDL_FILES WINMD_FILES_VARIABLE)
     # COMPILER_DIR
     get_filename_component(COMPILER_DIR ${CMAKE_C_COMPILER} DIRECTORY)
 
-    set(WINMD_FILES)
+    set(GENERATED_FILES)
 
     foreach(IDL_FILE IN LISTS IDL_FILES)
         get_filename_component(IDL_FILE_BASE ${IDL_FILE} NAME_WLE)
+
         set(OUTPUT_WINMD_FILE ${CMAKE_CURRENT_BINARY_DIR}/Unmerged/${IDL_FILE_BASE}.winmd)
         set(OUTPUT_WINMD_LOG ${CMAKE_CURRENT_BINARY_DIR}/Unmerged/${IDL_FILE_BASE}.log)
-
-        list(APPEND WINMD_FILES ${OUTPUT_WINMD_FILE})
 
         cmake_path(NATIVE_PATH OUTPUT_WINMD_FILE OUTPUT_WINMD_FILE)
         cmake_path(NATIVE_PATH OUTPUT_WINMD_LOG OUTPUT_WINMD_LOG)
@@ -148,9 +148,11 @@ ${MIDL_COMMAND_LINE} /winmd \"${OUTPUT_WINMD_FILE}\" \"${IDL_FILE}\" /o \"${OUTP
             COMMENT "Generating ${IDL_FILE_BASE}.winmd"
             WORKING_DIRECTORY ${TARGET_SOURCE_DIR}
         )
+
+        list(APPEND GENERATED_FILES ${OUTPUT_WINMD_FILE})
     endforeach()
 
-    set(${WINMD_FILES_VARIABLE} ${WINMD_FILES} PARENT_SCOPE)
+    set(${WINMD_FILES_VARIABLE} ${GENERATED_FILES} PARENT_SCOPE)
 endfunction()
 
 #----------------------------------------------------------------------------------------------------------------------
