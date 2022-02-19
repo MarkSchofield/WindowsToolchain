@@ -12,7 +12,6 @@
       "cacheVariables": {
         "TOOLCHAIN_TOOLS_PATH": "${sourceDir}/__tools",
         "NUGET_PACKAGE_ROOT_PATH": "${sourceDir}/__packages",
-        "NUGET_PATH": "${sourceDir}/__tools/nuget.exe",
         "CPPWINRT_VERSION": "2.0.210930.14",
         "CPPWINRT_PROJECTION_ROOT_PATH": "${sourceDir}/__cppwinrt",
         "CMAKE_SYSTEM_VERSION": "10.0.19041.0"

@@ -8,12 +8,6 @@ Application, and Windows Desktop application and a shared library.
 From a PowerShell Core command prompt, run:
 
 ```pwsh
-./initialize.ps1
-```
-
-to download 'nuget.exe'. Then run:
-
-```pwsh
 ./build.ps1
 ```
 

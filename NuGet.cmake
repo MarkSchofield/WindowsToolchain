@@ -23,11 +23,40 @@
 #----------------------------------------------------------------------------------------------------------------------
 include_guard()
 
+include("${CMAKE_CURRENT_LIST_DIR}/ToolchainCommon.cmake")
+
 find_program(NUGET_PATH
     nuget nuget.exe
     PATHS
         ${NUGET_PATH}
 )
+
+# If NuGet isn't found, download it.
+#
+# NuGet.exe will be downloaded to `TOOLCHAIN_TOOLS_PATH`. If `TOOLCHAIN_TOOLS_PATH` is not set then it will
+# be downloaded to '${CMAKE_BINARY_DIR}/__tools'.
+if(NUGET_PATH STREQUAL "NUGET_PATH-NOTFOUND")
+    if(NOT NUGET_VERSION)
+        set(NUGET_VERSION "6.0.0")
+        set(NUGET_HASH "SHA256=04EB6C4FE4213907E2773E1BE1BBBD730E9A655A3C9C58387CE8D4A714A5B9E1")
+    else()
+        if(NOT NUGET_HASH)
+            message(FATAL_ERROR "NUGET_VERSION is set to ${NUGET_VERSION}. NUGET_HASH must be set if NUGET_VERSION is set.")
+        endif()
+    endif()
+
+    if(NOT TOOLCHAIN_TOOLS_PATH)
+        set(TOOLCHAIN_TOOLS_PATH "${CMAKE_BINARY_DIR}/__tools")
+    endif()
+
+    set(NUGET_PATH "${TOOLCHAIN_TOOLS_PATH}/nuget.exe")
+
+    toolchain_download_file(
+        URL "https://dist.nuget.org/win-x86-commandline/v${NUGET_VERSION}/nuget.exe"
+        PATH ${NUGET_PATH}
+        EXPECTED_HASH ${NUGET_HASH}
+    )
+endif()
 
 #[[====================================================================================================================
     install_nuget_package
@@ -41,6 +70,14 @@ find_program(NUGET_PATH
             [PRERELEASE <ON|OFF>]
             [PACKAGESAVEMODE <nuspec|nupkg|nuspec;nupkg>]
         )
+
+    The packages will be downloaded to `NUGET_PACKAGE_ROOT_PATH`. If `NUGET_PACKAGE_ROOT_PATH` is not set, then
+    packages will be downloaded to `${CMAKE_BINARY_DIR}/__nuget`.
+
+    Note: Since `CMAKE_BINARY_DIR` is platform specific, the default download location will change by platform,
+    resulting in NuGet packages being downloaded once for each platform that is built. Setting
+    `NUGET_PACKAGE_ROOT_PATH` to a platform-independent path (e.g. relative to the root of the repository) will
+    allow NuGet packages to be downloaded once for all platforms.
 ====================================================================================================================]]#
 function(install_nuget_package NUGET_PACKAGE_NAME NUGET_PACKAGE_VERSION VARIABLE_NAME)
     set(OPTIONS)

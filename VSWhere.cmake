@@ -23,13 +23,40 @@
 #----------------------------------------------------------------------------------------------------------------------
 include_guard()
 
+include("${CMAKE_CURRENT_LIST_DIR}/ToolchainCommon.cmake")
+
 set(_ProgramFiles "ProgramFiles(x86)")
 find_program(VSWHERE_PATH
     vswhere.exe
     HINTS
         "$ENV{${_ProgramFiles}}/Microsoft Visual Studio/Installer"
-    REQUIRED
 )
+
+# If vswhere isn't found, download it.
+#
+# vswhere.exe will be downloaded to `TOOLCHAIN_TOOLS_PATH`. If `TOOLCHAIN_TOOLS_PATH` is not set then it will
+# be downloaded to '${CMAKE_BINARY_DIR}/__tools'.
+if(VSWHERE_PATH STREQUAL "VSWHERE_PATH-NOTFOUND")
+    if(NOT VSWHERE_VERSION)
+        set(VSWHERE_VERSION "2.8.4")
+        set(VSWHERE_HASH "SHA256=E50A14767C27477F634A4C19709D35C27A72F541FB2BA5C3A446C80998A86419")
+    else()
+        if(NOT VSWHERE_HASH)
+            message(FATAL_ERROR "VSWHERE_VERSION is set to ${VSWHERE_VERSION}. VSWHERE_HASH must be set if VSWHERE_VERSION is set.")
+        endif()
+    endif()
+
+    if(NOT TOOLCHAIN_TOOLS_PATH)
+        set(TOOLCHAIN_TOOLS_PATH "${CMAKE_BINARY_DIR}/__tools")
+    endif()
+
+    set(VSWHERE_PATH "${TOOLCHAIN_TOOLS_PATH}/vswhere.exe")
+    toolchain_download_file(
+        URL "https://github.com/microsoft/vswhere/releases/download/${VSWHERE_VERSION}/vswhere.exe"
+        PATH ${VSWHERE_PATH}
+        EXPECTED_HASH ${VSWHERE_HASH}
+    )
+endif()
 
 function(getVSWhereProperty VSWHERE_OUTPUT VSWHERE_PROPERTY VARIABLE_NAME)
     string(REGEX MATCH "${VSWHERE_PROPERTY}: [^\r\n]*" VSWHERE_VALUE "${VSWHERE_OUTPUT}")
@@ -89,7 +116,7 @@ function(findVisualStudio)
     while(FIND_VS_PROPERTIES)
         list(POP_FRONT FIND_VS_PROPERTIES VSWHERE_PROPERTY)
         list(POP_FRONT FIND_VS_PROPERTIES VSWHERE_CMAKE_VARIABLE)
-        getVSWhereProperty(${VSWHERE_OUTPUT} ${VSWHERE_PROPERTY} VSWHERE_VALUE)
+        getVSWhereProperty("${VSWHERE_OUTPUT}" ${VSWHERE_PROPERTY} VSWHERE_VALUE)
         set(${VSWHERE_CMAKE_VARIABLE} ${VSWHERE_VALUE} PARENT_SCOPE)
     endwhile()
 endfunction()
