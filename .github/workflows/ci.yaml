@@ -1,10 +1,44 @@
 name: Toolchain CI
 on:
+  pull_request:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.editorconfig'
+      - '.vscode/**'
+      - '*.md'
   workflow_dispatch:
 jobs:
   build:
     name: Build Examples
+    strategy:
+      max-parallel: 8
+      fail-fast: false
+      matrix:
+        configuration: [ Debug, Release ]
+        buildPreset: [ windows-msvc-x64, windows-msvc-x86, windows-msvc-arm64, windows-clang-x64 ]
     runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: CMake Configure ${{ matrix.buildPreset }}
+        shell: pwsh
+        run: |
+          Set-Location ./example
+          cmake --preset ${{ matrix.buildPreset }}
+      - name: CMake Build ${{ matrix.buildPreset }}
+        shell: pwsh
+        run: |
+          Set-Location ./example
+          cmake --build --preset ${{ matrix.buildPreset }} --config ${{ matrix.configuration }}
+      - name: Upload output artifact
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: __output_${{ matrix.buildPreset }}_${{ matrix.configuration }}
+          path: |
+            example/__output/${{ matrix.buildPreset }}
+            !example/__output/${{ matrix.buildPreset }}/**/*.ilk
+            !example/__output/${{ matrix.buildPreset }}/**/*.obj
+            !example/__output/${{ matrix.buildPreset }}/**/*.pch

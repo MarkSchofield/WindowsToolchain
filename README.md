@@ -1,8 +1,11 @@
 # A CMake Toolchain file for Windows MSVC and Windows Clang
 
 A CMake toolchain file describes the set of tools and utilities for compiling code in CMake. This repo provides
-toolchains that descibes how to compile using MSVC and Clang in CMake, with the goal of making Windows CMake builds more
+toolchains that describes how to compile using MSVC and Clang in CMake, with the goal of making Windows CMake builds more
 canonical to reduce the 'barrier-to-entry' to build code for Windows.
+
+[![build status](https://github.com/MarkSchofield/Toolchain/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/MarkSchofield/Toolchain/actions/workflows/ci.yaml?query=branch%3Amain)
+
 
 ## But I can build with MSVC in CMake already...?
 
