@@ -5,8 +5,8 @@
 
 [CmdletBinding()]
 param (
-    [ValidateSet('windows-clang-x64', 'windows-msvc-arm', 'windows-msvc-arm64', 'windows-msvc-x64', 'windows-msvc-x86')]
-    $Presets = @('windows-clang-x64', 'windows-msvc-arm', 'windows-msvc-arm64', 'windows-msvc-x64', 'windows-msvc-x86')
+    [ValidateSet('windows-clang-x64', 'windows-msvc-arm64', 'windows-msvc-x64', 'windows-msvc-x86')]
+    $Presets = @('windows-clang-x64', 'windows-msvc-arm64', 'windows-msvc-x64', 'windows-msvc-x86')
 )
 
 Set-StrictMode -Version Latest
