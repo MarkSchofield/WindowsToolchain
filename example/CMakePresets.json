@@ -73,15 +73,6 @@
       }
     },
     {
-      "name": "windows-msvc-arm",
-      "inherits": "windows-msvc",
-      "displayName": "Configure for 'windows-msvc-arm'",
-      "binaryDir": "${sourceDir}/__output/${presetName}",
-      "cacheVariables": {
-        "CMAKE_SYSTEM_PROCESSOR": "arm"
-      }
-    },
-    {
       "name": "windows-clang-x64",
       "inherits": "windows-clang",
       "displayName": "Configure for 'windows-clang-x64'",
@@ -104,10 +95,6 @@
     {
       "name": "windows-msvc-arm64",
       "configurePreset": "windows-msvc-arm64"
-    },
-    {
-      "name": "windows-msvc-arm",
-      "configurePreset": "windows-msvc-arm"
     },
     {
       "name": "windows-clang-x64",
