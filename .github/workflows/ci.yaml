@@ -1,0 +1,10 @@
+name: Toolchain CI
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build Examples
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
