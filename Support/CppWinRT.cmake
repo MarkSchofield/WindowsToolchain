@@ -25,12 +25,6 @@ include_guard()
 
 include("${CMAKE_CURRENT_LIST_DIR}/../NuGet.cmake")
 
-if(NOT CPPWINRT_VERSION)
-    set(CPPWINRT_VERSION "2.0.210930.14")
-endif()
-
-install_nuget_package(Microsoft.Windows.CppWinRT ${CPPWINRT_VERSION} NUGET_MICROSOFT_WINDOWS_CPPWINRT)
-
 #[[====================================================================================================================
     generate_winrt_projection
     -------------------------
@@ -49,6 +43,12 @@ function(generate_winrt_projection)
     set(MULTI_VALUE_KEYWORDS INPUT)
 
     cmake_parse_arguments(PARSE_ARGV 0 CPPWINRT "${OPTIONS}" "${ONE_VALUE_KEYWORDS}" "${MULTI_VALUE_KEYWORDS}")
+
+    if(NOT CPPWINRT_VERSION)
+        set(CPPWINRT_VERSION "2.0.210930.14")
+    endif()
+
+    install_nuget_package(Microsoft.Windows.CppWinRT ${CPPWINRT_VERSION} NUGET_MICROSOFT_WINDOWS_CPPWINRT)
 
     if(NOT CPPWINRT_PROJECTION_ROOT_PATH)
         set(CPPWINRT_PROJECTION_ROOT_PATH ${CMAKE_BINARY_DIR}/__cppwinrt)

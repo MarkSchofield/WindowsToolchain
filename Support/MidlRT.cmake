@@ -24,6 +24,13 @@
 include_guard()
 
 include("${CMAKE_CURRENT_LIST_DIR}/../PowerShell.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/../NuGet.cmake")
+
+if(NOT CPPWINRT_VERSION)
+    set(CPPWINRT_VERSION "2.0.210930.14")
+endif()
+
+install_nuget_package(Microsoft.Windows.CppWinRT ${CPPWINRT_VERSION} NUGET_MICROSOFT_WINDOWS_CPPWINRT)
 
 set(MIDL_PLATFORM_RESPONSE_FILE "${CMAKE_BINARY_DIR}/midl.platform.rsp")
 set(MDMERGE_PLATFORM_RESPONSE_FILE "${CMAKE_BINARY_DIR}/mdmerge.platform.rsp")
