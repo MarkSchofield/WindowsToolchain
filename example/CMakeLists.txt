@@ -7,12 +7,11 @@ project(WindowsToolchainExample)
 
 include(CppWinRT)
 
-generate_winrt_projection(
-    INPUT local
+add_cppwinrt_projection(CppWinRT
+    INPUTS
+        ${CMAKE_SYSTEM_VERSION}
     OPTIMIZE
 )
-
-include_directories(BEFORE SYSTEM ${CPPWINRT_PROJECTION_ROOT_PATH})
 
 add_compile_definitions(
     UNICODE
