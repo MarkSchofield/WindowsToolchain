@@ -19,7 +19,5 @@ target_precompile_headers(CommandLineWinRT
 
 target_link_libraries(CommandLineWinRT
     PRIVATE
-        RuntimeObject.lib
-        oleaut32.lib
-        ole32.lib
+        CppWinRT
 )

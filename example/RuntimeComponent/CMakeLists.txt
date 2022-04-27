@@ -22,4 +22,9 @@ target_precompile_headers(RuntimeComponent
         pch.h
 )
 
+target_link_libraries(RuntimeComponent
+    PRIVATE
+        CppWinRT
+)
+
 enable_midlrt(RuntimeComponent)
