@@ -58,12 +58,6 @@ if(VSWHERE_PATH STREQUAL "VSWHERE_PATH-NOTFOUND")
     )
 endif()
 
-function(getVSWhereProperty VSWHERE_OUTPUT VSWHERE_PROPERTY VARIABLE_NAME)
-    string(REGEX MATCH "${VSWHERE_PROPERTY}: [^\r\n]*" VSWHERE_VALUE "${VSWHERE_OUTPUT}")
-    string(REPLACE "${VSWHERE_PROPERTY}: " "" VSWHERE_VALUE "${VSWHERE_VALUE}")
-    set(${VARIABLE_NAME} "${VSWHERE_VALUE}" PARENT_SCOPE)
-endfunction()
-
 #[[====================================================================================================================
     findVisualStudio
     ----------------
@@ -112,6 +106,12 @@ function(findVisualStudio)
         )
 
     message(VERBOSE "findVisualStudio: VSWHERE_OUTPUT = ${VSWHERE_OUTPUT}")
+
+    function(getVSWhereProperty VSWHERE_OUTPUT VSWHERE_PROPERTY VARIABLE_NAME)
+        string(REGEX MATCH "${VSWHERE_PROPERTY}: [^\r\n]*" VSWHERE_VALUE "${VSWHERE_OUTPUT}")
+        string(REPLACE "${VSWHERE_PROPERTY}: " "" VSWHERE_VALUE "${VSWHERE_VALUE}")
+        set(${VARIABLE_NAME} "${VSWHERE_VALUE}" PARENT_SCOPE)
+    endfunction()
 
     while(FIND_VS_PROPERTIES)
         list(POP_FRONT FIND_VS_PROPERTIES VSWHERE_PROPERTY)

@@ -54,6 +54,32 @@ function(toolchain_update_file)
 endfunction()
 
 #[[====================================================================================================================
+    toolchain_find_powershell
+    -------------------------
+    Searches for PowerShell.
+
+        toolchain_find_powershell(
+            <VARIABLE_NAME>
+        )
+
+    If the POWERSHELL_PATH value is set, that will be preferred. The VARIABLE_NAME will be set in the parent scope
+    with the result.
+====================================================================================================================]]#
+function(toolchain_find_powershell VARIABLE_NAME)
+    if(NOT EXISTS ${POWERSHELL_PATH})
+        find_program(
+            POWERSHELL_PATH
+            NAMES
+                pwsh.exe powershell.exe
+            DOC "The path to PowerShell"
+            REQUIRED
+        )
+    endif()
+    message(VERBOSE "toolchain_find_powershell: Using PowerShell from: ${POWERSHELL_PATH}")
+    set(${VARIABLE_NAME} ${POWERSHELL_PATH} PARENT_SCOPE)
+endfunction()
+
+#[[====================================================================================================================
     toolchain_download_file
     -----------------------
     Downloads a file to the given path.
