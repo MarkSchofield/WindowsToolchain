@@ -61,6 +61,10 @@ include("${CMAKE_CURRENT_LIST_DIR}/ToolchainCommon.cmake")
 #
 # Download and unpack ninja to TOOLCHAIN_TOOLS_PATH and set CMAKE_MAKE_PROGRAM to point to it.
 if((NINJA_PATH STREQUAL "NINJA_PATH-NOTFOUND") AND TOOLCHAIN_TOOLS_PATH)
+    if(NOT IS_ABSOLUTE ${TOOLCHAIN_TOOLS_PATH})
+        message(WARNING "TOOLCHAIN_TOOLS_PATH is not an absolute path. This might result in an inconsistent behavior.")
+    endif()
+
     set(NINJA_ARCHIVE_PATH "${TOOLCHAIN_TOOLS_PATH}/ninja.zip")
     set(NINJA_PATH "${TOOLCHAIN_TOOLS_PATH}/ninja.exe")
 
