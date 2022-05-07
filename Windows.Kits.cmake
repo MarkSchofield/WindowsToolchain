@@ -100,8 +100,9 @@ set(CMAKE_RC_FLAGS_INIT "/nologo")
 set(MIDL_COMPILER "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/midl.exe")
 set(MDMERGE_TOOL "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/mdmerge.exe")
 
-# Add the 'Support' folder to the search path so that projects can opt-in to other functionality
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_LIST_DIR}/Support")
+# MSVC_TOOLCHAIN_DIR can be used to opt-in to other functionality by including other files in the toolchain directory.
+set(MSVC_TOOLCHAIN_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE FILEPATH "MSVC toolchain directory")
+set(MSVC_TOOLCHAIN_SUPPORT_DIR ${CMAKE_CURRENT_LIST_DIR}/Support CACHE FILEPATH "MSVC toolchain support directory")
 
 # Windows SDK
 include_directories(SYSTEM "${WINDOWS_KITS_INCLUDE_PATH}/ucrt")
