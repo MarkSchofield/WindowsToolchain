@@ -19,5 +19,10 @@ target_precompile_headers(CommandLineWinRT
 
 target_link_libraries(CommandLineWinRT
     PRIVATE
-        CppWinRT
+        RuntimeComponentCppWinRT
+)
+
+add_custom_command(TARGET CommandLineWinRT POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:CommandLineWinRT> $<TARGET_FILE_DIR:CommandLineWinRT>
+  COMMAND_EXPAND_LISTS
 )

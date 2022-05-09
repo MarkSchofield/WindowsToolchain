@@ -28,3 +28,16 @@ target_link_libraries(RuntimeComponent
 )
 
 enable_midlrt(RuntimeComponent)
+
+add_cppwinrt_projection(RuntimeComponentCppWinRT
+    INPUTS
+        ${CMAKE_CURRENT_BINARY_DIR}/RuntimeComponent.winmd
+    DEPS
+        CppWinRT
+    OPTIMIZE
+)
+
+target_link_libraries(RuntimeComponentCppWinRT
+    INTERFACE
+        RuntimeComponent
+)
