@@ -96,6 +96,7 @@ endfunction()
 
         add_cppwinrt_projection(<target>
             INPUTS <spec>+
+            [DEPS <spec>+]
             [VERSION <C++/WinRT version>]
             [PROJECTION_ROOT_PATH <path>]
             [OPTIMIZE]
@@ -103,6 +104,10 @@ endfunction()
 
     The 'INPUTS' will be used to generate the projection, and can be any input to the cppwinrt tooling. If the INPUTS
     includes a path to a .winmd file, the file will be a dependency of the target that generates the projection.
+
+    The DEPS parameter is optional, but may contain target names of dependencies. These will be added to the
+    target_link_libraries of this projection target, and any referenced cppwinrt inputs will be used for the
+    -ref parameter to cppwinrt when generating this target's projection.
 
     The VERSION parameter is optional, but if not specified the CPPWINRT_VERSION must be set.
 
@@ -115,7 +120,7 @@ endfunction()
 function(add_cppwinrt_projection TARGET_NAME)
     set(OPTIONS OPTIMIZE)
     set(ONE_VALUE_KEYWORDS PROJECTION_ROOT_PATH VERSION PCH_NAME)
-    set(MULTI_VALUE_KEYWORDS INPUTS)
+    set(MULTI_VALUE_KEYWORDS INPUTS DEPS)
 
     if(NOT TARGET_NAME)
         message(FATAL_ERROR "add_cppwinrt_projection called with incorrect arguments: a target name is required.")
@@ -129,6 +134,18 @@ function(add_cppwinrt_projection TARGET_NAME)
 
     if(NOT CPPWINRT_PROJECTION_ROOT_PATH)
         set(CPPWINRT_PROJECTION_ROOT_PATH ${CMAKE_BINARY_DIR}/__cppwinrt)
+    endif()
+
+    set(CPPWINRT_REFS)
+    if(CPPWINRT_DEPS)
+        foreach(_dep IN LISTS CPPWINRT_DEPS)
+            get_target_property(_refs ${_dep} INTERFACE_CPPWINRT_REFS)
+            if (NOT _refs MATCHES "-NOTFOUND$")
+                list(APPEND CPPWINRT_REFS ${_refs})
+            else()
+                message(WARNING "add_cppwinwinrt_project: Dependency ${_dep} does not have target property INTERFACE_CPPWINRT_REFS!")
+            endif()
+        endforeach()
     endif()
 
     message(VERBOSE "add_cppwinrt_projection: CPPWINRT_VERSION = ${CPPWINRT_VERSION}")
@@ -146,6 +163,7 @@ function(add_cppwinrt_projection TARGET_NAME)
     list(APPEND CPPWINRT_COMMAND ${CPPWINRT_EXECUTABLE_PATH})
     list(APPEND CPPWINRT_COMMAND -output ${CPPWINRT_OUTPUT})
     list(APPEND CPPWINRT_COMMAND -input ${CPPWINRT_INPUTS})
+    list(APPEND CPPWINRT_COMMAND -ref ${CPPWINRT_REFS})
 
     if(CPPWINRT_OPTIMIZE)
         list(APPEND CPPWINRT_COMMAND -optimize)
@@ -190,5 +208,11 @@ function(add_cppwinrt_projection TARGET_NAME)
     target_link_libraries(${TARGET_NAME}
         INTERFACE
             RuntimeObject.lib
+            ${CPPWINRT_DEPS}
+    )
+
+    list(APPEND CPPWINRT_REFS ${CPPWINRT_INPUTS})
+    set_target_properties(${TARGET_NAME} PROPERTIES
+        INTERFACE_CPPWINRT_REFS "${CPPWINRT_REFS}"
     )
 endfunction()
