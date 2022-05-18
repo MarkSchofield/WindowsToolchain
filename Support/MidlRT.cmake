@@ -27,7 +27,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/../PowerShell.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/../NuGet.cmake")
 
 if(NOT CPPWINRT_VERSION)
-    set(CPPWINRT_VERSION "2.0.210930.14")
+    set(CPPWINRT_VERSION "2.0.220418.1")
 endif()
 
 install_nuget_package(Microsoft.Windows.CppWinRT ${CPPWINRT_VERSION} NUGET_MICROSOFT_WINDOWS_CPPWINRT)
