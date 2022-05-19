@@ -22,12 +22,13 @@
 # SOFTWARE.
 #----------------------------------------------------------------------------------------------------------------------
 #
-# | CMake Variable                                      | Description                                                                                                              |
-# |-----------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-# | CMAKE_SYSTEM_VERSION                                | The version of the operating system for which CMake is to build. Defaults to the host version.                           |
-# | CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE         | The architecture of the tooling to use. Defaults to x64.                                                                 |
-# | CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION            | The version of the Windows SDK to use. Defaults to the highest installed, that is no higher than the host OS version.    |
-# | CMAKE_WINDOWS_KITS_10_DIR                           | The location of the root of the Windows Kits 10 directory.                                                               |
+# | CMake Variable                                      | Description                                                                                                                                       |
+# |-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
+# | CMAKE_SYSTEM_VERSION                                | The version of the operating system for which CMake is to build. Defaults to the host version.                                                    |
+# | CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE         | The architecture of the tooling to use. Defaults to x64.                                                                                          |
+# | CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION            | The version of the Windows SDK to use. Defaults to the highest installed, that is no higher than CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION_MAXIMUM |
+# | CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION_MAXIMUM    | The maximum version of the Windows SDK to use, for example '10.0.19041.0'. Defaults to nothing                                                    |
+# | CMAKE_WINDOWS_KITS_10_DIR                           | The location of the root of the Windows Kits 10 directory.                                                                                        |
 #
 # The following variables will be set:
 #
@@ -69,10 +70,23 @@ if(NOT CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
     list(SORT WINDOWS_KITS_VERSIONS COMPARE NATURAL ORDER DESCENDING)
     while(WINDOWS_KITS_VERSIONS)
         list(POP_FRONT WINDOWS_KITS_VERSIONS CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
-        if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION VERSION_LESS_EQUAL CMAKE_HOST_SYSTEM_VERSION)
+        if(NOT CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION_MAXIMUM)
+            message(VERBOSE "Windows.Kits: Defaulting version: ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}")
             break()
         endif()
+
+        if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION VERSION_LESS_EQUAL CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION_MAXIMUM)
+            message(VERBOSE "Windows.Kits: Choosing version: ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}")
+            break()
+        endif()
+
+        message(VERBOSE "Windows.Kits: Not suitable: ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}")
+        set(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
     endwhile()
+endif()
+
+if(NOT CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
+    message(FATAL_ERROR "A Windows SDK could not be found.")
 endif()
 
 set(WINDOWS_KITS_BIN_PATH "${CMAKE_WINDOWS_KITS_10_DIR}/bin/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}" CACHE PATH "" FORCE)
