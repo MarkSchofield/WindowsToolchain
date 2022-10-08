@@ -27,11 +27,11 @@
 #
 # The following variables can be used to configure the behavior of this toolchain file:
 #
-# | CMake Variable                              | Description                                                                                           |
-# |---------------------------------------------|-------------------------------------------------------------------------------------------------------|
-# | CMAKE_SYSTEM_VERSION                        | The version of the operating system for which CMake is to build. Defaults to '10.0.19041.0'.          |
-# | CMAKE_SYSTEM_PROCESSOR                      | The processor to compiler for. One of 'x86', 'x64', 'arm', 'arm64'. Defaults to 'x64'.                |
-# | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                            |
+# | CMake Variable                              | Description                                                                                                     |
+# |---------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+# | CMAKE_SYSTEM_VERSION                        | The version of the operating system for which CMake is to build. Defaults to '10.0.19041.0'.                    |
+# | CMAKE_SYSTEM_PROCESSOR                      | The processor to compiler for. One of 'x86', 'x64', 'arm', 'arm64'. Defaults to ${CMAKE_HOST_SYSTEM_PROCESSOR}. |
+# | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                      |
 #
 # The toolchain file will set the following variables:
 #
@@ -58,7 +58,7 @@ set(CMAKE_CROSSCOMPILING TRUE)
 set(WIN32 1)
 
 if(NOT CMAKE_SYSTEM_PROCESSOR)
-    set(CMAKE_SYSTEM_PROCESSOR x64)
+    set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_HOST_SYSTEM_PROCESSOR})
 endif()
 
 if(NOT CMAKE_VS_VERSION_RANGE)
