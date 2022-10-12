@@ -23,12 +23,15 @@
 #----------------------------------------------------------------------------------------------------------------------
 include_guard()
 
+if(NOT WIN32)
+    return()
+endif()
+
 include("${CMAKE_CURRENT_LIST_DIR}/ToolchainCommon.cmake")
 
 find_program(NUGET_PATH
-    nuget nuget.exe
-    PATHS
-        ${NUGET_PATH}
+    NAMES nuget nuget.exe
+    PATHS ${NUGET_PATH}
 )
 
 # If NuGet isn't found, download it.

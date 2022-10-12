@@ -47,9 +47,8 @@ else()
 endif()
 
 find_program(NINJA_PATH
-    ninja ninja.exe
-    PATHS
-        ${NINJA_PATH}
+    NAMES ninja ninja.exe
+    PATHS ${NINJA_PATH}
 )
 
 include("${CMAKE_CURRENT_LIST_DIR}/ToolchainCommon.cmake")

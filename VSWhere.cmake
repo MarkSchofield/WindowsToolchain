@@ -23,6 +23,10 @@
 #----------------------------------------------------------------------------------------------------------------------
 include_guard()
 
+if(NOT WIN32)
+    return()
+endif()
+
 include("${CMAKE_CURRENT_LIST_DIR}/ToolchainCommon.cmake")
 
 set(_ProgramFiles "ProgramFiles(x86)")
