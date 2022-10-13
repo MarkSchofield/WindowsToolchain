@@ -25,35 +25,55 @@ include_guard()
 
 include("${CMAKE_CURRENT_LIST_DIR}/ToolchainCommon.cmake")
 
-find_program(NUGET_PATH
-    NAMES nuget nuget.exe
-)
+#[[====================================================================================================================
+    toolchain_ensure_nuget
+    ----------------------
 
-# If NuGet isn't found, download it.
-#
-# NuGet.exe will be downloaded to `TOOLCHAIN_TOOLS_PATH`. If `TOOLCHAIN_TOOLS_PATH` is not set then it will be downloaded to '${CMAKE_BINARY_DIR}/__tools'.
-if(NUGET_PATH STREQUAL "NUGET_PATH-NOTFOUND")
-    if(NOT NUGET_VERSION)
-        set(NUGET_VERSION "6.1.0")
-        set(NUGET_HASH "SHA256=432d322b16ffab3fed5d24ab7ea30ae10c555a00339a9bf53060aa4b2aee7925")
-    else()
-        if(NOT NUGET_HASH)
-            message(FATAL_ERROR "NUGET_VERSION is set to ${NUGET_VERSION}. NUGET_HASH must be set if NUGET_VERSION is set.")
-        endif()
-    endif()
+    Ensures that NuGet is available and the NUGET_PATH variables is set in the cache. The following steps will be
+    taken:
 
-    if(NOT TOOLCHAIN_TOOLS_PATH)
-        set(TOOLCHAIN_TOOLS_PATH "${CMAKE_BINARY_DIR}/__tools")
-    endif()
+        1. If `NUGET_PATH` is set, then that value will be used.
+        2. If NuGet is found through `find_program`, that path will be used.
+        3. NuGet will be downloaded - specified by `NUGET_VERSION` and `NUGET_HASH` - into the `TOOLCHAIN_TOOLS_PATH`
+           and `NUGET_PATH` will be set to the download location. If `TOOLCHAIN_TOOLS_PATH` is not set, then it will
+           default to `${CMAKE_BINARY_DIR}/__tools`.
 
-    set(NUGET_PATH "${TOOLCHAIN_TOOLS_PATH}/nuget.exe")
-
-    toolchain_download_file(
-        URL "https://dist.nuget.org/win-x86-commandline/v${NUGET_VERSION}/nuget.exe"
-        PATH ${NUGET_PATH}
-        EXPECTED_HASH ${NUGET_HASH}
+    Note: Since `CMAKE_BINARY_DIR` is platform specific, the default download location will change by platform,
+    resulting in the tool being downloaded once for each platform that is built. Setting
+    `TOOLCHAIN_TOOLS_PATH` to a platform-independent path (e.g. relative to the root of the repository) will
+    allow NuGet to be downloaded once for all platforms.
+====================================================================================================================]]#
+function(toolchain_ensure_nuget)
+    find_program(NUGET_PATH
+        NAMES nuget nuget.exe
     )
-endif()
+
+    # If NuGet isn't found, download it.
+    #
+    # NuGet.exe will be downloaded to `TOOLCHAIN_TOOLS_PATH`. If `TOOLCHAIN_TOOLS_PATH` is not set then it will be downloaded to '${CMAKE_BINARY_DIR}/__tools'.
+    if(NUGET_PATH STREQUAL "NUGET_PATH-NOTFOUND")
+        if(NOT NUGET_VERSION)
+            set(NUGET_VERSION "6.1.0")
+            set(NUGET_HASH "SHA256=432d322b16ffab3fed5d24ab7ea30ae10c555a00339a9bf53060aa4b2aee7925")
+        else()
+            if(NOT NUGET_HASH)
+                message(FATAL_ERROR "NUGET_VERSION is set to ${NUGET_VERSION}. NUGET_HASH must be set if NUGET_VERSION is set.")
+            endif()
+        endif()
+
+        if(NOT TOOLCHAIN_TOOLS_PATH)
+            set(TOOLCHAIN_TOOLS_PATH "${CMAKE_BINARY_DIR}/__tools")
+        endif()
+
+        set(NUGET_PATH "${TOOLCHAIN_TOOLS_PATH}/nuget.exe" CACHE FILEPATH "The location of 'nuget.exe'" FORCE)
+
+        toolchain_download_file(
+            URL "https://dist.nuget.org/win-x86-commandline/v${NUGET_VERSION}/nuget.exe"
+            PATH ${NUGET_PATH}
+            EXPECTED_HASH ${NUGET_HASH}
+        )
+    endif()
+endfunction()
 
 #[[====================================================================================================================
     install_nuget_package
@@ -90,6 +110,8 @@ function(install_nuget_package NUGET_PACKAGE_NAME NUGET_PACKAGE_VERSION VARIABLE
     set(NUGET_PACKAGE_PATH "${NUGET_PACKAGE_ROOT_PATH}/${NUGET_PACKAGE_NAME}.${NUGET_PACKAGE_VERSION}")
 
     if(NOT EXISTS "${NUGET_PACKAGE_PATH}")
+        toolchain_ensure_nuget()
+
         set(NUGET_COMMAND ${NUGET_PATH} install ${NUGET_PACKAGE_NAME})
 
         list(APPEND NUGET_COMMAND -OutputDirectory ${NUGET_PACKAGE_ROOT_PATH})
