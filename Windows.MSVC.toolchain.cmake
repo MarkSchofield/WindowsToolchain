@@ -59,6 +59,10 @@ cmake_minimum_required(VERSION 3.20)
 
 include_guard()
 
+if(NOT (CMAKE_HOST_SYSTEM_NAME STREQUAL Windows))
+    return()
+endif()
+
 set(UNUSED ${CMAKE_TOOLCHAIN_FILE})
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES
