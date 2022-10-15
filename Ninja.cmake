@@ -31,7 +31,7 @@
 # | NINJA_VERSION           | The version of Ninja to download - if it can't be found. Defaults to 1.11.0.                                              |
 # | NINJA_ARCHIVE_HASH      | The hash of the Ninja archive, following the format of `string(<HASH>`. Defaults to the hash of the Ninja 1.10.2 archive. |
 # | TOOLCHAIN_TOOLS_PATH    | The path to download tools to. If not set, then tools will not be downloaded.                                             |
-# | NINJA_DIR               | The directory where ninja may found. Defaults not set.                                                                    |
+# | NINJA_PATH              | The path to ninja program to use. Defaults not set.                                                                       |
 include_guard()
 
 if((NOT (CMAKE_GENERATOR STREQUAL Ninja)) AND (NOT (CMAKE_GENERATOR STREQUAL "Ninja Multi-Config")))
@@ -49,7 +49,6 @@ endif()
 
 find_program(NINJA_PATH
     NAMES ninja ninja.exe
-    HINTS ${NINJA_DIR}
 )
 
 include("${CMAKE_CURRENT_LIST_DIR}/ToolchainCommon.cmake")

@@ -33,8 +33,8 @@
 # | CMAKE_SYSTEM_PROCESSOR                      | The processor to compiler for. One of 'x86', 'x64', 'arm', 'arm64'. Defaults to ${CMAKE_HOST_SYSTEM_PROCESSOR}. |
 # | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                      |
 # | CLANG_TIDY_CHECKS                           | List of rules clang-tidy should check. Defaults not set.                                                        |
-# | NINJA_DIR                                   | The directory where ninja may found. Defaults not set.                                                          |
-# | NUGET_DIR                                   | The directory where nuget may found. Defaults not set.                                                          |
+# | NINJA_PATH                                  | The path to the ninja program. Defaults not set.                                                                |
+# | NUGET_PATH                                  | The path to the nuget program. Defaults not set.                                                                |
 #
 # The toolchain file will set the following variables:
 #
@@ -59,7 +59,7 @@ if(NOT (CMAKE_HOST_SYSTEM_NAME STREQUAL Windows))
     return()
 endif()
 
-set(UNUSED ${CMAKE_TOOLCHAIN_FILE}) # TODO(CK): what does this mean?
+set(UNUSED ${CMAKE_TOOLCHAIN_FILE}) # Note: only to prevent cmake unused variable warninig
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES "CMAKE_SYSTEM_PROCESSOR;CMAKE_CROSSCOMPILING")
 set(CMAKE_CROSSCOMPILING TRUE)

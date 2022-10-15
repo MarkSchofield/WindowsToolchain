@@ -27,7 +27,6 @@ include("${CMAKE_CURRENT_LIST_DIR}/ToolchainCommon.cmake")
 
 find_program(NUGET_PATH
     NAMES nuget nuget.exe
-    HINTS ${NUGET_DIR}
 )
 
 # If NuGet isn't found, download it.
