@@ -53,5 +53,38 @@ Note: Since WindowsToolchain uses a `.yaml` file for configuration, make sure to
 
 The [Toolchain CI](.\.github\workflows\ci.yaml) GitHub Workflow enforces the linting rules during PR and CI.
 
+## Testing
+
+WindowsToolchain uses [Pester][pester] for testing the CMake files in the codebase. The tests are written for
+[PowerShell Core][powershellcore] and checked into [the `Tests` folder](./Tests). To run the tests:
+
+1. Launch a [PowerShell Core][powershellcore] prompt.
+
+    ```text
+    pwsh
+    ```
+
+2. Make sure that you have [Pester][pester] installed. This only needs to be done once.
+
+    ```powershell
+    Install-Module Pester
+    ```
+
+3. Import the Pester module into the PowerShell Core session:
+
+    ```powershell
+    Import-Module Pester
+    ```
+
+4. Discover and run all tests:
+
+    ```powershell
+    Invoke-Pester
+    ```
+
+The [Toolchain CI](.\.github\workflows\ci.yaml) GitHub Workflow requires all tests to pass during PR and CI.
+
 [cmake-toolchains]: https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html "CMake Toolchains"
 [cmakelang]: https://cmake-format.readthedocs.io/ "cmakelang"
+[pester]: https://pester.dev/ "Pester"
+[powershellcore]: https://learn.microsoft.com/en-us/powershell/ "PowerShell Core"

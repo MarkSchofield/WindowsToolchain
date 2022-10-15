@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install 'cmakelang[YAML]'
         shell: pwsh
         run: |
@@ -24,6 +24,27 @@ jobs:
         shell: pwsh
         run: |
           & ./analyze.ps1
+  test:
+    name: Run tests
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Invoke-Pester
+        shell: pwsh
+        run: |
+          Import-Module Pester
+          $Configuration = [PesterConfiguration]@{
+            Run = @{
+              Path = '*'
+              Passthru = $true
+            }
+            Output = @{
+              Verbosity = 'Diagnostic'
+              CIFormat = 'GithubActions'
+            }
+          }
+          Invoke-Pester -Configuration $Configuration
   build:
     name: Build Examples
     strategy:
@@ -35,7 +56,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: CMake Configure ${{ matrix.buildPreset }}
         shell: pwsh
         run: |
@@ -47,7 +68,7 @@ jobs:
           Set-Location ./example
           cmake --build --preset ${{ matrix.buildPreset }} --config ${{ matrix.configuration }}
       - name: Upload output artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: ${{ always() }}
         with:
           name: __output_${{ matrix.buildPreset }}_${{ matrix.configuration }}
