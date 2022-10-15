@@ -26,15 +26,13 @@ include_guard()
 include("${CMAKE_CURRENT_LIST_DIR}/ToolchainCommon.cmake")
 
 find_program(NUGET_PATH
-    nuget nuget.exe
-    PATHS
-        ${NUGET_PATH}
+    NAMES nuget nuget.exe
+    HINTS ${NUGET_DIR}
 )
 
 # If NuGet isn't found, download it.
 #
-# NuGet.exe will be downloaded to `TOOLCHAIN_TOOLS_PATH`. If `TOOLCHAIN_TOOLS_PATH` is not set then it will
-# be downloaded to '${CMAKE_BINARY_DIR}/__tools'.
+# NuGet.exe will be downloaded to `TOOLCHAIN_TOOLS_PATH`. If `TOOLCHAIN_TOOLS_PATH` is not set then it will be downloaded to '${CMAKE_BINARY_DIR}/__tools'.
 if(NUGET_PATH STREQUAL "NUGET_PATH-NOTFOUND")
     if(NOT NUGET_VERSION)
         set(NUGET_VERSION "6.1.0")

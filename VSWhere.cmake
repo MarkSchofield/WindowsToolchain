@@ -27,15 +27,13 @@ include("${CMAKE_CURRENT_LIST_DIR}/ToolchainCommon.cmake")
 
 set(_ProgramFiles "ProgramFiles(x86)")
 find_program(VSWHERE_PATH
-    vswhere.exe
-    HINTS
-        "$ENV{${_ProgramFiles}}/Microsoft Visual Studio/Installer"
+    NAMES vswhere vswhere.exe
+    HINTS "$ENV{${_ProgramFiles}}/Microsoft Visual Studio/Installer"
 )
 
 # If vswhere isn't found, download it.
 #
-# vswhere.exe will be downloaded to `TOOLCHAIN_TOOLS_PATH`. If `TOOLCHAIN_TOOLS_PATH` is not set then it will
-# be downloaded to '${CMAKE_BINARY_DIR}/__tools'.
+# vswhere.exe will be downloaded to `TOOLCHAIN_TOOLS_PATH`. If `TOOLCHAIN_TOOLS_PATH` is not set then it will be downloaded to '${CMAKE_BINARY_DIR}/__tools'.
 if(VSWHERE_PATH STREQUAL "VSWHERE_PATH-NOTFOUND")
     if(NOT VSWHERE_VERSION)
         set(VSWHERE_VERSION "2.8.4")
