@@ -69,8 +69,7 @@ function(toolchain_find_powershell VARIABLE_NAME)
     if(NOT EXISTS ${POWERSHELL_PATH})
         find_program(
             POWERSHELL_PATH
-            NAMES
-                pwsh.exe powershell.exe
+            NAMES pwsh.exe powershell.exe
             DOC "The path to PowerShell"
             REQUIRED
         )
