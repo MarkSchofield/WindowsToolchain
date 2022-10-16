@@ -6,7 +6,6 @@ canonical to reduce the 'barrier-to-entry' to build code for Windows.
 
 [![build status](https://github.com/MarkSchofield/Toolchain/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/MarkSchofield/Toolchain/actions/workflows/ci.yaml?query=branch%3Amain)
 
-
 ## But I can build with MSVC in CMake already...?
 
 Yes, but you're probably either:
@@ -41,4 +40,18 @@ The ['Windows.MSVC.toolchain.cmake'](./Windows.MSVC.toolchain.cmake) and
 that can be used to configure the build. And [the example folder](./example) provides a CMake project that builds a
 variety of Windows projects.
 
+## Linting
+
+WindowsToolchain uses [`cmakelang`][cmakelang] for linting the CMake files in the codebase. The
+[.cmake-format.yaml](./.cmake-format.yaml) file describes the formatting style for the codebase. To run the linting
+tools:
+
+1. Install [`cmakelang`][cmakelang] following [the installation instuctions](https://cmake-format.readthedocs.io/en/latest/installation.html).
+Note: Since WindowsToolchain uses a `.yaml` file for configuration, make sure to install the `cmakelang[YAML]` package.
+
+2. Run [`./analyze.ps1`](./analyze.ps1)
+
+The [Toolchain CI](.\.github\workflows\ci.yaml) GitHub Workflow enforces the linting rules during PR and CI.
+
 [cmake-toolchains]: https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html "CMake Toolchains"
+[cmakelang]: https://cmake-format.readthedocs.io/ "cmakelang"

@@ -82,7 +82,7 @@ function(generate_winrt_projection)
         execute_process(
             COMMAND ${CPPWINRT_COMMAND}
             OUTPUT_VARIABLE CPPWINRT_OUTPUT
-            )
+        )
 
         message(VERBOSE "generate_winrt_projection: CPPWINRT_OUTPUT = ${CPPWINRT_OUTPUT}")
     endif()
@@ -160,10 +160,12 @@ function(add_cppwinrt_projection TARGET_NAME)
     set(CPPWINRT_EXECUTABLE_PATH ${NUGET_MICROSOFT_WINDOWS_CPPWINRT}/bin/cppwinrt.exe)
 
     set(CPPWINRT_COMMAND)
-    list(APPEND CPPWINRT_COMMAND ${CPPWINRT_EXECUTABLE_PATH})
-    list(APPEND CPPWINRT_COMMAND -output ${CPPWINRT_OUTPUT})
-    list(APPEND CPPWINRT_COMMAND -input ${CPPWINRT_INPUTS})
-    list(APPEND CPPWINRT_COMMAND -ref ${CPPWINRT_REFS})
+    list(APPEND CPPWINRT_COMMAND
+        ${CPPWINRT_EXECUTABLE_PATH}
+        -output ${CPPWINRT_OUTPUT}
+        -input ${CPPWINRT_INPUTS}
+        -ref ${CPPWINRT_REFS}
+    )
 
     if(CPPWINRT_OPTIMIZE)
         list(APPEND CPPWINRT_COMMAND -optimize)

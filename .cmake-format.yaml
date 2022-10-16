@@ -1,0 +1,45 @@
+format:
+  command_case: lower
+  dangle_parens: true
+  line_ending: windows
+  line_width: 120
+  max_pargs_hwrap: 3
+  separate_ctrl_name_with_space: false
+  separate_fn_name_with_space: false
+  tab_size: 4
+  use_tabchars: false
+
+parse:
+  additional_commands:
+    file:
+      pargs:
+        flags: [
+          'ARCHIVE_EXTRACT'
+        ]
+      kwargs:
+        INPUT: 1
+        DESTINATION: 1
+
+markup:
+  bullet_char: "*"
+  enable_markup: false
+  enum_char: .
+
+lint:
+  argument_var_pattern: '([A-Z][A-Z0-9_]+|[a-z_][a-z0-9_]+)'
+  local_var_pattern: '[A-Z][A-Z0-9_]+'
+  max_statements: 60
+  disabled_codes:
+    # Disable "Line too long", the current documentation tables have long lines.
+    - C0301
+
+    # Disable "Wrong line ending (unix)". See https://github.com/cheshirekow/cmake_format/issues/273
+    - C0327
+
+    # Disable "Empty docstring on function or macro declaration". CMakeLang doesn't appear to handle bracket comments
+    - C0112
+
+encode:
+  emit_byteorder_mark: false
+  input_encoding: utf-8
+  output_encoding: utf-8

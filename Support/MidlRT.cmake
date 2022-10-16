@@ -73,7 +73,7 @@ function(_generateMidlPlatformResponseFile)
     file(GENERATE
         OUTPUT ${MIDL_PLATFORM_RESPONSE_FILE}
         CONTENT "/nologo ${PLATFORM_REFERENCE_WINMDS_ARGS} ${PLATFORM_METADATA_PATHS_ARGS}"
-        )
+    )
 endfunction()
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ function(_generateMdMergePlatformResponseFile)
     file(GENERATE
         OUTPUT ${MDMERGE_PLATFORM_RESPONSE_FILE}
         CONTENT "-v ${PLATFORM_REFERENCE_PATHS_ARGS}"
-        )
+    )
 endfunction()
 
 _generateMidlPlatformResponseFile()
@@ -197,7 +197,7 @@ ${MDMERGE_COMMAND_LINE}
             DEPENDS ${WINMD_FILES} ${MDMERGE_COMMAND_SCRIPT}
             COMMENT "Generating ${TARGET_NAME}.winmd"
             WORKING_DIRECTORY ${TARGET_SOURCE_DIR}
-        )
+    )
 
     set(${TARGET_WINMD_FILE_VARIABLE} ${OUTPUT_TARGET_WINMD_FILE} PARENT_SCOPE)
 endfunction()
@@ -235,7 +235,7 @@ ${CPPWINRT_COMMAND_LINE}
             DEPENDS ${MERGED_WINMD_FILE} ${CPPWINRT_COMMAND_SCRIPT}
             COMMENT "Projecting ${TARGET_NAME}.winmd"
             WORKING_DIRECTORY ${TARGET_SOURCE_DIR}
-        )
+    )
 endfunction()
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -257,12 +257,12 @@ function(_cppwinrtPlatformProjection)
     ")
 
     add_custom_command(
-            OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/Generated Files/winrt/base.h"
-            COMMAND ${CPPWINRT_COMMAND_SCRIPT}
-            DEPENDS ${MERGED_WINMD_FILE} ${CPPWINRT_COMMAND_SCRIPT}
-            COMMENT "Projecting 'Platform' .winmd"
-            WORKING_DIRECTORY ${TARGET_SOURCE_DIR}
-        )
+        OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/Generated Files/winrt/base.h"
+        COMMAND ${CPPWINRT_COMMAND_SCRIPT}
+        DEPENDS ${MERGED_WINMD_FILE} ${CPPWINRT_COMMAND_SCRIPT}
+        COMMENT "Projecting 'Platform' .winmd"
+        WORKING_DIRECTORY ${TARGET_SOURCE_DIR}
+    )
 endfunction()
 
 #----------------------------------------------------------------------------------------------------------------------

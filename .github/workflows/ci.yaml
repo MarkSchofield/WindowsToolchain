@@ -10,6 +10,20 @@ on:
       - '*.md'
   workflow_dispatch:
 jobs:
+  analyze:
+    name: Run 'cmake-lint'
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install 'cmakelang[YAML]'
+        shell: pwsh
+        run: |
+          & pip install cmakelang[YAML]
+      - name: CMake lint
+        shell: pwsh
+        run: |
+          & ./analyze.ps1
   build:
     name: Build Examples
     strategy:
