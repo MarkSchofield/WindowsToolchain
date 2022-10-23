@@ -133,7 +133,7 @@ function(install_nuget_package NUGET_PACKAGE_NAME NUGET_PACKAGE_VERSION VARIABLE
             OUTPUT_VARIABLE NUGET_OUTPUT
             ERROR_VARIABLE NUGET_ERROR
             RESULT_VARIABLE NUGET_RESULT
-            )
+        )
 
         message(VERBOSE "install_nuget_package: NUGET_OUTPUT = ${NUGET_OUTPUT}")
         if(NOT (NUGET_RESULT STREQUAL 0))

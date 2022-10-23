@@ -44,10 +44,9 @@ include("${CMAKE_CURRENT_LIST_DIR}/ToolchainCommon.cmake")
     allow 'vswhere' to be downloaded once for all platforms.
 ====================================================================================================================]]#
 function(toolchain_ensure_vswhere)
-    set(_ProgramFiles "ProgramFiles(x86)")
     find_program(VSWHERE_PATH
         NAMES vswhere vswhere.exe
-        HINTS "$ENV{${_ProgramFiles}}/Microsoft Visual Studio/Installer"
+        HINTS "$ENV{ProgramFiles\(x86\)}/Microsoft Visual Studio/Installer"
     )
 
     # If vswhere isn't found, download it.
@@ -124,10 +123,12 @@ function(findVisualStudio)
     execute_process(
         COMMAND ${VSWHERE_COMMAND}
         OUTPUT_VARIABLE VSWHERE_OUTPUT
-        )
+    )
 
     message(VERBOSE "findVisualStudio: VSWHERE_OUTPUT = ${VSWHERE_OUTPUT}")
 
+    # Matches `VSWHERE_PROPERTY` in the `VSWHERE_OUTPUT` text in the format written by vswhere.
+    # The matched value is assigned to the variable `VARIABLE_NAME` in the parent scope.
     function(getVSWhereProperty VSWHERE_OUTPUT VSWHERE_PROPERTY VARIABLE_NAME)
         string(REGEX MATCH "${VSWHERE_PROPERTY}: [^\r\n]*" VSWHERE_VALUE "${VSWHERE_OUTPUT}")
         string(REPLACE "${VSWHERE_PROPERTY}: " "" VSWHERE_VALUE "${VSWHERE_VALUE}")
