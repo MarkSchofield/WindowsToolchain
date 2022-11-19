@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "windows",
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "generator": "Ninja Multi-Config",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER_FORCED": "true",
+        "CMAKE_CXX_COMPILER_FORCED": "true",
+        "CMAKE_TOOLCHAIN_FILE": "../../Windows.MSVC.toolchain.cmake"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows",
+      "configurePreset": "windows"
+    }
+  ]
+}
