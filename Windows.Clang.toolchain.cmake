@@ -77,9 +77,9 @@ if(NOT CMAKE_VS_VERSION_PRERELEASE)
     set(CMAKE_VS_VERSION_PRERELEASE OFF)
 endif()
 
-include("${CMAKE_CURRENT_LIST_DIR}/Ninja.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/NuGet.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/Support/Ninja.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/Support/NuGet.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/Support/VSWhere.cmake")
 
 # Find Clang
 #
