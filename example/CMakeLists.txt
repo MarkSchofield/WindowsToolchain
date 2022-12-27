@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project(WindowsToolchainExample)
 
-include(${WINDOWS_TOOLCHAIN_DIR}/Support/CppWinRT.cmake)
+include(${WINDOWS_TOOLCHAIN_SUPPORT_DIR}/CppWinRT.cmake)
 
 add_cppwinrt_projection(CppWinRT
     INPUTS

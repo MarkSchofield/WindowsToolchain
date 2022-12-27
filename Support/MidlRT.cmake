@@ -23,8 +23,8 @@
 #----------------------------------------------------------------------------------------------------------------------
 include_guard()
 
-include("${CMAKE_CURRENT_LIST_DIR}/../PowerShell.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/../NuGet.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/PowerShell.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/NuGet.cmake")
 
 if(NOT CPPWINRT_VERSION)
     set(CPPWINRT_VERSION "2.0.220418.1")

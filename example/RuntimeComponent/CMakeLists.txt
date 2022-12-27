@@ -3,7 +3,7 @@
 #----------------------------------------------------------------------------------------------------------------------
 project(RuntimeComponent LANGUAGES CXX)
 
-include(${WINDOWS_TOOLCHAIN_DIR}/Support/MidlRT.cmake)
+include(${WINDOWS_TOOLCHAIN_SUPPORT_DIR}/MidlRT.cmake)
 
 add_library(RuntimeComponent SHARED
     Class.cpp

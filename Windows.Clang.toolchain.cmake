@@ -77,6 +77,10 @@ if(NOT CMAKE_VS_VERSION_PRERELEASE)
     set(CMAKE_VS_VERSION_PRERELEASE OFF)
 endif()
 
+# WINDOWS_TOOLCHAIN_SUPPORT_DIR can be used to opt-in to other functionality by including other files in the toolchain directory.
+set(WINDOWS_TOOLCHAIN_DIR ${CMAKE_CURRENT_LIST_DIR} CACHE FILEPATH "Windows toolchain directory")
+set(WINDOWS_TOOLCHAIN_SUPPORT_DIR ${CMAKE_CURRENT_LIST_DIR}/Support CACHE FILEPATH "Windows toolchain support directory")
+
 include("${CMAKE_CURRENT_LIST_DIR}/Support/Ninja.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/Support/NuGet.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/Support/VSWhere.cmake")
@@ -121,4 +125,4 @@ if(CLANG_TIDY_CHECKS)
 endif()
 
 # Windows Kits
-include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
+include("${CMAKE_CURRENT_LIST_DIR}/Support/Windows.Kits.cmake")
