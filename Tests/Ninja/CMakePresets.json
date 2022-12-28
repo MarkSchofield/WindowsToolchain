@@ -13,7 +13,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER_FORCED": "true",
         "CMAKE_CXX_COMPILER_FORCED": "true",
-        "CMAKE_TOOLCHAIN_FILE": "../../Windows.MSVC.toolchain.cmake"
+        "CMAKE_TOOLCHAIN_FILE": "../../Toolchain/Windows.MSVC.toolchain.cmake"
       }
     }
   ],

@@ -26,7 +26,7 @@
       "description": "This build is only available on Windows",
       "generator": "Ninja Multi-Config",
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "../Windows.MSVC.toolchain.cmake",
+        "CMAKE_TOOLCHAIN_FILE": "../Toolchain/Windows.MSVC.toolchain.cmake",
         "CMAKE_VS_VERSION_PRERELEASE": "ON",
         "VS_USE_SPECTRE_MITIGATION_RUNTIME": "ON"
       },
@@ -40,7 +40,7 @@
       "description": "This build is only available on Windows",
       "generator": "Ninja Multi-Config",
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "../Windows.Clang.toolchain.cmake",
+        "CMAKE_TOOLCHAIN_FILE": "../Toolchain/Windows.Clang.toolchain.cmake",
         "CMAKE_VS_VERSION_RANGE": "[16.0,18.0)",
         "CMAKE_VS_VERSION_PRERELEASE": "ON"
       },
