@@ -87,11 +87,28 @@ Describe 'Windows.MSVC.toolchain.cmake NuGet support' {
             $CMakeCachePath | Should -Exist
             $ToolsNuGetPath | Should -Exist
 
+            Join-Path $OutputPath 'windows/__nuget/Humanizer.Core.2.14.1/Humanizer.Core.2.14.1.nupkg' |
+                Should -Exist
+
             $CMakeCachePath |
                 Get-CMakeCacheVariable -EntryName NUGET_PATH |
                 Select-Object -ExpandProperty Value |
                 Canonicalize-Path |
                 Should -Be $ToolsNuGetPath
         }
+    }
+
+    It 'honors the PACKAGESAVEMODE' {
+        # Switch to the 'nuspec' PACKAGESAVEMODE.
+        $Parameters = @(
+            "-DTOOLCHAIN_TOOLS_PATH=$ToolsPath"
+            "-DSPECIFIED_PACKAGESAVEMODE=nuspec"
+        )
+
+        $Null = & $CMake --preset windows @Parameters
+        $LastExitCode | Should -Be 0
+
+        Join-Path $OutputPath 'windows/__nuget/Humanizer.Core.2.14.1/Humanizer.Core.nuspec' |
+            Should -Exist
     }
 }
