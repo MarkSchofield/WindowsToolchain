@@ -12,6 +12,12 @@ BeforeAll {
     $OutputPath = Join-Path -Path $PSScriptRoot -ChildPath __output
 
     $ToolsNuGetPath = Join-Path -Path $ToolsPath -ChildPath nuget.exe
+
+    $OriginalLocation = Get-Location
+}
+
+AfterAll {
+    Set-Location $OriginalLocation
 }
 
 Describe 'Windows.MSVC.toolchain.cmake NuGet support' {

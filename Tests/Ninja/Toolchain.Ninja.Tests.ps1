@@ -12,6 +12,12 @@ BeforeAll {
     $OutputPath = Join-Path -Path $PSScriptRoot -ChildPath __output
 
     $ToolsNinjaPath = Join-Path -Path $ToolsPath -ChildPath ninja.exe
+
+    $OriginalLocation = Get-Location
+}
+
+AfterAll {
+    Set-Location $OriginalLocation
 }
 
 Describe 'Windows.MSVC.toolchain.cmake Ninja support' {
