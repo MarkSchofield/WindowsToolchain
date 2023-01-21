@@ -85,7 +85,7 @@ endfunction()
             <package version>
             <variable name>
             [PRERELEASE <ON|OFF>]
-            [PACKAGESAVEMODE <nuspec|nupkg|nuspec;nupkg>]
+            [PACKAGESAVEMODE <nuspec|nupkg>]
         )
 
     The packages will be downloaded to `NUGET_PACKAGE_ROOT_PATH`. If `NUGET_PACKAGE_ROOT_PATH` is not set, then
@@ -98,10 +98,10 @@ endfunction()
 ====================================================================================================================]]#
 function(install_nuget_package NUGET_PACKAGE_NAME NUGET_PACKAGE_VERSION VARIABLE_NAME)
     set(OPTIONS)
-    set(ONE_VALUE_KEYWORDS PRERELEASE)
+    set(ONE_VALUE_KEYWORDS PRERELEASE PACKAGESAVEMODE)
     set(MULTI_VALUE_KEYWORDS)
 
-    cmake_parse_arguments(PARSE_ARGV 0 NUGET "${OPTIONS}" "${ONE_VALUE_KEYWORDS}" "${MULTI_VALUE_KEYWORDS}")
+    cmake_parse_arguments(PARSE_ARGV 3 NUGET "${OPTIONS}" "${ONE_VALUE_KEYWORDS}" "${MULTI_VALUE_KEYWORDS}")
 
     if(NOT NUGET_PACKAGE_ROOT_PATH)
         set(NUGET_PACKAGE_ROOT_PATH ${CMAKE_BINARY_DIR}/__nuget)
@@ -121,7 +121,7 @@ function(install_nuget_package NUGET_PACKAGE_NAME NUGET_PACKAGE_VERSION VARIABLE
             list(APPEND NUGET_COMMAND -Prerelease)
         endif()
 
-        if(NUGET_PACKAGESAVEMODE)
+        if(DEFINED NUGET_PACKAGESAVEMODE)
             list(APPEND NUGET_COMMAND -PackageSaveMode ${NUGET_PACKAGESAVEMODE})
         endif()
 

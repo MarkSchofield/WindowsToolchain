@@ -52,7 +52,10 @@ function(generate_winrt_projection)
         set(CPPWINRT_VERSION "2.0.220418.1")
     endif()
 
-    install_nuget_package(Microsoft.Windows.CppWinRT ${CPPWINRT_VERSION} NUGET_MICROSOFT_WINDOWS_CPPWINRT)
+    install_nuget_package(Microsoft.Windows.CppWinRT ${CPPWINRT_VERSION} NUGET_MICROSOFT_WINDOWS_CPPWINRT
+        PACKAGESAVEMODE nuspec
+        PRERELEASE ON
+    )
 
     if(NOT CPPWINRT_PROJECTION_ROOT_PATH)
         set(CPPWINRT_PROJECTION_ROOT_PATH ${CMAKE_BINARY_DIR}/__cppwinrt)
@@ -152,7 +155,10 @@ function(add_cppwinrt_projection TARGET_NAME)
     message(VERBOSE "add_cppwinrt_projection: CPPWINRT_PROJECTION_ROOT_PATH = ${CPPWINRT_PROJECTION_ROOT_PATH}")
 
     # Install the Microsoft.Windows.CppWinRT NuGet
-    install_nuget_package(Microsoft.Windows.CppWinRT ${CPPWINRT_VERSION} NUGET_MICROSOFT_WINDOWS_CPPWINRT)
+    install_nuget_package(Microsoft.Windows.CppWinRT ${CPPWINRT_VERSION} NUGET_MICROSOFT_WINDOWS_CPPWINRT
+        PACKAGESAVEMODE nuspec
+        PRERELEASE ON
+    )
 
     # Build the command to generate the projection
     set(CPPWINRT_OUTPUT ${CPPWINRT_PROJECTION_ROOT_PATH}/${TARGET_NAME})
