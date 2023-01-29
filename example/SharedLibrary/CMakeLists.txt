@@ -13,7 +13,10 @@ target_compile_definitions(SharedLibrary
         PROJECT1_EXPORTS
 )
 
-target_precompile_headers(SharedLibrary
-    PRIVATE
-        pch.h
-)
+# Precompiled headers cause a dependency cycle with module support
+if(NOT CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API)
+    target_precompile_headers(SharedLibrary
+        PRIVATE
+            pch.h
+    )
+endif()

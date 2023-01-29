@@ -17,10 +17,13 @@ target_compile_features(RuntimeComponent
         cxx_std_17
 )
 
-target_precompile_headers(RuntimeComponent
-    PRIVATE
-        pch.h
-)
+# Precompiled headers cause a dependency cycle with module support
+if(NOT CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API)
+    target_precompile_headers(RuntimeComponent
+        PRIVATE
+            pch.h
+    )
+endif()
 
 target_link_libraries(RuntimeComponent
     PRIVATE

@@ -204,9 +204,26 @@ function(add_cppwinrt_projection TARGET_NAME)
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
 
-    add_library(${TARGET_NAME} INTERFACE
-        ${CPPWINRT_OUTPUT_FILE}
-    )
+    if((EXISTS ${CPPWINRT_OUTPUT}/winrt/winrt.ixx) AND CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API)
+        add_library(${TARGET_NAME}
+            ${CPPWINRT_OUTPUT_FILE}
+        )
+
+        target_compile_features(${TARGET_NAME}
+            PRIVATE
+                cxx_std_20
+        )
+
+        target_sources(${TARGET_NAME}
+            PUBLIC FILE_SET CXX_MODULES TYPE CXX_MODULES
+            FILES
+                ${CPPWINRT_OUTPUT}/winrt/winrt.ixx
+        )
+    else()
+        add_library(${TARGET_NAME} INTERFACE
+            ${CPPWINRT_OUTPUT_FILE}
+        )
+    endif()
 
     target_include_directories(${TARGET_NAME} BEFORE
         INTERFACE
