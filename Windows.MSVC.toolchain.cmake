@@ -37,6 +37,7 @@
 # | CMAKE_VS_PLATFORM_TOOLSET_VERSION           | The version of the MSVC toolset to use. For example, 14.29.30133. Defaults to the highest available.                     |
 # | CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE | The architecture of the toolset to use. Defaults to 'x64'.                                                               |
 # | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                               |
+# | VS_EXPERIMENTAL_MODULE                      | Whether experimental module support should be enabled.
 # | VS_USE_SPECTRE_MITIGATION_RUNTIME           | Whether the compiler should link with a runtime that uses 'Spectre' mitigations. Defaults to 'OFF'.                      |
 # | NINJA_PATH                                  | The path to the ninja program. Defaults not set.                                                                         |
 # | NUGET_PATH                                  | The path to the nuget program. Defaults not set.                                                                         |
@@ -195,6 +196,12 @@ link_directories("${VS_TOOLSET_PATH}/ATLMFC/lib${TOOLCHAIN_SPECTRE_TOKEN}/${CMAK
 link_directories("${VS_TOOLSET_PATH}/lib${TOOLCHAIN_SPECTRE_TOKEN}/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
 
 link_directories("${VS_TOOLSET_PATH}/lib/x86/store/references")
+
+# Module support
+if(VS_EXPERIMENTAL_MODULE)
+    add_compile_options(/experimental:module)
+    add_compile_options(/stdIfcDir "${VS_TOOLSET_PATH}/ifc/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
+endif()
 
 # Windows Kits
 include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
