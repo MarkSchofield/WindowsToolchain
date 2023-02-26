@@ -40,6 +40,33 @@ The ['Windows.MSVC.toolchain.cmake'](./Windows.MSVC.toolchain.cmake) and
 that can be used to configure the build. And [the example folder](./example) provides a CMake project that builds a
 variety of Windows projects.
 
+## WindowsToolchain and VCPkg
+
+VCPkg - <https://github.com/microsoft/vcpkg> - is a Package Manager for C++. There are a couple of problems when using WindowsToolchain and VCPkg together:
+
+1. In order to use VCPkg, the `vcpkg.cmake` script must be specified as the toolchain for CMake builds - as per [the VCPkg documentation](https://github.com/microsoft/vcpkg#getting-started). Since only a single script can be specified as the [CMAKE_TOOLCHAIN_FILE](https://cmake.org/cmake/help/latest/variable/CMAKE_TOOLCHAIN_FILE.html), then VCPkg *cannot* be used in conjunction with other CMake toolchains, such as WindowsToolchain.
+
+2. VCPkg has default functionality to copy runtime dependencies from VCPkg-based packages during a CMake build. The functionality - implemented in [`applocal.ps1`](https://github.com/microsoft/vcpkg/blob/0ba60bfef5dea4cb2599daa7ad8364e309835a68/scripts/buildsystems/msbuild/applocal.ps1) - requires that `dumpbin`, `llvm-objdump` or `objdump` be found by PowerShell's `Get-Command`. On Windows, `applocal.ps1` is typically executed so that it would find `dumpbin` through the `PATH` environment variable, but since WindowsToolchain doesn't configure the `PATH` environment variable `applocal.ps1` fails.
+
+In order to use WindowsToolchain with VCPkg:
+
+1. Specify WindowsToolchain as the `CMAKE_TOOLCHAIN_FILE`, and specify the `vcpkg.cmake` script as a [`CMAKE_PROJECT_TOP_LEVEL_INCLUDES`](https://cmake.org/cmake/help/latest/variable/CMAKE_PROJECT_TOP_LEVEL_INCLUDES.html) entry. Note: `CMAKE_PROJECT_TOP_LEVEL_INCLUDES` requires CMake 3.24 or higher.
+
+2. Set `VCPKG_APPLOCAL_DEPS` to `OFF` in your `CMakePresets.json`, on the CMake configuration command-line, or before the top-level `project()` call to disable the default behavior of VCPkg to copy runtime dependencies during a build. If dependencies need to be copied during a build, use custom commands to copy them. For example, the following CMake snippet will copy dependencies for a target called `CommandLine`, for dependencies that support the `$<TARGET_RUNTIME_DLLS:tgt>` generator expression:
+
+    ```cmake
+    if(WIN32)
+        add_custom_command(TARGET CommandLine POST_BUILD
+            COMMAND "${CMAKE_COMMAND};-E;$<IF:$<BOOL:$<TARGET_RUNTIME_DLLS:CommandLine>>,copy;$<TARGET_RUNTIME_DLLS:CommandLine>;$<TARGET_FILE_DIR:CommandLine>,true>"
+            COMMAND_EXPAND_LISTS
+        )
+    endif()
+    ```
+
+    Note: The `$<TARGET_RUNTIME_DLLS:tgt>` generator expression requires CMake 3.21 or higher.
+
+[#59](https://github.com/MarkSchofield/WindowsToolchain/issues/59) discusses using WindowsToolchain and VCPkg together.
+
 ## Linting
 
 WindowsToolchain uses [`cmakelang`][cmakelang] for linting the CMake files in the codebase. The
