@@ -39,8 +39,6 @@
 # | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                               |
 # | VS_EXPERIMENTAL_MODULE                      | Whether experimental module support should be enabled.
 # | VS_USE_SPECTRE_MITIGATION_RUNTIME           | Whether the compiler should link with a runtime that uses 'Spectre' mitigations. Defaults to 'OFF'.                      |
-# | NINJA_PATH                                  | The path to the ninja program. Defaults not set.                                                                         |
-# | NUGET_PATH                                  | The path to the nuget program. Defaults not set.                                                                         |
 #
 # The toolchain file will set the following variables:
 #
@@ -82,8 +80,6 @@ set(CMAKE_CROSSCOMPILING TRUE)
 set(WIN32 1)
 set(MSVC 1)
 
-include("${CMAKE_CURRENT_LIST_DIR}/Ninja.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/NuGet.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
 
 if(NOT CMAKE_SYSTEM_PROCESSOR)

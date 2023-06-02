@@ -33,8 +33,6 @@
 # | CMAKE_SYSTEM_PROCESSOR                      | The processor to compiler for. One of 'x86', 'x64', 'arm', 'arm64'. Defaults to ${CMAKE_HOST_SYSTEM_PROCESSOR}. |
 # | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                      |
 # | CLANG_TIDY_CHECKS                           | List of rules clang-tidy should check. Defaults not set.                                                        |
-# | NINJA_PATH                                  | The path to the ninja program. Defaults not set.                                                                |
-# | NUGET_PATH                                  | The path to the nuget program. Defaults not set.                                                                |
 #
 # The toolchain file will set the following variables:
 #
@@ -77,8 +75,6 @@ if(NOT CMAKE_VS_VERSION_PRERELEASE)
     set(CMAKE_VS_VERSION_PRERELEASE OFF)
 endif()
 
-include("${CMAKE_CURRENT_LIST_DIR}/Ninja.cmake")
-include("${CMAKE_CURRENT_LIST_DIR}/NuGet.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
 
 # Find Clang

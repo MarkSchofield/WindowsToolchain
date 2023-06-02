@@ -6,6 +6,8 @@ canonical to reduce the 'barrier-to-entry' to build code for Windows.
 
 [![build status](https://github.com/MarkSchofield/Toolchain/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/MarkSchofield/Toolchain/actions/workflows/ci.yaml?query=branch%3Amain)
 
+The CMake scripts for Windows-specific build tasks that used to be in this repository can now be found in [MarkSchofield/WindowsCMake](https://github.com/MarkSchofield/WindowsCMake).
+
 ## But I can build with MSVC in CMake already...?
 
 Yes, but you're probably either:
