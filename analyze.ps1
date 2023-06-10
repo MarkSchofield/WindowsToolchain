@@ -1,5 +1,5 @@
 <#====================================================================================================================#
-Runs cmake-lint on all `.cmake` files in the Git repository
+Runs cmake-lint on all `*.cmake` and `*CMakeLists.txt` files in the Git repository
 =====================================================================================================================#>
 $Root = $PSScriptRoot
 
@@ -26,19 +26,20 @@ if (-not $CMakeLint) {
 }
 
 $Failed = $false;
-$CMakeFiles = & $Git ls-files "$Root/*.cmake"
-
-foreach ($CMakeFile in $CMakeFiles) {
-    & $CMakeLint $CMakeFile |
+'*.cmake', '*CMakeLists.txt' |
     ForEach-Object {
-        if ($_ -match '^([^:]*):(\d+):(.*)$') {
-            ReportError -File $Matches[1] -LineNumber $Matches[2] -Message $_
-            $Failed = $true
+        & $Git ls-files "$Root/$_"
+    } |
+    ForEach-Object {
+        & $CMakeLint $_ |
+            ForEach-Object {
+                if ($_ -match '^([^:]*):(\d+):(.*)$') {
+                    ReportError -File $Matches[1] -LineNumber $Matches[2] -Message $_
+                    $Failed = $true
+                } else {
+                    Write-Output $_
+                }
+            }
         }
-        else {
-            Write-Output $_
-        }
-    }
-}
 
 exit ($Failed ? 1 : 0)
