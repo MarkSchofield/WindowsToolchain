@@ -183,8 +183,10 @@ if(NOT MSVC_VERSION)
 endif()
 
 # Compiler
-include_directories(SYSTEM "${VS_TOOLSET_PATH}/ATLMFC/include")
-include_directories(SYSTEM "${VS_TOOLSET_PATH}/include")
+foreach(LANG C CXX RC)
+    list(APPEND CMAKE_${LANG}_STANDARD_INCLUDE_DIRECTORIES "${VS_TOOLSET_PATH}/ATLMFC/include")
+    list(APPEND CMAKE_${LANG}_STANDARD_INCLUDE_DIRECTORIES "${VS_TOOLSET_PATH}/include")
+endforeach()
 
 if(VS_USE_SPECTRE_MITIGATION_RUNTIME)
     set(TOOLCHAIN_SPECTRE_TOKEN "/spectre")
