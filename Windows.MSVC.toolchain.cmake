@@ -197,8 +197,8 @@ link_directories("${VS_TOOLSET_PATH}/lib/x86/store/references")
 
 # Module support
 if(VS_EXPERIMENTAL_MODULE)
-    add_compile_options(/experimental:module)
-    add_compile_options(/stdIfcDir "${VS_TOOLSET_PATH}/ifc/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
+    set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /experimental:module")
+    set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /stdIfcDir \"${VS_TOOLSET_PATH}/ifc/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}\"")
 endif()
 
 # Windows Kits
