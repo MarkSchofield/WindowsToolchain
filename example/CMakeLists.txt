@@ -11,6 +11,7 @@ add_compile_definitions(
 )
 
 add_subdirectory(CommandLine)
+add_subdirectory(CommandLineC)
 add_subdirectory(SharedLibrary)
 add_subdirectory(WindowsApplication)
 
