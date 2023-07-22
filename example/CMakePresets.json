@@ -30,6 +30,22 @@
       "binaryDir": "${sourceDir}/__output/${presetName}"
     },
     {
+      "name": "windows-msvc-asan",
+      "inherits": "windows",
+      "hidden": true,
+      "displayName": "Windows-only configuration",
+      "description": "This build is only available on Windows",
+      "generator": "Ninja Multi-Config",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "../Windows.MSVC.toolchain.cmake",
+        "CMAKE_VS_VERSION_PRERELEASE": "ON",
+        "VS_EXPERIMENTAL_ASAN": "ON",
+        "VS_EXPERIMENTAL_MODULE": "OFF",
+        "VS_USE_SPECTRE_MITIGATION_RUNTIME": "OFF"
+      },
+      "binaryDir": "${sourceDir}/__output/${presetName}"
+    },
+    {
       "name": "windows-clang",
       "inherits": "windows",
       "hidden": true,
@@ -63,6 +79,15 @@
       "name": "windows-msvc-x64",
       "inherits": "windows-msvc",
       "displayName": "Configure for 'windows-msvc-x64'",
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "x64"
+      }
+    },
+    {
+      "name": "windows-msvc-asan-x64",
+      "inherits": "windows-msvc-asan",
+      "displayName": "Configure for 'windows-msvc-asan-x64'",
       "binaryDir": "${sourceDir}/__output/${presetName}",
       "cacheVariables": {
         "CMAKE_SYSTEM_PROCESSOR": "x64"
@@ -150,6 +175,11 @@
     {
       "name": "windows-msvc-x64",
       "configurePreset": "windows-msvc-x64"
+    },
+    {
+      "name": "windows-msvc-asan-x64",
+      "configurePreset": "windows-msvc-asan-x64",
+      "configuration": "RelWithDebInfo"
     },
     {
       "name": "windows-msvc-amd64",
