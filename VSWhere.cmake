@@ -24,6 +24,40 @@
 include_guard()
 
 #[[====================================================================================================================
+    toolchain_validate_vs_files
+    ---------------------------
+
+    Note: Not supported for consumption outside of the toolchain files.
+
+    Validates the the specified folder exists and contains the specified files.
+
+        toolchain_validate_vs_files(
+            <DESCRIPTION <description>>
+            <FOLDER <folder>>
+            <FILES <file>...>
+        )
+
+    If the folder or files are missing, then a FATAL_ERROR is reported.
+====================================================================================================================]]#
+function(toolchain_validate_vs_files)
+    set(OPTIONS)
+    set(ONE_VALUE_KEYWORDS FOLDER DESCRIPTION)
+    set(MULTI_VALUE_KEYWORDS FILES)
+
+    cmake_parse_arguments(PARSE_ARGV 0 VS "${OPTIONS}" "${ONE_VALUE_KEYWORDS}" "${MULTI_VALUE_KEYWORDS}")
+
+    if(NOT EXISTS ${VS_FOLDER})
+        message(FATAL_ERROR "Folder not present - ${VS_FOLDER} - ensure that the ${VS_DESCRIPTION} are installed with Visual Studio.")
+    endif()
+
+    foreach(FILE ${VS_FILES})
+        if(NOT EXISTS "${VS_FOLDER}/${FILE}")
+            message(FATAL_ERROR "File not present - ${VS_FOLDER}/${FILE} - ensure that the ${VS_DESCRIPTION} are installed with Visual Studio.")
+        endif()
+    endforeach()
+endfunction()
+
+#[[====================================================================================================================
     findVisualStudio
     ----------------
 
