@@ -56,6 +56,9 @@ endif()
 
 if(NOT CMAKE_WINDOWS_KITS_10_DIR)
 	set(CMAKE_WINDOWS_KITS_10_DIR "$ENV{WindowsSdkDir}")
+	if ("${CMAKE_WINDOWS_KITS_10_DIR}" STREQUAL "")
+    	unset(CMAKE_WINDOWS_KITS_10_DIR)
+    endif()
 endif()
 
 if(NOT CMAKE_WINDOWS_KITS_10_DIR)
