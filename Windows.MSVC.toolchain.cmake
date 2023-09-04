@@ -145,7 +145,7 @@ function(getMsvcVersion COMPILER MSVC_VERSION_OUTPUT)
         OUTPUT_QUIET
     )
 
-    if(COMPILER_OUTPUT MATCHES "cl.exe.*(([0-9]+)\\.([0-9]+)\\.([0-9]+)(\\.([0-9]+))?)")
+    if(COMPILER_OUTPUT MATCHES "cl\\.exe[^0-9]*(([0-9]+)\\.([0-9]+)\\.([0-9]+)(\\.([0-9]+))?)")
         set(COMPILER_VERSION ${CMAKE_MATCH_1})
         set(COMPILER_VERSION_MAJOR ${CMAKE_MATCH_2})
         set(COMPILER_VERSION_MINOR ${CMAKE_MATCH_3})
