@@ -37,7 +37,8 @@
 # | CMAKE_VS_PLATFORM_TOOLSET_VERSION           | The version of the MSVC toolset to use. For example, 14.29.30133. Defaults to the highest available.                     |
 # | CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE | The architecture of the toolset to use. Defaults to 'x64'.                                                               |
 # | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                               |
-# | VS_EXPERIMENTAL_MODULE                      | Whether experimental module support should be enabled.
+# | VS_INSTALLATION_PATH                        | The location of the root of the Visual Studio installation. If not specified VSWhere will be used to search for one.     |
+# | VS_EXPERIMENTAL_MODULE                      | Whether experimental module support should be enabled.                                                                   |
 # | VS_USE_SPECTRE_MITIGATION_RUNTIME           | Whether the compiler should link with a runtime that uses 'Spectre' mitigations. Defaults to 'OFF'.                      |
 #
 # The toolchain file will set the following variables:
@@ -108,14 +109,16 @@ endif()
 
 # Find Visual Studio
 #
-findVisualStudio(
-    VERSION ${CMAKE_VS_VERSION_RANGE}
-    PRERELEASE ${CMAKE_VS_VERSION_PRERELEASE}
-    PRODUCTS ${CMAKE_VS_PRODUCTS}
-    PROPERTIES
-        installationVersion VS_INSTALLATION_VERSION
-        installationPath VS_INSTALLATION_PATH
-)
+if(NOT VS_INSTALLATION_PATH)
+	findVisualStudio(
+		VERSION ${CMAKE_VS_VERSION_RANGE}
+		PRERELEASE ${CMAKE_VS_VERSION_PRERELEASE}
+		PRODUCTS ${CMAKE_VS_PRODUCTS}
+		PROPERTIES
+			installationVersion VS_INSTALLATION_VERSION
+			installationPath VS_INSTALLATION_PATH
+	)
+endif()
 
 message(VERBOSE "VS_INSTALLATION_VERSION = ${VS_INSTALLATION_VERSION}")
 message(VERBOSE "VS_INSTALLATION_PATH = ${VS_INSTALLATION_PATH}")

@@ -56,6 +56,9 @@ endif()
 
 if(NOT CMAKE_WINDOWS_KITS_10_DIR)
     get_filename_component(CMAKE_WINDOWS_KITS_10_DIR "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v10.0;InstallationFolder]" ABSOLUTE CACHE)
+    if ("${CMAKE_WINDOWS_KITS_10_DIR}" STREQUAL "/registry")
+    	unset(CMAKE_WINDOWS_KITS_10_DIR)
+    endif()
 endif()
 
 if(NOT CMAKE_WINDOWS_KITS_10_DIR)
