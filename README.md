@@ -1,8 +1,21 @@
-# A CMake Toolchain file for Windows MSVC and Windows Clang
+# CMake Toolchain files for Windows
 
 A CMake toolchain file describes the set of tools and utilities for compiling code in CMake. This repo provides
 toolchains that describes how to compile using MSVC and Clang in CMake, with the goal of making Windows CMake builds more
 canonical to reduce the 'barrier-to-entry' to build code for Windows.
+
+This repo contains three toolchains:
+
+1. [Windows.MSVC.toolchain.cmake](./Windows.MSVC.toolchain.cmake) - Uses the MSVC compiler from an installed Visual Studio
+instance.
+
+2. [Windows.Clang.toolchain.cmake](./Windows.Clang.toolchain.cmake) - Uses Clang from either an LLVM installation or from
+a Visual Studio installation.
+
+3. [Windows.EWDK.toolchain.cmake](./Windows.EWDK.toolchain.cmake) - Uses the MSVC compiler from an [Enterprise Windows Driver Kit][ewdk].
+This toolchain requires that CMake be invoked from an EWDK build prompt.
+
+Each toolchain will find a compiler, runtime and a Windows SDK.
 
 [![build status](https://github.com/MarkSchofield/Toolchain/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/MarkSchofield/Toolchain/actions/workflows/ci.yaml?query=branch%3Amain)
 
@@ -33,14 +46,13 @@ conversation.
 
 ## How do I use this?
 
-Specify the 'Windows.MSVC.toolchain.cmake' or 'Windows.Clang.toolchain.cmake' file as a toolchain file to your CMake
-builds. See [the documentation for CMake toolchains][cmake-toolchains] for more details on Toolchain files and how to
-consume them.
+Simply specify one of the toolchain files to your CMake builds. See [the documentation for CMake toolchains][cmake-toolchains]
+for more details on Toolchain files and how to consume them.
 
-The ['Windows.MSVC.toolchain.cmake'](./Windows.MSVC.toolchain.cmake) and
-['Windows.Clang.toolchain.cmake'](./Windows.Clang.toolchain.cmake) file has details on the various CMake variables
+Each toolchain file (['Windows.MSVC.toolchain.cmake'](./Windows.MSVC.toolchain.cmake), ['Windows.Clang.toolchain.cmake'](./Windows.Clang.toolchain.cmake),
+or [Windows.EWDK.toolchain.cmake](./Windows.EWDK.toolchain.cmake)) has details on the various CMake properties
 that can be used to configure the build. And [the example folder](./example) provides a CMake project that builds a
-variety of Windows projects.
+variety of Windows projects, using each of the toolchain files.
 
 ## WindowsToolchain and VCPkg
 
@@ -115,3 +127,4 @@ The [Toolchain CI](.\.github\workflows\ci.yaml) GitHub Workflow requires all tes
 [cmakelang]: https://cmake-format.readthedocs.io/ "cmakelang"
 [pester]: https://pester.dev/ "Pester"
 [powershellcore]: https://learn.microsoft.com/en-us/powershell/ "PowerShell Core"
+[ewdk]: https://learn.microsoft.com/en-us/windows-hardware/drivers/develop/using-the-enterprise-wdk "Enterprise Windows Driver Kit"
