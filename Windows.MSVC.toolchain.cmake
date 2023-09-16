@@ -29,16 +29,16 @@
 #
 # | CMake Variable                              | Description                                                                                                              |
 # |---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-# | CMAKE_SYSTEM_VERSION                        | The version of the operating system for which CMake is to build. Defaults to the host version.                           |
 # | CMAKE_SYSTEM_PROCESSOR                      | The processor to compiler for. One of 'x86', 'x64'/'AMD64', 'arm', 'arm64'. Defaults to ${CMAKE_HOST_SYSTEM_PROCESSOR}.  |
-# | CMAKE_VS_VERSION_RANGE                      | A verson range for VS instances to find. For example, '[16.0,17.0)' will find versions '16.*'. Defaults to '[16.0,17.0)' |
-# | CMAKE_VS_VERSION_PRERELEASE                 | Whether 'prerelease' versions of Visual Studio should be considered. Defaults to 'OFF'                                   |
-# | CMAKE_VS_PRODUCTS                           | One or more Visual Studio Product IDs to consider. Defaults to '*'                                                       |
-# | CMAKE_VS_PLATFORM_TOOLSET_VERSION           | The version of the MSVC toolset to use. For example, 14.29.30133. Defaults to the highest available.                     |
+# | CMAKE_SYSTEM_VERSION                        | The version of the operating system for which CMake is to build. Defaults to the host version.                           |
 # | CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE | The architecture of the toolset to use. Defaults to 'x64'.                                                               |
+# | CMAKE_VS_PRODUCTS                           | One or more Visual Studio Product IDs to consider. Defaults to '*'                                                       |
+# | CMAKE_VS_VERSION_PRERELEASE                 | Whether 'prerelease' versions of Visual Studio should be considered. Defaults to 'OFF'                                   |
+# | CMAKE_VS_VERSION_RANGE                      | A verson range for VS instances to find. For example, '[16.0,17.0)' will find versions '16.*'. Defaults to '[16.0,17.0)' |
 # | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                               |
-# | VS_INSTALLATION_PATH                        | The location of the root of the Visual Studio installation. If not specified VSWhere will be used to search for one.     |
 # | VS_EXPERIMENTAL_MODULE                      | Whether experimental module support should be enabled.                                                                   |
+# | VS_INSTALLATION_PATH                        | The location of the root of the Visual Studio installation. If not specified VSWhere will be used to search for one.     |
+# | VS_PLATFORM_TOOLSET_VERSION                 | The version of the MSVC toolset to use. For example, 14.29.30133. Defaults to the highest available.                     |
 # | VS_USE_SPECTRE_MITIGATION_RUNTIME           | Whether the compiler should link with a runtime that uses 'Spectre' mitigations. Defaults to 'OFF'.                      |
 #
 # The toolchain file will set the following variables:
@@ -50,6 +50,7 @@
 # | CMAKE_MT                                    | The path to the 'mt.exe' tool to use.                                                                 |
 # | CMAKE_RC_COMPILER                           | The path tp the 'rc.exe' tool to use.                                                                 |
 # | CMAKE_SYSTEM_NAME                           | Windows                                                                                               |
+# | CMAKE_VS_PLATFORM_TOOLSET_VERSION           | The version of the MSVC toolset being used - e.g. 14.29.30133.                                        |
 # | WIN32                                       | 1                                                                                                     |
 # | MSVC                                        | 1                                                                                                     |
 # | MSVC_VERSION                                | The '<major><minor>' version of the C++ compiler being used. For example, '1929'                      |
@@ -68,14 +69,15 @@ endif()
 set(UNUSED ${CMAKE_TOOLCHAIN_FILE}) # Note: only to prevent cmake unused variable warninig
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES
-    CMAKE_SYSTEM_PROCESSOR
     CMAKE_CROSSCOMPILING
+    CMAKE_SYSTEM_PROCESSOR
+    CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE
+    CMAKE_VS_PRODUCTS
     CMAKE_VS_VERSION_PRERELEASE
     CMAKE_VS_VERSION_RANGE
-    CMAKE_VS_PRODUCTS
-    CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE
-    VS_INSTALLATION_VERSION
     VS_INSTALLATION_PATH
+    VS_INSTALLATION_VERSION
+    VS_PLATFORM_TOOLSET_VERSION
 )
 set(CMAKE_CROSSCOMPILING TRUE)
 set(WIN32 1)
@@ -131,13 +133,22 @@ cmake_path(NORMAL_PATH VS_INSTALLATION_PATH)
 
 set(VS_MSVC_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC")
 
+# Use 'VS_PLATFORM_TOOLSET_VERSION' to resolve 'CMAKE_VS_PLATFORM_TOOLSET_VERSION'
+#
 if(NOT VS_PLATFORM_TOOLSET_VERSION)
-    file(GLOB VS_TOOLSET_VERSIONS RELATIVE ${VS_MSVC_PATH} ${VS_MSVC_PATH}/*)
-    list(SORT VS_TOOLSET_VERSIONS COMPARE NATURAL ORDER DESCENDING)
-    list(POP_FRONT VS_TOOLSET_VERSIONS VS_TOOLSET_VERSION)
+    if(VS_TOOLSET_VERSION)
+        message(WARNING "Old versions of WindowsToolchain incorrectly used 'VS_TOOLSET_VERSION' to specify the VS toolset version. This functionality is being deprecated - please use 'VS_PLATFORM_TOOLSET_VERSION' instead.")
+        set(VS_PLATFORM_TOOLSET_VERSION ${VS_TOOLSET_VERSION})
+    else()
+        file(GLOB VS_PLATFORM_TOOLSET_VERSIONS RELATIVE ${VS_MSVC_PATH} ${VS_MSVC_PATH}/*)
+        list(SORT VS_PLATFORM_TOOLSET_VERSIONS COMPARE NATURAL ORDER DESCENDING)
+        list(POP_FRONT VS_PLATFORM_TOOLSET_VERSIONS VS_PLATFORM_TOOLSET_VERSION)
+        unset(VS_PLATFORM_TOOLSET_VERSIONS)
+    endif()
 endif()
 
-set(VS_TOOLSET_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC/${VS_TOOLSET_VERSION}")
+set(CMAKE_VS_PLATFORM_TOOLSET_VERSION ${VS_PLATFORM_TOOLSET_VERSION})
+set(VS_TOOLSET_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC/${CMAKE_VS_PLATFORM_TOOLSET_VERSION}")
 
 # Set the tooling variables, include_directories and link_directories
 #
