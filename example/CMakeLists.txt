@@ -15,7 +15,7 @@ add_subdirectory(CommandLineC)
 add_subdirectory(SharedLibrary)
 add_subdirectory(WindowsApplication)
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if((CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") AND VS_EXPERIMENTAL_MODULE)
     if((CMAKE_SYSTEM_PROCESSOR STREQUAL x64) OR (CMAKE_SYSTEM_PROCESSOR STREQUAL AMD64) OR (CMAKE_SYSTEM_PROCESSOR STREQUAL x86))
         add_subdirectory(CommandLineModule)
     endif()
