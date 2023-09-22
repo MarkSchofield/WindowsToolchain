@@ -33,7 +33,7 @@ $Failed = $false;
     ForEach-Object {
         & $CMakeLint $_ |
             ForEach-Object {
-                if ($_ -match '^([^:]*):(\d+):(.*)$') {
+                if ($_ -match '^([^:]*):(\d+)(,\d+)?:(.*)$') {
                     ReportError -File $Matches[1] -LineNumber $Matches[2] -Message $_
                     $Failed = $true
                 } else {
