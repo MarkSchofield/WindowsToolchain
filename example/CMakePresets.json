@@ -44,6 +44,22 @@
       "binaryDir": "${sourceDir}/__output/${presetName}"
     },
     {
+      "name": "windows-clangcl",
+      "inherits": "windows",
+      "hidden": true,
+      "displayName": "Windows-only configuration",
+      "description": "This build is only available on Windows",
+      "generator": "Ninja Multi-Config",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER_FRONTEND_VARIANT": "MSVC",
+        "CMAKE_CXX_COMPILER_FRONTEND_VARIANT": "MSVC",
+        "CMAKE_TOOLCHAIN_FILE": "../Windows.Clang.toolchain.cmake",
+        "CMAKE_VS_VERSION_RANGE": "[16.0,18.0)",
+        "CMAKE_VS_VERSION_PRERELEASE": "ON"
+      },
+      "binaryDir": "${sourceDir}/__output/${presetName}"
+    },
+    {
       "name": "ewdk",
       "displayName": "EWDK configuration",
       "description": "This build is only available on Windows",
@@ -110,6 +126,24 @@
         "CMAKE_SYSTEM_PROCESSOR": "AMD64",
         "CLANG_TIDY_CHECKS": "bugprone*,-bugprone-easily-swappable-parameters"
       }
+    },
+    {
+      "name": "windows-clangcl-x64",
+      "inherits": "windows-clangcl",
+      "displayName": "Configure for 'windows-clangcl-x64'",
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "x64"
+      }
+    },
+    {
+      "name": "windows-clangcl-amd64",
+      "inherits": "windows-clangcl",
+      "displayName": "Configure for 'windows-clangcl-amd64'",
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "AMD64"
+      }
     }
   ],
   "buildPresets": [
@@ -136,6 +170,14 @@
     {
       "name": "windows-clang-amd64",
       "configurePreset": "windows-clang-amd64"
+    },
+    {
+      "name": "windows-clangcl-x64",
+      "configurePreset": "windows-clangcl-x64"
+    },
+    {
+      "name": "windows-clangcl-amd64",
+      "configurePreset": "windows-clangcl-amd64"
     },
     {
       "name": "ewdk",
