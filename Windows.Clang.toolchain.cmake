@@ -89,16 +89,26 @@ findVisualStudio(
         installationPath VS_INSTALLATION_PATH
 )
 
+set(TOOLCHAIN_C_COMPILER_EXE clang.exe)
+if(CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL MSVC)
+    set(TOOLCHAIN_C_COMPILER_EXE clang-cl.exe)
+endif()
+
 find_program(CMAKE_C_COMPILER
-    clang.exe
+    ${TOOLCHAIN_C_COMPILER_EXE}
     HINTS
         "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/x64/bin"
         "$ENV{ProgramFiles}/LLVM/bin"
     REQUIRED
 )
 
+set(TOOLCHAIN_CXX_COMPILER_EXE clang++.exe)
+if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL MSVC)
+    set(TOOLCHAIN_CXX_COMPILER_EXE clang-cl.exe)
+endif()
+
 find_program(CMAKE_CXX_COMPILER
-    clang++.exe
+    ${TOOLCHAIN_CXX_COMPILER_EXE}
     HINTS
         "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/x64/bin"
         "$ENV{ProgramFiles}/LLVM/bin"
