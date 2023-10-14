@@ -89,6 +89,18 @@ findVisualStudio(
         installationPath VS_INSTALLATION_PATH
 )
 
+if(NOT VS_INSTALLATION_PATH)
+    # If there's no Visual Studio with Clang, look for a Visual Studio without Clang so that other Visual Studio
+    # components can be found.
+    findVisualStudio(
+        VERSION ${CMAKE_VS_VERSION_RANGE}
+        PRERELEASE ${CMAKE_VS_VERSION_PRERELEASE}
+        PROPERTIES
+            installationVersion VS_INSTALLATION_VERSION
+            installationPath VS_INSTALLATION_PATH
+    )
+endif()
+
 set(TOOLCHAIN_C_COMPILER_EXE clang.exe)
 if(CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL MSVC)
     set(TOOLCHAIN_C_COMPILER_EXE clang-cl.exe)
