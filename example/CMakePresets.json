@@ -60,18 +60,6 @@
       "binaryDir": "${sourceDir}/__output/${presetName}"
     },
     {
-      "name": "ewdk",
-      "displayName": "EWDK configuration",
-      "description": "This build is only available on Windows",
-      "generator": "Ninja Multi-Config",
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "../Windows.EWDK.toolchain.cmake",
-        "VS_EXPERIMENTAL_MODULE": "OFF",
-        "VS_USE_SPECTRE_MITIGATION_RUNTIME": "ON"
-      },
-      "binaryDir": "${sourceDir}/__output/${presetName}-$env{VSCMD_ARG_TGT_ARCH}"
-    },
-    {
       "name": "windows-msvc-x64",
       "inherits": "windows-msvc",
       "displayName": "Configure for 'windows-msvc-x64'",
@@ -144,6 +132,18 @@
       "cacheVariables": {
         "CMAKE_SYSTEM_PROCESSOR": "AMD64"
       }
+    },
+    {
+      "name": "ewdk",
+      "displayName": "EWDK configuration",
+      "description": "This build is only available on Windows",
+      "generator": "Ninja Multi-Config",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "../Windows.EWDK.toolchain.cmake",
+        "VS_EXPERIMENTAL_MODULE": "OFF",
+        "VS_USE_SPECTRE_MITIGATION_RUNTIME": "ON"
+      },
+      "binaryDir": "${sourceDir}/__output/${presetName}-$env{VSCMD_ARG_TGT_ARCH}"
     }
   ],
   "buildPresets": [
