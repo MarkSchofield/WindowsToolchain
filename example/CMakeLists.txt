@@ -5,6 +5,11 @@ cmake_minimum_required(VERSION 3.20)
 
 project(WindowsToolchainExample)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    message(STATUS "MSVC_VERSION = ${MSVC_VERSION}")
+    message(STATUS "MSVC_TOOLSET_VERSION = ${MSVC_TOOLSET_VERSION}")
+endif()
+
 add_compile_definitions(
     UNICODE
     _UNICODE

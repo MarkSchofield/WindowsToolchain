@@ -152,21 +152,6 @@ set(VS_TOOLSET_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC/${CMAKE_VS_PLATFORM_T
 
 # Set the tooling variables, include_directories and link_directories
 #
-function(getMsvcVersion COMPILER MSVC_VERSION_OUTPUT)
-    execute_process(
-        COMMAND "${COMPILER}" -Bv
-        ERROR_VARIABLE COMPILER_OUTPUT
-        OUTPUT_QUIET
-    )
-
-    if(COMPILER_OUTPUT MATCHES "cl\\.exe[^0-9]*(([0-9]+)\\.([0-9]+)\\.([0-9]+)(\\.([0-9]+))?)")
-        set(COMPILER_VERSION ${CMAKE_MATCH_1})
-        set(COMPILER_VERSION_MAJOR ${CMAKE_MATCH_2})
-        set(COMPILER_VERSION_MINOR ${CMAKE_MATCH_3})
-    endif()
-
-    set(${MSVC_VERSION_OUTPUT} "${COMPILER_VERSION_MAJOR}${COMPILER_VERSION_MINOR}" PARENT_SCOPE)
-endfunction()
 
 # Map CMAKE_SYSTEM_PROCESSOR values to CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE that identifies the tools that should
 # be used to produce code for the CMAKE_SYSTEM_PROCESSOR.
@@ -185,11 +170,6 @@ set(CMAKE_C_COMPILER "${VS_TOOLSET_PATH}/bin/Host${CMAKE_VS_PLATFORM_TOOLSET_HOS
 
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL arm)
     set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /EHsc")
-endif()
-
-getMsvcVersion(${CMAKE_CXX_COMPILER} MSVC_VERSION)
-if(NOT MSVC_VERSION)
-    message(FATAL_ERROR "Unable to obtain the compiler version from: ${CMAKE_CXX_COMPILER}")
 endif()
 
 # Compiler
