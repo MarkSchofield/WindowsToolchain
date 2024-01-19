@@ -81,7 +81,9 @@ function(findVisualStudio)
 
     find_program(VSWHERE_PATH
         NAMES vswhere vswhere.exe
-        HINTS "$ENV{ProgramFiles\(x86\)}/Microsoft Visual Studio/Installer"
+        HINTS
+            "$ENV{ProgramFiles\(x86\)}/Microsoft Visual Studio/Installer"
+            "/mnt/c/Program Files (x86)/Microsoft Visual Studio/Installer"
     )
 
     if(VSWHERE_PATH STREQUAL "VSWHERE_PATH-NOTFOUND")
