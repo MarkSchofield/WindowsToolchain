@@ -68,9 +68,9 @@ cmake_minimum_required(VERSION 3.20)
 
 include_guard()
 
-if(NOT (CMAKE_HOST_SYSTEM_NAME STREQUAL Windows))
-    return()
-endif()
+# if(NOT (CMAKE_HOST_SYSTEM_NAME STREQUAL Windows))
+#     return()
+# endif()
 
 set(UNUSED ${CMAKE_TOOLCHAIN_FILE}) # Note: only to prevent cmake unused variable warninig
 set(CMAKE_SYSTEM_NAME Windows)
@@ -132,6 +132,17 @@ if(NOT VS_INSTALLATION_PATH)
     )
 endif()
 
+cmake_path(NORMAL_PATH VS_INSTALLATION_PATH)
+
+# WSL - Fixup the VS_INSTALLATION_PATH
+if(VS_INSTALLATION_PATH MATCHES [[^[A-Za-z]\:]])
+    execute_process(
+        COMMAND wslpath ${VS_INSTALLATION_PATH}
+        OUTPUT_VARIABLE VS_INSTALLATION_PATH
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+endif()
+
 message(VERBOSE "VS_INSTALLATION_VERSION = ${VS_INSTALLATION_VERSION}")
 message(VERBOSE "VS_INSTALLATION_PATH = ${VS_INSTALLATION_PATH}")
 
@@ -142,6 +153,8 @@ endif()
 cmake_path(NORMAL_PATH VS_INSTALLATION_PATH)
 
 set(VS_MSVC_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC")
+
+message(VERBOSE "VS_MSVC_PATH = ${VS_MSVC_PATH}")
 
 # Use 'VS_PLATFORM_TOOLSET_VERSION' to resolve 'CMAKE_VS_PLATFORM_TOOLSET_VERSION'
 #

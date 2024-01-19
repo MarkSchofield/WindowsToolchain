@@ -59,11 +59,15 @@ if(NOT CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE)
 endif()
 
 if(NOT CMAKE_WINDOWS_KITS_10_DIR)
+    # reg.exe QUERY "HKLM\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v10.0" /v InstallationFolder /reg:32
     get_filename_component(CMAKE_WINDOWS_KITS_10_DIR "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Microsoft SDKs\\Windows\\v10.0;InstallationFolder]" ABSOLUTE CACHE)
-    if ("${CMAKE_WINDOWS_KITS_10_DIR}" STREQUAL "/registry")
-        unset(CMAKE_WINDOWS_KITS_10_DIR)
+    if(CMAKE_WINDOWS_KITS_10_DIR STREQUAL "/registry")
+        unset(CMAKE_WINDOWS_KITS_10_DIR CACHE)
     endif()
 endif()
+
+set(CMAKE_WINDOWS_KITS_10_DIR "/mnt/c/Program Files (x86)/Windows Kits/10/")
+message(STATUS "CMAKE_WINDOWS_KITS_10_DIR = ${CMAKE_WINDOWS_KITS_10_DIR}")
 
 if(NOT CMAKE_WINDOWS_KITS_10_DIR)
     message(FATAL_ERROR "Unable to find an installed Windows SDK, and one wasn't specified.")
