@@ -39,6 +39,7 @@
 # | VS_EXPERIMENTAL_MODULE                      | Whether experimental module support should be enabled.                                                                   |
 # | VS_INSTALLATION_PATH                        | The location of the root of the Visual Studio installation. If not specified VSWhere will be used to search for one.     |
 # | VS_PLATFORM_TOOLSET_VERSION                 | The version of the MSVC toolset to use. For example, 14.29.30133. Defaults to the highest available.                     |
+# | VS_USE_SPECTRE_MITIGATION_ATLMFC_RUNTIME    | Whether the compiler should link with the ATLMFC runtime that uses 'Spectre' mitigations. Defaults to 'OFF'.             |
 # | VS_USE_SPECTRE_MITIGATION_RUNTIME           | Whether the compiler should link with a runtime that uses 'Spectre' mitigations. Defaults to 'OFF'.                      |
 #
 # The toolchain file will set the following variables:
@@ -178,14 +179,30 @@ foreach(LANG C CXX RC)
     list(APPEND CMAKE_${LANG}_STANDARD_INCLUDE_DIRECTORIES "${VS_TOOLSET_PATH}/include")
 endforeach()
 
-if(VS_USE_SPECTRE_MITIGATION_RUNTIME)
-    set(TOOLCHAIN_SPECTRE_TOKEN "/spectre")
-else()
-    set(TOOLCHAIN_SPECTRE_TOKEN)
+if(VS_USE_SPECTRE_MITIGATION_ATLMFC_RUNTIME)
+    # Ensure that the necessary folder and files are present before adding the 'link_directories'
+    toolchain_validate_vs_files(
+        DESCRIPTION "ATLMFC Spectre libraries"
+        FOLDER "${VS_TOOLSET_PATH}/ATLMFC/lib/spectre/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}"
+        FILES
+            atls.lib
+    )
+    link_directories("${VS_TOOLSET_PATH}/ATLMFC/lib/spectre/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
 endif()
 
-link_directories("${VS_TOOLSET_PATH}/ATLMFC/lib${TOOLCHAIN_SPECTRE_TOKEN}/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
-link_directories("${VS_TOOLSET_PATH}/lib${TOOLCHAIN_SPECTRE_TOKEN}/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
+if(VS_USE_SPECTRE_MITIGATION_RUNTIME)
+    # Ensure that the necessary folder and files are present before adding the 'link_directories'
+    toolchain_validate_vs_files(
+        DESCRIPTION "Spectre libraries"
+        FOLDER "${VS_TOOLSET_PATH}/lib/spectre/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}"
+        FILES
+            msvcrt.lib vcruntime.lib vcruntimed.lib
+    )
+    link_directories("${VS_TOOLSET_PATH}/lib/spectre/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
+endif()
+
+link_directories("${VS_TOOLSET_PATH}/ATLMFC/lib/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
+link_directories("${VS_TOOLSET_PATH}/lib/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
 
 link_directories("${VS_TOOLSET_PATH}/lib/x86/store/references")
 
@@ -197,5 +214,3 @@ endif()
 
 # Windows Kits
 include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
-
-set(TOOLCHAIN_SPECTRE_TOKEN)
