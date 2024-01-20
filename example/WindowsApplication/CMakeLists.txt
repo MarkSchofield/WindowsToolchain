@@ -4,6 +4,7 @@
 project(WindowsApplication LANGUAGES CXX)
 
 add_executable(WindowsApplication WIN32
+    app.manifest
     WindowsApplication.cpp
     WindowsApplication.rc
 )
