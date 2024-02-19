@@ -25,7 +25,7 @@
         "CMAKE_TOOLCHAIN_FILE": "../Windows.MSVC.toolchain.cmake",
         "CMAKE_VS_VERSION_PRERELEASE": "ON",
         "VS_EXPERIMENTAL_MODULE": "ON",
-        "VS_USE_SPECTRE_MITIGATION_RUNTIME": "ON"
+        "VS_USE_SPECTRE_MITIGATION_RUNTIME": "OFF"
       },
       "binaryDir": "${sourceDir}/__output/${presetName}"
     },
@@ -141,7 +141,7 @@
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": "../Windows.EWDK.toolchain.cmake",
         "VS_EXPERIMENTAL_MODULE": "OFF",
-        "VS_USE_SPECTRE_MITIGATION_RUNTIME": "ON"
+        "VS_USE_SPECTRE_MITIGATION_RUNTIME": "OFF"
       },
       "binaryDir": "${sourceDir}/__output/${presetName}-$env{VSCMD_ARG_TGT_ARCH}"
     }
