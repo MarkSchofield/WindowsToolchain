@@ -188,6 +188,8 @@ if(VS_USE_SPECTRE_MITIGATION_ATLMFC_RUNTIME)
             atls.lib
     )
     link_directories("${VS_TOOLSET_PATH}/ATLMFC/lib/spectre/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
+else()
+    link_directories("${VS_TOOLSET_PATH}/ATLMFC/lib/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
 endif()
 
 if(VS_USE_SPECTRE_MITIGATION_RUNTIME)
@@ -199,10 +201,9 @@ if(VS_USE_SPECTRE_MITIGATION_RUNTIME)
             msvcrt.lib vcruntime.lib vcruntimed.lib
     )
     link_directories("${VS_TOOLSET_PATH}/lib/spectre/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
+else()
+    link_directories("${VS_TOOLSET_PATH}/lib/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
 endif()
-
-link_directories("${VS_TOOLSET_PATH}/ATLMFC/lib/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
-link_directories("${VS_TOOLSET_PATH}/lib/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
 
 link_directories("${VS_TOOLSET_PATH}/lib/x86/store/references")
 
