@@ -25,9 +25,9 @@
         "CMAKE_TOOLCHAIN_FILE": "../Windows.MSVC.toolchain.cmake",
         "CMAKE_VS_VERSION_PRERELEASE": "ON",
         "VS_EXPERIMENTAL_MODULE": "OFF",
+        "VS_USE_SPECTRE_MITIGATION_ATLMFC_RUNTIME": "OFF",
         "VS_USE_SPECTRE_MITIGATION_RUNTIME": "OFF"
-      },
-      "binaryDir": "${sourceDir}/__output/${presetName}"
+      }
     },
     {
       "name": "windows-clang",
@@ -40,24 +40,18 @@
         "CMAKE_TOOLCHAIN_FILE": "../Windows.Clang.toolchain.cmake",
         "CMAKE_VS_VERSION_RANGE": "[16.0,18.0)",
         "CMAKE_VS_VERSION_PRERELEASE": "ON"
-      },
-      "binaryDir": "${sourceDir}/__output/${presetName}"
+      }
     },
     {
       "name": "windows-clangcl",
-      "inherits": "windows",
+      "inherits": "windows-clang",
       "hidden": true,
       "displayName": "Windows-only configuration",
       "description": "This build is only available on Windows",
-      "generator": "Ninja Multi-Config",
       "cacheVariables": {
         "CMAKE_C_COMPILER_FRONTEND_VARIANT": "MSVC",
-        "CMAKE_CXX_COMPILER_FRONTEND_VARIANT": "MSVC",
-        "CMAKE_TOOLCHAIN_FILE": "../Windows.Clang.toolchain.cmake",
-        "CMAKE_VS_VERSION_RANGE": "[16.0,18.0)",
-        "CMAKE_VS_VERSION_PRERELEASE": "ON"
-      },
-      "binaryDir": "${sourceDir}/__output/${presetName}"
+        "CMAKE_CXX_COMPILER_FRONTEND_VARIANT": "MSVC"
+      }
     },
     {
       "name": "windows-msvc-x64",
