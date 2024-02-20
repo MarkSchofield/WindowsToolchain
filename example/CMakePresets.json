@@ -25,9 +25,20 @@
         "CMAKE_TOOLCHAIN_FILE": "../Windows.MSVC.toolchain.cmake",
         "CMAKE_VS_VERSION_PRERELEASE": "ON",
         "VS_EXPERIMENTAL_MODULE": "OFF",
+        "VS_USE_SPECTRE_MITIGATION_ATLMFC_RUNTIME": "OFF",
         "VS_USE_SPECTRE_MITIGATION_RUNTIME": "OFF"
-      },
-      "binaryDir": "${sourceDir}/__output/${presetName}"
+      }
+    },
+    {
+      "name": "windows-msvc-spectre",
+      "inherits": "windows-msvc",
+      "hidden": true,
+      "displayName": "Windows-only configuration",
+      "description": "This build is only available on Windows",
+      "cacheVariables": {
+        "VS_USE_SPECTRE_MITIGATION_ATLMFC_RUNTIME": "ON",
+        "VS_USE_SPECTRE_MITIGATION_RUNTIME": "ON"
+      }
     },
     {
       "name": "windows-clang",
@@ -40,29 +51,32 @@
         "CMAKE_TOOLCHAIN_FILE": "../Windows.Clang.toolchain.cmake",
         "CMAKE_VS_VERSION_RANGE": "[16.0,18.0)",
         "CMAKE_VS_VERSION_PRERELEASE": "ON"
-      },
-      "binaryDir": "${sourceDir}/__output/${presetName}"
+      }
     },
     {
       "name": "windows-clangcl",
-      "inherits": "windows",
+      "inherits": "windows-clang",
       "hidden": true,
       "displayName": "Windows-only configuration",
       "description": "This build is only available on Windows",
-      "generator": "Ninja Multi-Config",
       "cacheVariables": {
         "CMAKE_C_COMPILER_FRONTEND_VARIANT": "MSVC",
-        "CMAKE_CXX_COMPILER_FRONTEND_VARIANT": "MSVC",
-        "CMAKE_TOOLCHAIN_FILE": "../Windows.Clang.toolchain.cmake",
-        "CMAKE_VS_VERSION_RANGE": "[16.0,18.0)",
-        "CMAKE_VS_VERSION_PRERELEASE": "ON"
-      },
-      "binaryDir": "${sourceDir}/__output/${presetName}"
+        "CMAKE_CXX_COMPILER_FRONTEND_VARIANT": "MSVC"
+      }
     },
     {
       "name": "windows-msvc-x64",
       "inherits": "windows-msvc",
       "displayName": "Configure for 'windows-msvc-x64'",
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "x64"
+      }
+    },
+    {
+      "name": "windows-msvc-spectre-x64",
+      "inherits": "windows-msvc-spectre",
+      "displayName": "Configure for 'windows-msvc-spectre-x64'",
       "binaryDir": "${sourceDir}/__output/${presetName}",
       "cacheVariables": {
         "CMAKE_SYSTEM_PROCESSOR": "x64"
@@ -150,6 +164,10 @@
     {
       "name": "windows-msvc-x64",
       "configurePreset": "windows-msvc-x64"
+    },
+    {
+      "name": "windows-msvc-spectre-x64",
+      "configurePreset": "windows-msvc-spectre-x64"
     },
     {
       "name": "windows-msvc-amd64",
