@@ -25,7 +25,7 @@
 # | CMake Variable                                      | Description                                                                                                                                       |
 # |-----------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------|
 # | CMAKE_SYSTEM_VERSION                                | The version of the operating system for which CMake is to build. Defaults to the host version.                                                    |
-# | CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE         | The architecture of the tooling to use. Defaults to x64.                                                                                          |
+# | CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE         | The architecture of the tooling to use. Defaults to 'arm64' on ARM64 systems, otherwise 'x64'.                                                    |
 # | CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION            | The version of the Windows SDK to use. Defaults to the highest installed, that is no higher than CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION_MAXIMUM |
 # | CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION_MAXIMUM    | The maximum version of the Windows SDK to use, for example '10.0.19041.0'. Defaults to nothing                                                    |
 # | CMAKE_WINDOWS_KITS_10_DIR                           | The location of the root of the Windows Kits 10 directory.                                                                                        |
@@ -51,7 +51,11 @@ if(NOT CMAKE_SYSTEM_VERSION)
 endif()
 
 if(NOT CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE)
-    set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE x64)
+    if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL ARM64)
+        set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE arm64)
+    else()
+        set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE x64)
+    endif()
 endif()
 
 if(NOT CMAKE_WINDOWS_KITS_10_DIR)
