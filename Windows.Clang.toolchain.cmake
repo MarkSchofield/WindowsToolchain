@@ -101,6 +101,49 @@ if(NOT VS_INSTALLATION_PATH)
     )
 endif()
 
+message(VERBOSE "VS_INSTALLATION_VERSION = ${VS_INSTALLATION_VERSION}")
+message(VERBOSE "VS_INSTALLATION_PATH = ${VS_INSTALLATION_PATH}")
+
+if(NOT VS_INSTALLATION_PATH)
+    message(FATAL_ERROR "Unable to find Visual Studio")
+endif()
+
+cmake_path(NORMAL_PATH VS_INSTALLATION_PATH)
+
+set(VS_MSVC_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC")
+
+# Use 'VS_PLATFORM_TOOLSET_VERSION' to resolve 'CMAKE_VS_PLATFORM_TOOLSET_VERSION'
+#
+if(NOT VS_PLATFORM_TOOLSET_VERSION)
+    if(VS_TOOLSET_VERSION)
+        message(WARNING "Old versions of WindowsToolchain incorrectly used 'VS_TOOLSET_VERSION' to specify the VS toolset version. This functionality is being deprecated - please use 'VS_PLATFORM_TOOLSET_VERSION' instead.")
+        set(VS_PLATFORM_TOOLSET_VERSION ${VS_TOOLSET_VERSION})
+    else()
+        file(GLOB VS_PLATFORM_TOOLSET_VERSIONS RELATIVE ${VS_MSVC_PATH} ${VS_MSVC_PATH}/*)
+        list(SORT VS_PLATFORM_TOOLSET_VERSIONS COMPARE NATURAL ORDER DESCENDING)
+        list(POP_FRONT VS_PLATFORM_TOOLSET_VERSIONS VS_PLATFORM_TOOLSET_VERSION)
+        unset(VS_PLATFORM_TOOLSET_VERSIONS)
+    endif()
+endif()
+
+set(CMAKE_VS_PLATFORM_TOOLSET_VERSION ${VS_PLATFORM_TOOLSET_VERSION})
+set(VS_TOOLSET_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC/${CMAKE_VS_PLATFORM_TOOLSET_VERSION}")
+
+# Set the tooling variables, include_directories and link_directories
+#
+
+# Map CMAKE_SYSTEM_PROCESSOR values to CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE that identifies the tools that should
+# be used to produce code for the CMAKE_SYSTEM_PROCESSOR.
+if((CMAKE_SYSTEM_PROCESSOR STREQUAL AMD64) OR (CMAKE_SYSTEM_PROCESSOR STREQUAL x64))
+    set(CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE x64)
+elseif((CMAKE_SYSTEM_PROCESSOR STREQUAL arm)
+    OR (CMAKE_SYSTEM_PROCESSOR STREQUAL arm64)
+    OR (CMAKE_SYSTEM_PROCESSOR STREQUAL x86))
+    set(CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+else()
+    message(FATAL_ERROR "Unable identify compiler architecture for CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR}")
+endif()
+
 set(TOOLCHAIN_C_COMPILER_EXE clang.exe)
 if(CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL MSVC)
     set(TOOLCHAIN_C_COMPILER_EXE clang-cl.exe)
@@ -126,6 +169,44 @@ find_program(CMAKE_CXX_COMPILER
         "$ENV{ProgramFiles}/LLVM/bin"
     REQUIRED
 )
+
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL arm)
+    set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /EHsc")
+endif()
+
+# Compiler
+foreach(LANG C CXX RC)
+    list(APPEND CMAKE_${LANG}_STANDARD_INCLUDE_DIRECTORIES "${VS_TOOLSET_PATH}/ATLMFC/include")
+    list(APPEND CMAKE_${LANG}_STANDARD_INCLUDE_DIRECTORIES "${VS_TOOLSET_PATH}/include")
+endforeach()
+
+if(VS_USE_SPECTRE_MITIGATION_ATLMFC_RUNTIME)
+    # Ensure that the necessary folder and files are present before adding the 'link_directories'
+    toolchain_validate_vs_files(
+        DESCRIPTION "ATLMFC Spectre libraries"
+        FOLDER "${VS_TOOLSET_PATH}/ATLMFC/lib/spectre/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}"
+        FILES
+            atls.lib
+    )
+    link_directories("${VS_TOOLSET_PATH}/ATLMFC/lib/spectre/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
+else()
+    link_directories("${VS_TOOLSET_PATH}/ATLMFC/lib/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
+endif()
+
+if(VS_USE_SPECTRE_MITIGATION_RUNTIME)
+    # Ensure that the necessary folder and files are present before adding the 'link_directories'
+    toolchain_validate_vs_files(
+        DESCRIPTION "Spectre libraries"
+        FOLDER "${VS_TOOLSET_PATH}/lib/spectre/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}"
+        FILES
+            msvcrt.lib vcruntime.lib vcruntimed.lib
+    )
+    link_directories("${VS_TOOLSET_PATH}/lib/spectre/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
+else()
+    link_directories("${VS_TOOLSET_PATH}/lib/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
+endif()
+
+link_directories("${VS_TOOLSET_PATH}/lib/x86/store/references")
 
 if(CLANG_TIDY_CHECKS)
     get_filename_component(CLANG_PATH ${CMAKE_CXX_COMPILER} DIRECTORY CACHE)
