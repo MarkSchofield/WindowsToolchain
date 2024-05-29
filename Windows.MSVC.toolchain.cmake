@@ -177,6 +177,15 @@ if(CMAKE_SYSTEM_PROCESSOR STREQUAL arm)
     set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /EHsc")
 endif()
 
+if(CMAKE_GENERATOR MATCHES "^Ninja")
+    find_program(CMAKE_MAKE_PROGRAM
+        ninja.exe
+    HINTS "${VS_INSTALLATION_PATH}\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja"
+    REQUIRED
+    )
+    message(VERBOSE "Using ninja.exe: ${CMAKE_MAKE_PROGRAM}")
+endif()
+
 # Compiler
 foreach(LANG C CXX RC)
     list(APPEND CMAKE_${LANG}_STANDARD_INCLUDE_DIRECTORIES "${VS_TOOLSET_PATH}/ATLMFC/include")

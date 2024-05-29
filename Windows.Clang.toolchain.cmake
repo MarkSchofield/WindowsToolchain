@@ -59,7 +59,11 @@ endif()
 
 set(UNUSED ${CMAKE_TOOLCHAIN_FILE}) # Note: only to prevent cmake unused variable warninig
 set(CMAKE_SYSTEM_NAME Windows)
-set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES "CMAKE_SYSTEM_PROCESSOR;CMAKE_CROSSCOMPILING")
+set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES
+    CMAKE_SYSTEM_PROCESSOR
+    CMAKE_CLANG_PRODUCTS
+    CMAKE_CROSSCOMPILING
+)
 set(CMAKE_CROSSCOMPILING TRUE)
 set(WIN32 1)
 
@@ -75,6 +79,10 @@ if(NOT CMAKE_VS_VERSION_PRERELEASE)
     set(CMAKE_VS_VERSION_PRERELEASE OFF)
 endif()
 
+if(NOT CMAKE_CLANG_PRODUCTS)
+    set(CMAKE_CLANG_PRODUCTS "*")
+endif()
+
 include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
 
 # Find Clang
@@ -82,6 +90,7 @@ include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
 findVisualStudio(
     VERSION ${CMAKE_VS_VERSION_RANGE}
     PRERELEASE ${CMAKE_VS_VERSION_PRERELEASE}
+    PRODUCTS ${CMAKE_CLANG_PRODUCTS}
     REQUIRES
         Microsoft.VisualStudio.Component.VC.Llvm.Clang
     PROPERTIES
@@ -169,6 +178,15 @@ find_program(CMAKE_CXX_COMPILER
         "$ENV{ProgramFiles}/LLVM/bin"
     REQUIRED
 )
+
+if(CMAKE_GENERATOR MATCHES "^Ninja")
+    find_program(CMAKE_MAKE_PROGRAM
+        ninja.exe
+    HINTS "${VS_INSTALLATION_PATH}\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja"
+    REQUIRED
+    )
+    message(VERBOSE "Using ninja.exe: ${CMAKE_MAKE_PROGRAM}")
+endif()
 
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL arm)
     set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /EHsc")
