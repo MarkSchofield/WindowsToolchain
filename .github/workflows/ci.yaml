@@ -32,6 +32,9 @@ jobs:
       matrix:
         configuration: [ Debug, Release ]
         buildPreset: [ windows-msvc-x64, windows-msvc-spectre-x64, windows-msvc-amd64, windows-msvc-x86, windows-msvc-arm64, windows-clang-x64, windows-clang-amd64, windows-clangcl-x64, windows-clangcl-amd64 ]
+        include:
+          - buildPreset: windows-msvc-x64
+            cuda: true
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -40,6 +43,17 @@ jobs:
         shell: pwsh
         run: |
           choco install ninja
+      - name: Install NVIDIA Cuda Toolkit
+        if: ${{ matrix.cuda }}
+        shell: pwsh
+        run: |
+          choco install cuda
+
+          # The installation sets the CUDA_PATH environment variable - use 'Update-SessionEnvironment' to pull it into
+          # the current process' environment block, then add it to the '$env:GITHUB_ENV' file for subsequent steps.
+          Import-Module "$env:ChocolateyInstall/helpers/chocolateyInstaller.psm1"
+          Update-SessionEnvironment
+          "CUDA_PATH=$env:CUDA_PATH" >> $env:GITHUB_ENV
       - name: CMake Configure ${{ matrix.buildPreset }}
         shell: pwsh
         run: |
