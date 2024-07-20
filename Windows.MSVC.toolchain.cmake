@@ -56,6 +56,11 @@
 # | MSVC                                        | 1                                                                                                     |
 # | MSVC_VERSION                                | The '<major><minor>' version of the C++ compiler being used. For example, '1929'                      |
 #
+# Other configuration:
+#
+# * If the 'CMAKE_CUDA_COMPILER' is set, and 'CMAKE_CUDA_HOST_COMPILER' is not set, and ENV{CUDAHOSTCXX} not defined
+#   then 'CMAKE_CUDA_HOST_COMPILER' is set to the value of 'CMAKE_CXX_COMPILER'.
+#
 # Resources:
 #   <https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html>
 #
@@ -219,3 +224,13 @@ endif()
 
 # Windows Kits
 include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
+
+# CUDA support
+#
+# If a CUDA compiler is specified, and a host compiler wasn't specified, set 'CMAKE_CXX_COMPILER'
+# as the host compiler.
+if(CMAKE_CUDA_COMPILER)
+    if((NOT CMAKE_CUDA_HOST_COMPILER) AND (NOT DEFINED ENV{CUDAHOSTCXX}))
+        set(CMAKE_CUDA_HOST_COMPILER "${CMAKE_CXX_COMPILER}")
+    endif()
+endif()
