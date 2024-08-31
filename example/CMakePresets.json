@@ -158,6 +158,37 @@
         "VS_USE_SPECTRE_MITIGATION_RUNTIME": "OFF"
       },
       "binaryDir": "${sourceDir}/__output/${presetName}-$env{VSCMD_ARG_TGT_ARCH}"
+    },
+    {
+      "name": "windows-vs",
+      "inherits": "windows",
+      "hidden": true,
+      "displayName": "Windows-only configuration",
+      "description": "This build is only available on Windows",
+      "generator": "Visual Studio 17 2022",
+      "cacheVariables": {}
+    },
+    {
+      "name": "windows-vs-x64",
+      "inherits": "windows",
+      "hidden": false,
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "displayName": "Windows-only configuration",
+      "description": "This build is only available on Windows",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "AMD64"
+      }
+    },
+    {
+      "name": "windows-vs-arm64",
+      "inherits": "windows",
+      "hidden": false,
+      "binaryDir": "${sourceDir}/__output/${presetName}",
+      "displayName": "Windows-only configuration",
+      "description": "This build is only available on Windows",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "ARM64"
+      }
     }
   ],
   "buildPresets": [
@@ -200,6 +231,14 @@
     {
       "name": "ewdk",
       "configurePreset": "ewdk"
+    },
+    {
+      "name": "windows-vs-x64",
+      "configurePreset": "windows-vs-x64"
+    },
+    {
+      "name": "windows-vs-arm64",
+      "configurePreset": "windows-vs-arm64"
     }
   ]
 }
