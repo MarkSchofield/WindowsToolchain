@@ -29,7 +29,7 @@
 #
 # | CMake Variable                              | Description                                                                                                              |
 # |---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-# | CMAKE_SYSTEM_PROCESSOR                      | The processor to compiler for. One of 'x86', 'x64'/'AMD64', 'arm', 'arm64'. Defaults to ${CMAKE_HOST_SYSTEM_PROCESSOR}.  |
+# | CMAKE_SYSTEM_PROCESSOR                      | The processor to compiler for. One of 'X86', 'AMD64', 'ARM', 'ARM64'. Defaults to ${CMAKE_HOST_SYSTEM_PROCESSOR}.  |
 # | CMAKE_SYSTEM_VERSION                        | The version of the operating system for which CMake is to build. Defaults to the host version.                           |
 # | CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE | The architecture of the tooling to use. Defaults to 'arm64' on ARM64 systems, otherwise 'x64'.                           |
 # | CMAKE_VS_PRODUCTS                           | One or more Visual Studio Product IDs to consider. Defaults to '*'                                                       |
@@ -165,11 +165,19 @@ set(VS_TOOLSET_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC/${CMAKE_VS_PLATFORM_T
 
 # Map CMAKE_SYSTEM_PROCESSOR values to CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE that identifies the tools that should
 # be used to produce code for the CMAKE_SYSTEM_PROCESSOR.
-if((CMAKE_SYSTEM_PROCESSOR STREQUAL AMD64) OR (CMAKE_SYSTEM_PROCESSOR STREQUAL x64))
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL AMD64)
+    set(CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE x64)
+elseif((CMAKE_SYSTEM_PROCESSOR STREQUAL ARM)
+    OR (CMAKE_SYSTEM_PROCESSOR STREQUAL ARM64)
+    OR (CMAKE_SYSTEM_PROCESSOR STREQUAL X86))
+    set(CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL x64)
+    message(WARNING "CMAKE_SYSTEM_PROCESSOR should be 'AMD64', not 'x64'. WindowsToolchain will stop recognizing 'x64' in a future release.")
     set(CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE x64)
 elseif((CMAKE_SYSTEM_PROCESSOR STREQUAL arm)
     OR (CMAKE_SYSTEM_PROCESSOR STREQUAL arm64)
     OR (CMAKE_SYSTEM_PROCESSOR STREQUAL x86))
+    message(WARNING "CMAKE_SYSTEM_PROCESSOR (${CMAKE_SYSTEM_PROCESSOR}) should be upper-case. WindowsToolchain will stop recognizing non-upper-case forms in a future release.")
     set(CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
 else()
     message(FATAL_ERROR "Unable identify compiler architecture for CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR}")
@@ -178,7 +186,10 @@ endif()
 set(CMAKE_CXX_COMPILER "${VS_TOOLSET_PATH}/bin/Host${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}/cl.exe")
 set(CMAKE_C_COMPILER "${VS_TOOLSET_PATH}/bin/Host${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}/cl.exe")
 
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL arm)
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL ARM)
+    set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /EHsc")
+elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL arm)
+    message(WARNING "CMAKE_SYSTEM_PROCESSOR (${CMAKE_SYSTEM_PROCESSOR}) should be upper-case. WindowsToolchain will stop recognizing non-upper-case forms in a future release.")
     set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /EHsc")
 endif()
 
