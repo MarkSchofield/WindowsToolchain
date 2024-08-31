@@ -30,8 +30,21 @@ jobs:
       max-parallel: 8
       fail-fast: false
       matrix:
-        configuration: [ Debug, Release ]
-        buildPreset: [ windows-msvc-x64, windows-msvc-spectre-x64, windows-msvc-amd64, windows-msvc-x86, windows-msvc-arm64, windows-clang-x64, windows-clang-amd64, windows-clangcl-x64, windows-clangcl-amd64 ]
+        configuration:
+          - Debug
+          - Release
+        buildPreset:
+          - windows-msvc-x64
+          - windows-msvc-spectre-x64
+          - windows-msvc-amd64
+          - windows-msvc-x86
+          - windows-msvc-arm64
+          - windows-clang-x64
+          - windows-clang-amd64
+          - windows-clangcl-x64
+          - windows-clangcl-amd64
+          - windows-vs-x64
+          - windows-vs-arm64
         include:
           - buildPreset: windows-msvc-x64
             cuda: true
