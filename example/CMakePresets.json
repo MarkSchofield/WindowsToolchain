@@ -70,22 +70,13 @@
       "displayName": "Configure for 'windows-msvc-x64'",
       "binaryDir": "${sourceDir}/__output/${presetName}",
       "cacheVariables": {
-        "CMAKE_SYSTEM_PROCESSOR": "x64"
+        "CMAKE_SYSTEM_PROCESSOR": "AMD64"
       }
     },
     {
       "name": "windows-msvc-spectre-x64",
       "inherits": "windows-msvc-spectre",
       "displayName": "Configure for 'windows-msvc-spectre-x64'",
-      "binaryDir": "${sourceDir}/__output/${presetName}",
-      "cacheVariables": {
-        "CMAKE_SYSTEM_PROCESSOR": "x64"
-      }
-    },
-    {
-      "name": "windows-msvc-amd64",
-      "inherits": "windows-msvc",
-      "displayName": "Configure for 'windows-msvc-amd64'",
       "binaryDir": "${sourceDir}/__output/${presetName}",
       "cacheVariables": {
         "CMAKE_SYSTEM_PROCESSOR": "AMD64"
@@ -106,23 +97,13 @@
       "displayName": "Configure for 'windows-msvc-arm64'",
       "binaryDir": "${sourceDir}/__output/${presetName}",
       "cacheVariables": {
-        "CMAKE_SYSTEM_PROCESSOR": "arm64"
+        "CMAKE_SYSTEM_PROCESSOR": "ARM64"
       }
     },
     {
       "name": "windows-clang-x64",
       "inherits": "windows-clang",
       "displayName": "Configure for 'windows-clang-x64'",
-      "binaryDir": "${sourceDir}/__output/${presetName}",
-      "cacheVariables": {
-        "CMAKE_SYSTEM_PROCESSOR": "x64",
-        "CLANG_TIDY_CHECKS": "bugprone*,-bugprone-easily-swappable-parameters"
-      }
-    },
-    {
-      "name": "windows-clang-amd64",
-      "inherits": "windows-clang",
-      "displayName": "Configure for 'windows-clang-amd64'",
       "binaryDir": "${sourceDir}/__output/${presetName}",
       "cacheVariables": {
         "CMAKE_SYSTEM_PROCESSOR": "AMD64",
@@ -133,15 +114,6 @@
       "name": "windows-clangcl-x64",
       "inherits": "windows-clangcl",
       "displayName": "Configure for 'windows-clangcl-x64'",
-      "binaryDir": "${sourceDir}/__output/${presetName}",
-      "cacheVariables": {
-        "CMAKE_SYSTEM_PROCESSOR": "x64"
-      }
-    },
-    {
-      "name": "windows-clangcl-amd64",
-      "inherits": "windows-clangcl",
-      "displayName": "Configure for 'windows-clangcl-amd64'",
       "binaryDir": "${sourceDir}/__output/${presetName}",
       "cacheVariables": {
         "CMAKE_SYSTEM_PROCESSOR": "AMD64"
@@ -201,10 +173,6 @@
       "configurePreset": "windows-msvc-spectre-x64"
     },
     {
-      "name": "windows-msvc-amd64",
-      "configurePreset": "windows-msvc-amd64"
-    },
-    {
       "name": "windows-msvc-x86",
       "configurePreset": "windows-msvc-x86"
     },
@@ -217,16 +185,8 @@
       "configurePreset": "windows-clang-x64"
     },
     {
-      "name": "windows-clang-amd64",
-      "configurePreset": "windows-clang-amd64"
-    },
-    {
       "name": "windows-clangcl-x64",
       "configurePreset": "windows-clangcl-x64"
-    },
-    {
-      "name": "windows-clangcl-amd64",
-      "configurePreset": "windows-clangcl-amd64"
     },
     {
       "name": "ewdk",

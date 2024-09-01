@@ -53,7 +53,7 @@
 # | CMAKE_MT                                    | The path to the 'mt.exe' tool to use.                                                                 |
 # | CMAKE_RC_COMPILER                           | The path tp the 'rc.exe' tool to use.                                                                 |
 # | CMAKE_SYSTEM_NAME                           | 'Windows'                                                                                             |
-# | CMAKE_SYSTEM_PROCESSOR                      | The architecture to build for (e.g. arm64).                                                           |
+# | CMAKE_SYSTEM_PROCESSOR                      | The architecture to build for (e.g. ARM64).                                                           |
 # | CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE | The architecture of the host tooling to use (e.g. x86).                                               |
 # | CMAKE_VS_PLATFORM_TOOLSET_VERSION           | The version of the MSVC platform toolset to use (e.g. 14.31.31103).                                   |
 # | CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION    | The version of the Windows SDK to use.                                                                |
