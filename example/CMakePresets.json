@@ -88,7 +88,7 @@
       "displayName": "Configure for 'windows-msvc-x86'",
       "binaryDir": "${sourceDir}/__output/${presetName}",
       "cacheVariables": {
-        "CMAKE_SYSTEM_PROCESSOR": "x86"
+        "CMAKE_SYSTEM_PROCESSOR": "X86"
       }
     },
     {
