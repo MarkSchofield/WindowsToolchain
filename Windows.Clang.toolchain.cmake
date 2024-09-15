@@ -42,7 +42,6 @@
 # | CMAKE_CXX_COMPILER                          | The path to the C++ compiler to use.                                                                  |
 # | CMAKE_MT                                    | The path to the 'mt.exe' tool to use.                                                                 |
 # | CMAKE_RC_COMPILER                           | The path tp the 'rc.exe' tool to use.                                                                 |
-# | CMAKE_SYSTEM_NAME                           | Windows                                                                                               |
 # | WIN32                                       | 1                                                                                                     |
 # | CMAKE_CXX_CLANG_TIDY                        | The commandline clang-tidy is used if CLANG_TIDY_CHECKS was set.                                      |
 #
@@ -53,18 +52,24 @@ cmake_minimum_required(VERSION 3.20)
 
 include_guard()
 
+# If `CMAKE_HOST_SYSTEM_NAME` is not 'Windows', there's nothing to do.
 if(NOT (CMAKE_HOST_SYSTEM_NAME STREQUAL Windows))
     return()
 endif()
 
 set(UNUSED ${CMAKE_TOOLCHAIN_FILE}) # Note: only to prevent cmake unused variable warninig
-set(CMAKE_SYSTEM_NAME Windows)
-set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES "CMAKE_SYSTEM_PROCESSOR;CMAKE_CROSSCOMPILING")
-set(CMAKE_CROSSCOMPILING TRUE)
+set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES "CMAKE_SYSTEM_PROCESSOR")
 set(WIN32 1)
 
+# If `CMAKE_SYSTEM_PROCESSOR` isn't set, default to `CMAKE_HOST_SYSTEM_PROCESSOR`
 if(NOT CMAKE_SYSTEM_PROCESSOR)
     set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_HOST_SYSTEM_PROCESSOR})
+endif()
+
+# If `CMAKE_SYSTEM_PROCESSOR` is not equal to `CMAKE_HOST_SYSTEM_PROCESSOR`, this is cross-compilation.
+# CMake expects `CMAKE_SYSTEM_NAME` to be set to reflect cross-compilation.
+if(NOT (CMAKE_SYSTEM_PROCESSOR STREQUAL ${CMAKE_HOST_SYSTEM_PROCESSOR}))
+    set(CMAKE_SYSTEM_NAME Windows)
 endif()
 
 if(NOT CMAKE_VS_VERSION_RANGE)
