@@ -51,7 +51,7 @@
 # | CMAKE_CXX_COMPILER                          | The path to the C++ compiler to use.                                                                  |
 # | CMAKE_MT                                    | The path to the 'mt.exe' tool to use.                                                                 |
 # | CMAKE_RC_COMPILER                           | The path tp the 'rc.exe' tool to use.                                                                 |
-# | CMAKE_SYSTEM_NAME                           | Windows                                                                                               |
+# | CMAKE_SYSTEM_NAME                           | "Windows", when cross-compiling                                                                       |
 # | CMAKE_VS_PLATFORM_TOOLSET_VERSION           | The version of the MSVC toolset being used - e.g. 14.29.30133.                                        |
 # | WIN32                                       | 1                                                                                                     |
 # | MSVC                                        | 1                                                                                                     |
@@ -69,6 +69,7 @@ cmake_minimum_required(VERSION 3.20)
 
 include_guard()
 
+# If `CMAKE_HOST_SYSTEM_NAME` is not 'Windows', there's nothing to do.
 if(NOT (CMAKE_HOST_SYSTEM_NAME STREQUAL Windows))
     return()
 endif()
@@ -76,9 +77,7 @@ endif()
 option(TOOLCHAIN_UPDATE_PROGRAM_PATH "Whether the toolchain should update CMAKE_PROGRAM_PATH." ON)
 
 set(UNUSED ${CMAKE_TOOLCHAIN_FILE}) # Note: only to prevent cmake unused variable warninig
-set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES
-    CMAKE_CROSSCOMPILING
     CMAKE_SYSTEM_PROCESSOR
     CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE
     CMAKE_VS_PRODUCTS
@@ -88,14 +87,20 @@ set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES
     VS_INSTALLATION_VERSION
     VS_PLATFORM_TOOLSET_VERSION
 )
-set(CMAKE_CROSSCOMPILING TRUE)
 set(WIN32 1)
 set(MSVC 1)
 
 include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
 
+# If `CMAKE_SYSTEM_PROCESSOR` isn't set, default to `CMAKE_HOST_SYSTEM_PROCESSOR`
 if(NOT CMAKE_SYSTEM_PROCESSOR)
     set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_HOST_SYSTEM_PROCESSOR})
+endif()
+
+# If `CMAKE_SYSTEM_PROCESSOR` is not equal to `CMAKE_HOST_SYSTEM_PROCESSOR`, this is cross-compilation.
+# CMake expects `CMAKE_SYSTEM_NAME` to be set to reflect cross-compilation.
+if(NOT (CMAKE_SYSTEM_PROCESSOR STREQUAL ${CMAKE_HOST_SYSTEM_PROCESSOR}))
+    set(CMAKE_SYSTEM_NAME Windows)
 endif()
 
 if(NOT CMAKE_VS_VERSION_RANGE)
