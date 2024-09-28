@@ -164,15 +164,23 @@ foreach(LANG C CXX RC ASM_MASM)
     list(APPEND CMAKE_${LANG}_STANDARD_INCLUDE_DIRECTORIES "${WINDOWS_KITS_INCLUDE_PATH}/cppwinrt")
 endforeach()
 
-link_directories("${WINDOWS_KITS_LIB_PATH}/ucrt/${WINDOWS_KITS_TARGET_ARCHITECTURE}")
-link_directories("${WINDOWS_KITS_LIB_PATH}/um/${WINDOWS_KITS_TARGET_ARCHITECTURE}")
-link_directories("${WINDOWS_KITS_REFERENCES_PATH}/${WINDOWS_KITS_TARGET_ARCHITECTURE}")
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.31)
+    message(VERBOSE "Toolchain: Setting CMAKE_\${LANG}_STANDARD_LINK_DIRECTORIES")
+    foreach(LANG C CXX)
+        list(APPEND CMAKE_${LANG}_STANDARD_LINK_DIRECTORIES "${WINDOWS_KITS_LIB_PATH}/ucrt/${WINDOWS_KITS_TARGET_ARCHITECTURE}")
+        list(APPEND CMAKE_${LANG}_STANDARD_LINK_DIRECTORIES "${WINDOWS_KITS_LIB_PATH}/um/${WINDOWS_KITS_TARGET_ARCHITECTURE}")
+        list(APPEND CMAKE_${LANG}_STANDARD_LINK_DIRECTORIES "${WINDOWS_KITS_REFERENCES_PATH}/${WINDOWS_KITS_TARGET_ARCHITECTURE}")
+    endforeach()
+else()
+    link_directories("${WINDOWS_KITS_LIB_PATH}/ucrt/${WINDOWS_KITS_TARGET_ARCHITECTURE}")
+    link_directories("${WINDOWS_KITS_LIB_PATH}/um/${WINDOWS_KITS_TARGET_ARCHITECTURE}")
+    link_directories("${WINDOWS_KITS_REFERENCES_PATH}/${WINDOWS_KITS_TARGET_ARCHITECTURE}")
+endif()
 
 # With a FASTBuild generator the path to the WindowsKits binaries should be added to the path so that
 # compiler tools - like link.exe - can find dependent tools - like mt.exe.
 #
 if(CMAKE_GENERATOR MATCHES "^FASTBuild")
-
     # Updates the CMAKE_FASTBUILD_ENV_OVERRIDES to prepend the given value to the Path environment variable.
     #
     # If:
