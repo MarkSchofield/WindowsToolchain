@@ -9,10 +9,11 @@ endif()
 
 project(WindowsToolchainExample)
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    message(STATUS "MSVC_VERSION = ${MSVC_VERSION}")
-    message(STATUS "MSVC_TOOLSET_VERSION = ${MSVC_TOOLSET_VERSION}")
-endif()
+# Write properties that are influenced by the toolchain
+#
+message(STATUS "CMAKE_SYSTEM_PROCESSOR = ${CMAKE_SYSTEM_PROCESSOR}")
+message(STATUS "MSVC_VERSION = ${MSVC_VERSION}")
+message(STATUS "MSVC_TOOLSET_VERSION = ${MSVC_TOOLSET_VERSION}")
 
 # Demonstrate that toolchain-related tooling can be found
 #
@@ -30,6 +31,7 @@ add_compile_definitions(
 )
 
 add_subdirectory(CommandLine)
+add_subdirectory(CommandLineAsm)
 add_subdirectory(CommandLineC)
 add_subdirectory(SharedLibrary)
 add_subdirectory(WindowsApplication)
