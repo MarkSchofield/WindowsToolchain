@@ -33,6 +33,7 @@
 # | CMAKE_SYSTEM_PROCESSOR                      | The processor to compiler for. One of 'X86', 'AMD64', 'ARM', 'ARM64'. Defaults to ${CMAKE_HOST_SYSTEM_PROCESSOR}. |
 # | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                      |
 # | CLANG_TIDY_CHECKS                           | List of rules clang-tidy should check. Defaults not set.                                                        |
+# | TOOLCHAIN_UPDATE_PROGRAM_PATH               | Whether the toolchain should update CMAKE_PROGRAM_PATH. Defaults to 'ON'.                                       |
 #
 # The toolchain file will set the following variables:
 #
@@ -57,6 +58,8 @@ if(NOT (CMAKE_HOST_SYSTEM_NAME STREQUAL Windows))
     return()
 endif()
 
+option(TOOLCHAIN_UPDATE_PROGRAM_PATH "Whether the toolchain should update CMAKE_PROGRAM_PATH." ON)
+
 set(UNUSED ${CMAKE_TOOLCHAIN_FILE}) # Note: only to prevent cmake unused variable warninig
 set(CMAKE_SYSTEM_NAME Windows)
 set(CMAKE_TRY_COMPILE_PLATFORM_VARIABLES "CMAKE_SYSTEM_PROCESSOR;CMAKE_CROSSCOMPILING")
@@ -76,6 +79,14 @@ if(NOT CMAKE_VS_VERSION_PRERELEASE)
 endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
+
+if(NOT CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE)
+    if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL ARM64)
+        set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE arm64)
+    else()
+        set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE x64)
+    endif()
+endif()
 
 # Find Clang
 #
@@ -226,3 +237,10 @@ endif()
 
 # Windows Kits
 include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
+
+# If 'TOOLCHAIN_UPDATE_PROGRAM_PATH' is selected, update CMAKE_PROGRAM_PATH.
+#
+if(TOOLCHAIN_UPDATE_PROGRAM_PATH)
+    list(APPEND CMAKE_PROGRAM_PATH "${VS_TOOLSET_PATH}/bin/Host${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
+    list(APPEND CMAKE_PROGRAM_PATH "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}")
+endif()
