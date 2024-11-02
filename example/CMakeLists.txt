@@ -14,6 +14,16 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     message(STATUS "MSVC_TOOLSET_VERSION = ${MSVC_TOOLSET_VERSION}")
 endif()
 
+# Demonstrate that toolchain-related tooling can be found
+#
+find_program(NMAKE_PATH
+    nmake.exe
+)
+
+message(STATUS "NMAKE_PATH = ${NMAKE_PATH}")
+
+# Build a set of representative projects
+#
 add_compile_definitions(
     UNICODE
     _UNICODE
