@@ -252,6 +252,13 @@ endif()
 # If 'TOOLCHAIN_UPDATE_PROGRAM_PATH' is selected, update CMAKE_PROGRAM_PATH.
 #
 if(TOOLCHAIN_UPDATE_PROGRAM_PATH)
+    # If the CMAKE_GENERATOR is Ninja-based, and the path to the Visual Studio-installed Ninja is present, add it to
+    # the CMAKE_SYSTEM_PROGRAM_PATH. 'find_program' searches CMAKE_SYSTEM_PROGRAM_PATH after the environment path, so
+    # an installed Ninja would be preferred.
+    if((CMAKE_GENERATOR MATCHES "^Ninja") AND (EXISTS "${VS_INSTALLATION_PATH}/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja"))
+        list(APPEND CMAKE_SYSTEM_PROGRAM_PATH "${VS_INSTALLATION_PATH}/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja")
+    endif()
+
     list(APPEND CMAKE_PROGRAM_PATH "${VS_TOOLSET_PATH}/bin/Host${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
     list(APPEND CMAKE_PROGRAM_PATH "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}")
 endif()

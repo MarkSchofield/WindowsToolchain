@@ -49,10 +49,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install Ninja
-        shell: pwsh
-        run: |
-          choco install ninja
       - name: Install NVIDIA Cuda Toolkit
         if: ${{ matrix.cuda }}
         shell: pwsh
