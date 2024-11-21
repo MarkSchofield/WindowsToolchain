@@ -38,6 +38,7 @@ jobs:
           - windows-msvc-spectre-x64
           - windows-msvc-x86
           - windows-msvc-arm64
+          - windows-msvc-host
           - windows-clang-x64
           - windows-clangcl-x64
           - windows-vs-x64
