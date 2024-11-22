@@ -207,6 +207,11 @@ foreach(LANG C CXX RC)
     list(APPEND CMAKE_${LANG}_STANDARD_INCLUDE_DIRECTORIES "${VS_TOOLSET_PATH}/include")
 endforeach()
 
+foreach(LANG C CXX)
+    # Add '/X': Do not add %INCLUDE% to include search path
+    set(CMAKE_${LANG}_FLAGS_INIT "${CMAKE_${LANG}_FLAGS_INIT} /X")
+endforeach()
+
 if(VS_USE_SPECTRE_MITIGATION_ATLMFC_RUNTIME)
     # Ensure that the necessary folder and files are present before adding the 'link_directories'
     toolchain_validate_vs_files(
