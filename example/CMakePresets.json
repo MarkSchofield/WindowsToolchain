@@ -101,6 +101,12 @@
       }
     },
     {
+      "name": "windows-msvc-host",
+      "inherits": "windows-msvc",
+      "displayName": "Configure for 'windows-msvc-host'",
+      "binaryDir": "${sourceDir}/__output/${presetName}"
+    },
+    {
       "name": "windows-clang-x64",
       "inherits": "windows-clang",
       "displayName": "Configure for 'windows-clang-x64'",
@@ -183,6 +189,10 @@
     {
       "name": "windows-msvc-arm64",
       "configurePreset": "windows-msvc-arm64"
+    },
+    {
+      "name": "windows-msvc-host",
+      "configurePreset": "windows-msvc-host"
     },
     {
       "name": "windows-clang-x64",

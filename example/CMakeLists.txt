@@ -11,9 +11,11 @@ project(WindowsToolchainExample)
 
 # Write properties that are influenced by the toolchain
 #
+message(STATUS "CMAKE_CROSSCOMPILING = ${CMAKE_CROSSCOMPILING}")
+message(STATUS "CMAKE_SYSTEM_NAME = ${CMAKE_SYSTEM_NAME}")
 message(STATUS "CMAKE_SYSTEM_PROCESSOR = ${CMAKE_SYSTEM_PROCESSOR}")
-message(STATUS "MSVC_VERSION = ${MSVC_VERSION}")
 message(STATUS "MSVC_TOOLSET_VERSION = ${MSVC_TOOLSET_VERSION}")
+message(STATUS "MSVC_VERSION = ${MSVC_VERSION}")
 
 # Demonstrate that toolchain-related tooling can be found
 #
