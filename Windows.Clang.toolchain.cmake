@@ -34,6 +34,7 @@
 # | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                      |
 # | CLANG_TIDY_CHECKS                           | List of rules clang-tidy should check. Defaults not set.                                                        |
 # | TOOLCHAIN_UPDATE_PROGRAM_PATH               | Whether the toolchain should update CMAKE_PROGRAM_PATH. Defaults to 'ON'.                                       |
+# | TOOLCHAIN_ADD_VS_NINJA_PATH                 | Whether the toolchain should add the path to the VS Ninja to the CMAKE_SYSTEM_PROGRAM_PATH. Defaults to 'ON'.   |
 #
 # The toolchain file will set the following variables:
 #
@@ -60,6 +61,7 @@ if(NOT (CMAKE_HOST_SYSTEM_NAME STREQUAL Windows))
 endif()
 
 option(TOOLCHAIN_UPDATE_PROGRAM_PATH "Whether the toolchain should update CMAKE_PROGRAM_PATH." ON)
+option(TOOLCHAIN_ADD_VS_NINJA_PATH "Whether the toolchain should add the path to the VS Ninja to the CMAKE_SYSTEM_PROGRAM_PATH." ON)
 
 set(UNUSED ${CMAKE_TOOLCHAIN_FILE}) # Note: only to prevent cmake unused variable warninig
 list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES "CMAKE_SYSTEM_PROCESSOR")
@@ -254,13 +256,16 @@ include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
 # If 'TOOLCHAIN_UPDATE_PROGRAM_PATH' is selected, update CMAKE_PROGRAM_PATH.
 #
 if(TOOLCHAIN_UPDATE_PROGRAM_PATH)
-    # If the CMAKE_GENERATOR is Ninja-based, and the path to the Visual Studio-installed Ninja is present, add it to
-    # the CMAKE_SYSTEM_PROGRAM_PATH. 'find_program' searches CMAKE_SYSTEM_PROGRAM_PATH after the environment path, so
-    # an installed Ninja would be preferred.
-    if((CMAKE_GENERATOR MATCHES "^Ninja") AND (EXISTS "${VS_INSTALLATION_PATH}/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja"))
-        list(APPEND CMAKE_SYSTEM_PROGRAM_PATH "${VS_INSTALLATION_PATH}/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja")
-    endif()
-
     list(APPEND CMAKE_PROGRAM_PATH "${VS_TOOLSET_PATH}/bin/Host${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}")
     list(APPEND CMAKE_PROGRAM_PATH "${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}")
+endif()
+
+# If the CMAKE_GENERATOR is Ninja-based, and the path to the Visual Studio-installed Ninja is present, add it to
+# the CMAKE_SYSTEM_PROGRAM_PATH. 'find_program' searches CMAKE_SYSTEM_PROGRAM_PATH after the environment path, so
+# an installed Ninja would be preferred.
+#
+if( (CMAKE_GENERATOR MATCHES "^Ninja") AND
+    (EXISTS "${VS_INSTALLATION_PATH}/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja") AND
+    (TOOLCHAIN_ADD_VS_NINJA_PATH))
+    list(APPEND CMAKE_SYSTEM_PROGRAM_PATH "${VS_INSTALLATION_PATH}/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja")
 endif()
