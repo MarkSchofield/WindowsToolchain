@@ -66,6 +66,7 @@ endif()
 option(TOOLCHAIN_UPDATE_PROGRAM_PATH "Whether the toolchain should update CMAKE_PROGRAM_PATH." ON)
 option(TOOLCHAIN_ADD_VS_NINJA_PATH "Whether the toolchain should add the path to the VS Ninja to the CMAKE_SYSTEM_PROGRAM_PATH." ON)
 
+set(TOOLCHAIN_LINK_LANGUAGES C CXX)
 set(UNUSED ${CMAKE_TOOLCHAIN_FILE}) # Note: only to prevent cmake unused variable warninig
 list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES "CMAKE_SYSTEM_PROCESSOR")
 set(WIN32 1)
@@ -238,21 +239,6 @@ endif()
 
 list(APPEND TOOLCHAIN_STANDARD_LINK_DIRECTORIES "${VS_TOOLSET_PATH}/lib/x86/store/references")
 
-if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.31)
-    message(VERBOSE "Toolchain: Setting CMAKE_\${LANG}_STANDARD_LINK_DIRECTORIES")
-    foreach(STANDARD_LINK_DIRECTORY ${TOOLCHAIN_STANDARD_LINK_DIRECTORIES})
-        foreach(LANG C CXX)
-            list(APPEND CMAKE_${LANG}_STANDARD_LINK_DIRECTORIES ${STANDARD_LINK_DIRECTORY})
-        endforeach()
-    endforeach()
-else()
-    foreach(STANDARD_LINK_DIRECTORY ${TOOLCHAIN_STANDARD_LINK_DIRECTORIES})
-        link_directories(${STANDARD_LINK_DIRECTORY})
-    endforeach()
-endif()
-
-unset(TOOLCHAIN_STANDARD_LINK_DIRECTORIES)
-
 if(CLANG_TIDY_CHECKS)
     get_filename_component(CLANG_PATH ${CMAKE_CXX_COMPILER} DIRECTORY CACHE)
     set(CMAKE_CXX_CLANG_TIDY "${CLANG_PATH}/clang-tidy.exe;-checks=${CLANG_TIDY_CHECKS}")
@@ -277,3 +263,22 @@ if( (CMAKE_GENERATOR MATCHES "^Ninja") AND
     (TOOLCHAIN_ADD_VS_NINJA_PATH))
     list(APPEND CMAKE_SYSTEM_PROGRAM_PATH "${VS_INSTALLATION_PATH}/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja")
 endif()
+
+# Set the link directories
+#
+if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.31)
+    message(VERBOSE "Toolchain: Setting CMAKE_\${LANG}_STANDARD_LINK_DIRECTORIES")
+    foreach(STANDARD_LINK_DIRECTORY ${TOOLCHAIN_STANDARD_LINK_DIRECTORIES})
+        foreach(LANG IN LISTS TOOLCHAIN_LINK_LANGUAGES)
+            list(APPEND CMAKE_${LANG}_STANDARD_LINK_DIRECTORIES ${STANDARD_LINK_DIRECTORY})
+        endforeach()
+    endforeach()
+else()
+    foreach(STANDARD_LINK_DIRECTORY ${TOOLCHAIN_STANDARD_LINK_DIRECTORIES})
+        link_directories(${STANDARD_LINK_DIRECTORY})
+    endforeach()
+endif()
+
+# Cleanup
+unset(TOOLCHAIN_LINK_LANGUAGES)
+unset(TOOLCHAIN_STANDARD_LINK_DIRECTORIES)
