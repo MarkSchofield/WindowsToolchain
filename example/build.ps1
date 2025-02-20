@@ -44,7 +44,7 @@ if (-not $CMake) {
 }
 
 foreach ($Preset in $Presets) {
-    & $CMake --preset $Preset
+    & $CMake --preset $Preset --log-level=VERBOSE
 
     foreach ($Configuration in $Configurations) {
         & $CMake --build --preset $Preset --config $Configuration
