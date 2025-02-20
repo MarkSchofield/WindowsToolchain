@@ -65,7 +65,7 @@ jobs:
         shell: pwsh
         run: |
           Set-Location ./example
-          cmake --preset ${{ matrix.buildPreset }}
+          cmake --preset ${{ matrix.buildPreset }} --log-level=VERBOSE
       - name: CMake Build ${{ matrix.buildPreset }}
         shell: pwsh
         run: |
