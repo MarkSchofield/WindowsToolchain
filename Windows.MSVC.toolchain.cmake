@@ -261,3 +261,14 @@ if( (CMAKE_GENERATOR MATCHES "^Ninja") AND
     (TOOLCHAIN_ADD_VS_NINJA_PATH))
     list(APPEND CMAKE_SYSTEM_PROGRAM_PATH "${VS_INSTALLATION_PATH}/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja")
 endif()
+
+# Generate moc_predefs.h file for automoc
+#
+set(CMAKE_CXX_COMPILER_PREDEFINES_COMMAND
+    ${CMAKE_CXX_COMPILER}
+        /nologo
+        /Zc:preprocessor
+        /PD
+        /c
+        ${CMAKE_ROOT}/Modules/CMakeCXXCompilerABI.cpp
+)
