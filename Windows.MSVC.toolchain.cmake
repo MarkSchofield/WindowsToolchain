@@ -261,3 +261,25 @@ if( (CMAKE_GENERATOR MATCHES "^Ninja") AND
     (TOOLCHAIN_ADD_VS_NINJA_PATH))
     list(APPEND CMAKE_SYSTEM_PROGRAM_PATH "${VS_INSTALLATION_PATH}/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja")
 endif()
+
+# Set 'CMAKE_<LANG>_COMPILER_PREDEFINES_COMMAND' to allow consumers - like automoc - to obtain the compiler predefines.
+#
+set(CMAKE_CXX_COMPILER_PREDEFINES_COMMAND
+    ${CMAKE_CXX_COMPILER}
+        /nologo
+        /Zc:preprocessor
+        /PD
+        /c
+        /Fonul.
+        ${CMAKE_ROOT}/Modules/CMakeCXXCompilerABI.cpp
+)
+
+set(CMAKE_C_COMPILER_PREDEFINES_COMMAND
+    ${CMAKE_C_COMPILER}
+        /nologo
+        /Zc:preprocessor
+        /PD
+        /c
+        /Fonul.
+        ${CMAKE_ROOT}/Modules/CMakeCCompilerABI.c
+)
