@@ -27,14 +27,17 @@
 #
 # The following variables can be used to configure the behavior of this toolchain file:
 #
-# | CMake Variable                              | Description                                                                                                     |
-# |---------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-# | CMAKE_SYSTEM_VERSION                        | The version of the operating system for which CMake is to build. Defaults to '10.0.19041.0'.                    |
-# | CMAKE_SYSTEM_PROCESSOR                      | The processor to compiler for. One of 'X86', 'AMD64', 'ARM', 'ARM64'. Defaults to ${CMAKE_HOST_SYSTEM_PROCESSOR}. |
-# | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                      |
-# | CLANG_TIDY_CHECKS                           | List of rules clang-tidy should check. Defaults not set.                                                        |
-# | TOOLCHAIN_UPDATE_PROGRAM_PATH               | Whether the toolchain should update CMAKE_PROGRAM_PATH. Defaults to 'ON'.                                       |
-# | TOOLCHAIN_ADD_VS_NINJA_PATH                 | Whether the toolchain should add the path to the VS Ninja to the CMAKE_SYSTEM_PROGRAM_PATH. Defaults to 'ON'.   |
+# | CMake Variable                              | Description                                                                                                              |
+# |---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
+# | CMAKE_SYSTEM_VERSION                        | The version of the operating system for which CMake is to build. Defaults to '10.0.19041.0'.                             |
+# | CMAKE_SYSTEM_PROCESSOR                      | The processor to compiler for. One of 'X86', 'AMD64', 'ARM', 'ARM64'. Defaults to ${CMAKE_HOST_SYSTEM_PROCESSOR}.        |
+# | CMAKE_VS_PRODUCTS                           | One or more Visual Studio Product IDs to consider. Defaults to '*'                                                       |
+# | CMAKE_VS_VERSION_PRERELEASE                 | Whether 'prerelease' versions of Visual Studio should be considered. Defaults to 'OFF'                                   |
+# | CMAKE_VS_VERSION_RANGE                      | A verson range for VS instances to find. For example, '[16.0,17.0)' will find versions '16.*'. Defaults to '[16.0,17.0)' |
+# | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                               |
+# | CLANG_TIDY_CHECKS                           | List of rules clang-tidy should check. Defaults not set.                                                                 |
+# | TOOLCHAIN_UPDATE_PROGRAM_PATH               | Whether the toolchain should update CMAKE_PROGRAM_PATH. Defaults to 'ON'.                                                |
+# | TOOLCHAIN_ADD_VS_NINJA_PATH                 | Whether the toolchain should add the path to the VS Ninja to the CMAKE_SYSTEM_PROGRAM_PATH. Defaults to 'ON'.            |
 #
 # The toolchain file will set the following variables:
 #
@@ -78,12 +81,16 @@ if(NOT (CMAKE_SYSTEM_PROCESSOR STREQUAL ${CMAKE_HOST_SYSTEM_PROCESSOR}))
     set(CMAKE_SYSTEM_NAME Windows)
 endif()
 
-if(NOT CMAKE_VS_VERSION_RANGE)
-    set(CMAKE_VS_VERSION_RANGE "[16.0,)")
+if(NOT CMAKE_VS_PRODUCTS)
+    set(CMAKE_VS_PRODUCTS "*")
 endif()
 
 if(NOT CMAKE_VS_VERSION_PRERELEASE)
     set(CMAKE_VS_VERSION_PRERELEASE OFF)
+endif()
+
+if(NOT CMAKE_VS_VERSION_RANGE)
+    set(CMAKE_VS_VERSION_RANGE "[16.0,)")
 endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/VSWhere.cmake")
@@ -101,6 +108,7 @@ endif()
 findVisualStudio(
     VERSION ${CMAKE_VS_VERSION_RANGE}
     PRERELEASE ${CMAKE_VS_VERSION_PRERELEASE}
+    PRODUCTS ${CMAKE_VS_PRODUCTS}
     REQUIRES
         Microsoft.VisualStudio.Component.VC.Llvm.Clang
     PROPERTIES
@@ -114,6 +122,7 @@ if(NOT VS_INSTALLATION_PATH)
     findVisualStudio(
         VERSION ${CMAKE_VS_VERSION_RANGE}
         PRERELEASE ${CMAKE_VS_VERSION_PRERELEASE}
+        PRODUCTS ${CMAKE_VS_PRODUCTS}
         PROPERTIES
             installationVersion VS_INSTALLATION_VERSION
             installationPath VS_INSTALLATION_PATH
