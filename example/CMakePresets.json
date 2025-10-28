@@ -10,7 +10,7 @@
       "name": "windows",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION_MAXIMUM": "10.0.22621.0",
+        "CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION_MAXIMUM": "10.0.26100.0",
         "CMAKE_SYSTEM_VERSION": "10.0.19041.0"
       }
     },
@@ -156,7 +156,7 @@
       "displayName": "windows-vs-x64",
       "description": "This build is only available on Windows",
       "cacheVariables": {
-        "CMAKE_GENERATOR_PLATFORM": "x64,version=10.0.22621.0",
+        "CMAKE_GENERATOR_PLATFORM": "x64,version=10.0.26100.0",
         "CMAKE_SYSTEM_PROCESSOR": "AMD64"
       }
     },
@@ -168,7 +168,7 @@
       "displayName": "windows-vs-arm64",
       "description": "This build is only available on Windows",
       "cacheVariables": {
-        "CMAKE_GENERATOR_PLATFORM": "ARM64,version=10.0.22621.0",
+        "CMAKE_GENERATOR_PLATFORM": "ARM64,version=10.0.26100.0",
         "CMAKE_SYSTEM_PROCESSOR": "ARM64"
       }
     }
