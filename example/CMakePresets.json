@@ -136,7 +136,8 @@
         "VS_EXPERIMENTAL_MODULE": "OFF",
         "VS_USE_SPECTRE_MITIGATION_RUNTIME": "OFF"
       },
-      "binaryDir": "${sourceDir}/__output/${presetName}-$env{VSCMD_ARG_TGT_ARCH}"
+      "binaryDir": "${sourceDir}/__output/${presetName}-$env{VSCMD_ARG_TGT_ARCH}",
+      "condition": { "lhs": "$env{VSCMD_ARG_TGT_ARCH}", "type": "notEquals", "rhs": "" }
     },
     {
       "name": "windows-vs",
