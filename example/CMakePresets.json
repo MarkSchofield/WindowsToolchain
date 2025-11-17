@@ -25,6 +25,32 @@
       "hidden": true
     },
     {
+      "name": "windows-fastbuild",
+      "inherits": ["windows"],
+      "hidden": true,
+      "generator": "FASTBuild",
+      "cacheVariables": {
+        "CMAKE_VS_VERSION_PRERELEASE": "ON",
+        "CMAKE_VS_VERSION_RANGE": "[16.0,19.0)",
+        "CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION_MAXIMUM": "10.0.26100.0"
+      }
+    },
+    {
+      "name": "windows-fastbuild-msvc",
+      "inherits": "windows-fastbuild",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "../Windows.MSVC.toolchain.cmake"
+      }
+    },
+    {
+      "name": "windows-fastbuild-msvc-x64",
+      "inherits": "windows-fastbuild-msvc",
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "AMD64"
+      }
+    },
+    {
       "name": "windows-ninja",
       "inherits": ["windows"],
       "hidden": true,
@@ -171,6 +197,10 @@
     {
       "name": "windows-ninja-clangcl-x64",
       "configurePreset": "windows-ninja-clangcl-x64"
+    },
+    {
+      "name": "windows-fastbuild-msvc-x64",
+      "configurePreset": "windows-fastbuild-msvc-x64"
     },
     {
       "name": "ewdk",
