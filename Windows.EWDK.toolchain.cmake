@@ -27,7 +27,7 @@
 #
 # The toolchain expects the following environment variables to have been initialized by the EWDK build environment:
 #
-# | CMake Variable                              | Description                                                                                           |
+# | Environment Variable                        | Description                                                                                           |
 # |---------------------------------------------|-------------------------------------------------------------------------------------------------------|
 # | VCToolsVersion                              | The version of the MSVC platform toolset to use (e.g. 14.31.31103).                                   |
 # | VSCMD_ARG_HOST_ARCH                         | The architecture of the host tooling to use (e.g. x86).                                               |
@@ -62,6 +62,7 @@
 # | MSVC_VERSION                                | The '<major><minor>' version of the C++ compiler being used. For example, '1929'                      |
 # | VS_INSTALLATION_PATH                        | The path to the Visual Studio instance to use.                                                        |
 # | WIN32                                       | 1                                                                                                     |
+# | EWDK                                        | 1                                                                                                     |
 #
 # Resources:
 #   <https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html>
@@ -74,15 +75,22 @@ if("$ENV{BuildLabSetupRoot}" STREQUAL "")
     message(FATAL_ERROR "The ${CMAKE_CURRENT_LIST_FILE} toolchain can only be used from an initialized EWDK build prompt.")
 endif()
 
-if(CMAKE_SYSTEM_PROCESSOR)
-    if(NOT (CMAKE_SYSTEM_PROCESSOR STREQUAL $ENV{VSCMD_ARG_TGT_ARCH}))
-        message(FATAL_ERROR "The 'CMAKE_SYSTEM_PROCESSOR' property - if set - must match the VSCMD_ARG_TGT_ARCH environment variable.")
+if("$ENV{VSCMD_ARG_TGT_ARCH}" STREQUAL "x64")
+    if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "AMD64")
+        # Not cross-compiling
+    else()
+        set(CMAKE_SYSTEM_PROCESSOR "AMD64")
     endif()
+elseif($ENV{VSCMD_ARG_TGT_ARCH} STREQUAL "arm64")
+    if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "ARM64")
+        # Not cross-compiling
+    else()
+        set(CMAKE_SYSTEM_PROCESSOR "ARM64")
+    endif()
+elseif($ENV{VSCMD_ARG_TGT_ARCH} STREQUAL "x86")
+    set(CMAKE_SYSTEM_PROCESSOR "X86")
 else()
-    set(CMAKE_SYSTEM_PROCESSOR $ENV{VSCMD_ARG_TGT_ARCH})
-    if(NOT CMAKE_SYSTEM_PROCESSOR)
-        message(FATAL_ERROR "The 'VSCMD_ARG_TGT_ARCH' environment variable should specify the architecture of the host toolset to use.")
-    endif()
+    message(FATAL_ERROR "The 'VSCMD_ARG_TGT_ARCH' environment variable specifies an unsupported target architecture: '$ENV{VSCMD_ARG_TGT_ARCH}'")
 endif()
 
 set(CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE $ENV{VSCMD_ARG_HOST_ARCH})
@@ -111,3 +119,5 @@ if(NOT CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION)
 endif()
 
 include("${CMAKE_CURRENT_LIST_DIR}/Windows.MSVC.toolchain.cmake")
+
+set(EWDK 1)

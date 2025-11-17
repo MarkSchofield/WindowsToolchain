@@ -38,7 +38,7 @@ add_subdirectory(CommandLineC)
 add_subdirectory(SharedLibrary)
 add_subdirectory(WindowsApplication)
 
-if((CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") AND (CMAKE_SYSTEM_PROCESSOR STREQUAL AMD64))
+if((CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") AND (CMAKE_SYSTEM_PROCESSOR STREQUAL AMD64) AND (NOT EWDK))
     if(DEFINED ENV{CUDA_PATH})
         add_subdirectory(CommandLineCuda)
     else()
