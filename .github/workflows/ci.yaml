@@ -41,11 +41,14 @@ jobs:
           - windows-ninja-msvc-host
           - windows-ninja-clang-x64
           - windows-ninja-clangcl-x64
+          - windows-fastbuild-msvc-x64
           - windows-vs2022-x64
           - windows-vs2022-arm64
         include:
           - buildPreset: windows-ninja-msvc-x64
             cuda: true
+          - buildPreset: windows-fastbuild-msvc-x64
+            fastbuild: true
     runs-on: windows-latest
     steps:
       - name: Checkout
@@ -61,6 +64,14 @@ jobs:
           Import-Module "$env:ChocolateyInstall/helpers/chocolateyInstaller.psm1"
           Update-SessionEnvironment
           "CUDA_PATH=$env:CUDA_PATH" >> $env:GITHUB_ENV
+      - name: Install FASTBuild
+        if: ${{ matrix.fastbuild }}
+        shell: pwsh
+        run: |
+          ./example/Scripts/updateCMake.ps1
+
+          $DownloadFolder = ./example/Scripts/installFASTBuild.ps1
+          echo $DownloadFolder >> $env:GITHUB_PATH
       - name: CMake Configure ${{ matrix.buildPreset }}
         shell: pwsh
         run: |
