@@ -143,3 +143,40 @@ endforeach()
 link_directories("${WINDOWS_KITS_LIB_PATH}/ucrt/${WINDOWS_KITS_TARGET_ARCHITECTURE}")
 link_directories("${WINDOWS_KITS_LIB_PATH}/um/${WINDOWS_KITS_TARGET_ARCHITECTURE}")
 link_directories("${WINDOWS_KITS_REFERENCES_PATH}/${WINDOWS_KITS_TARGET_ARCHITECTURE}")
+
+# With a FASTBuild generator the path to the WindowsKits binaries should be added to the path so that
+# compiler tools - like link.exe - can find dependent tools - like mt.exe.
+#
+if(CMAKE_GENERATOR MATCHES "^FASTBuild")
+
+    # Updates the CMAKE_FASTBUILD_ENV_OVERRIDES to prepend the given value to the Path environment variable.
+    #
+    # If:
+    #   * CMAKE_FASTBUILD_ENV_OVERRIDES is not defined, it will be set to Path=${VALUE}\;$ENV{Path}
+    #   * CMAKE_FASTBUILD_ENV_OVERRIDES is defined but does not contain a Path entry, a `Path=${VALUE}\;$ENV{Path}`
+    #       entry will be added.
+    #   * CMAKE_FASTBUILD_ENV_OVERRIDES is defined and contains a Path entry, the value will be prepended to the
+    #       existing Path entry.
+    function(toolchain_prepend_fastbuild_path VALUE)
+        string(REPLACE ";" "\;" CURRENT_PATH "$ENV{Path}")
+        set(FOUND FALSE)
+        set(RESULT)
+        foreach(ENTRY IN LISTS CMAKE_FASTBUILD_ENV_OVERRIDES)
+            if(ENTRY MATCHES "^Path=(.*)$")
+                set(FOUND TRUE)
+                string(REPLACE ";" "\;" CURRENT_PATH "${CMAKE_MATCH_1}")
+                list(APPEND RESULT "Path=${VALUE}\;${CURRENT_PATH}")
+            else()
+                list(APPEND RESULT ${ENTRY})
+            endif()
+        endforeach()
+
+        if(NOT FOUND)
+            list(APPEND RESULT "Path=${VALUE}\;${CURRENT_PATH}")
+        endif()
+
+        set(CMAKE_FASTBUILD_ENV_OVERRIDES "${RESULT}" PARENT_SCOPE)
+    endfunction()
+
+    toolchain_prepend_fastbuild_path("${WINDOWS_KITS_BIN_PATH}/${CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE}")
+endif()
