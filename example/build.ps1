@@ -5,8 +5,14 @@
 
 [CmdletBinding()]
 param (
-    [ValidateSet('windows-clang-x64', 'windows-msvc-arm64', 'windows-msvc-x64', 'windows-msvc-x86')]
-    $Presets = @('windows-clang-x64', 'windows-msvc-arm64', 'windows-msvc-x64', 'windows-msvc-x86')
+    [ValidateSet('windows-ninja-msvc-x64', 'windows-ninja-msvc-x64-spectre', 'windows-ninja-msvc-x86',
+        'windows-ninja-msvc-arm64', 'windows-ninja-msvc-host', 'windows-ninja-clang-x64',
+        'windows-ninja-clangcl-x64', 'windows-fastbuild-msvc-x64', 'windows-vs2022-x64',
+        'windows-vs2022-arm64')]
+    $Presets = @('windows-ninja-msvc-host'),
+
+    [ValidateSet('Debug', 'Release', 'RelWithDebInfo')]
+    $Configurations = @('Debug')
 )
 
 Set-StrictMode -Version Latest
@@ -32,12 +38,6 @@ if (-not $CMake) {
         Write-Error "Unable to find CMake."
     }
 }
-
-$Configurations = @(
-    'Debug'
-    'Release'
-    'RelWithDebInfo'
-)
 
 foreach ($Preset in $Presets) {
     & $CMake --preset $Preset
