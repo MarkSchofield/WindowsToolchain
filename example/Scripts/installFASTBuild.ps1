@@ -10,7 +10,7 @@ param (
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$FastBuildVersion = "1.17"
+$FastBuildVersion = "1.18"
 $FastBuildFileName = "FASTBuild-Windows-x64-v$FastBuildVersion.zip"
 $FastBuildZipUrl = "https://www.fastbuild.org/downloads/v$FastBuildVersion/$FastBuildFileName"
 $DownloadFolder = Join-Path -Path $PSScriptRoot -ChildPath "../../__downloads"
