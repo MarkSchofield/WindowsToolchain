@@ -57,7 +57,8 @@ jobs:
         if: ${{ matrix.cuda }}
         shell: pwsh
         run: |
-          choco install cuda
+          winget install Nvidia.CUDA --silent --accept-source-agreements --accept-package-agreements |
+            Select-String -NotMatch '^   [\\\-/|] $'
 
           # The installation sets the CUDA_PATH environment variable - use 'Update-SessionEnvironment' to pull it into
           # the current process' environment block, then add it to the '$env:GITHUB_ENV' file for subsequent steps.
