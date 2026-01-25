@@ -72,16 +72,11 @@ jobs:
 
           $DownloadFolder = ./example/Scripts/installFASTBuild.ps1
           echo $DownloadFolder >> $env:GITHUB_PATH
-      - name: CMake Configure ${{ matrix.buildPreset }}
+      - name: Build - ${{ matrix.buildPreset }}, ${{ matrix.configuration }}
         shell: pwsh
         run: |
           Set-Location ./example
-          cmake --preset ${{ matrix.buildPreset }}
-      - name: CMake Build ${{ matrix.buildPreset }}
-        shell: pwsh
-        run: |
-          Set-Location ./example
-          cmake --build --preset ${{ matrix.buildPreset }} --config ${{ matrix.configuration }}
+          ./build.ps1 -Preset ${{ matrix.buildPreset }} -Configuration ${{ matrix.configuration }}
       - name: Upload output artifact
         uses: actions/upload-artifact@v6
         if: ${{ always() }}
