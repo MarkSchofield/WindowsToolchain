@@ -29,27 +29,31 @@
 #
 # | CMake Variable                              | Description                                                                                                              |
 # |---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-# | CMAKE_SYSTEM_VERSION                        | The version of the operating system for which CMake is to build. Defaults to '10.0.19041.0'.                             |
+# | CLANG_TIDY_CHECKS                           | List of rules clang-tidy should check. Defaults not set.                                                                 |
 # | CMAKE_SYSTEM_PROCESSOR                      | The processor to compiler for. One of 'X86', 'AMD64', 'ARM', 'ARM64'. Defaults to ${CMAKE_HOST_SYSTEM_PROCESSOR}.        |
+# | CMAKE_C_COMPILER_FRONTEND_VARIANT           | If set to 'MSVC', configures Clang to use the MSVC-compatible compiler driver for C.                                     |
+# | CMAKE_CXX_COMPILER_FRONTEND_VARIANT         | If set to 'MSVC', configures Clang to use the MSVC-compatible compiler driver for C++.                                   |
+# | CMAKE_SYSTEM_VERSION                        | The version of the operating system for which CMake is to build. Defaults to '10.0.19041.0'.                             |
 # | CMAKE_VS_PRODUCTS                           | One or more Visual Studio Product IDs to consider. Defaults to '*'                                                       |
 # | CMAKE_VS_VERSION_PRERELEASE                 | Whether 'prerelease' versions of Visual Studio should be considered. Defaults to 'OFF'                                   |
 # | CMAKE_VS_VERSION_RANGE                      | A verson range for VS instances to find. For example, '[16.0,17.0)' will find versions '16.*'. Defaults to '[16.0,17.0)' |
 # | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                               |
-# | CLANG_TIDY_CHECKS                           | List of rules clang-tidy should check. Defaults not set.                                                                 |
-# | TOOLCHAIN_UPDATE_PROGRAM_PATH               | Whether the toolchain should update CMAKE_PROGRAM_PATH. Defaults to 'ON'.                                                |
 # | TOOLCHAIN_ADD_VS_NINJA_PATH                 | Whether the toolchain should add the path to the VS Ninja to the CMAKE_SYSTEM_PROGRAM_PATH. Defaults to 'ON'.            |
+# | TOOLCHAIN_UPDATE_PROGRAM_PATH               | Whether the toolchain should update CMAKE_PROGRAM_PATH. Defaults to 'ON'.                                                |
+# | VS_INSTALLATION_PATH                        | The location of the root of the Visual Studio installation. If not specified VSWhere will be used to search for one.     |
 #
 # The toolchain file will set the following variables:
 #
 # | CMake Variable                              | Description                                                                                           |
 # |---------------------------------------------|-------------------------------------------------------------------------------------------------------|
 # | CMAKE_C_COMPILER                            | The path to the C compiler to use.                                                                    |
+# | CMAKE_CXX_CLANG_TIDY                        | The commandline clang-tidy is used if CLANG_TIDY_CHECKS was set.                                      |
 # | CMAKE_CXX_COMPILER                          | The path to the C++ compiler to use.                                                                  |
 # | CMAKE_MT                                    | The path to the 'mt.exe' tool to use.                                                                 |
 # | CMAKE_RC_COMPILER                           | The path tp the 'rc.exe' tool to use.                                                                 |
 # | CMAKE_SYSTEM_NAME                           | "Windows", when cross-compiling                                                                       |
+# | VS_INSTALLATION_PATH                        | The location of the root of the Visual Studio installation.                                           |
 # | WIN32                                       | 1                                                                                                     |
-# | CMAKE_CXX_CLANG_TIDY                        | The commandline clang-tidy is used if CLANG_TIDY_CHECKS was set.                                      |
 #
 # Resources:
 #   <https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html>
@@ -105,28 +109,30 @@ endif()
 
 # Find Clang
 #
-findVisualStudio(
-    VERSION ${CMAKE_VS_VERSION_RANGE}
-    PRERELEASE ${CMAKE_VS_VERSION_PRERELEASE}
-    PRODUCTS ${CMAKE_VS_PRODUCTS}
-    REQUIRES
-        Microsoft.VisualStudio.Component.VC.Llvm.Clang
-    PROPERTIES
-        installationVersion VS_INSTALLATION_VERSION
-        installationPath VS_INSTALLATION_PATH
-)
-
+# Search for a Visual Studio installation that includes the Clang toolset, if one isn't found, look for any Visual
+# Studio installation so that other Visual Studio components can be found.
 if(NOT VS_INSTALLATION_PATH)
-    # If there's no Visual Studio with Clang, look for a Visual Studio without Clang so that other Visual Studio
-    # components can be found.
     findVisualStudio(
         VERSION ${CMAKE_VS_VERSION_RANGE}
         PRERELEASE ${CMAKE_VS_VERSION_PRERELEASE}
         PRODUCTS ${CMAKE_VS_PRODUCTS}
+        REQUIRES
+            Microsoft.VisualStudio.Component.VC.Llvm.Clang
         PROPERTIES
             installationVersion VS_INSTALLATION_VERSION
             installationPath VS_INSTALLATION_PATH
     )
+
+    if(NOT VS_INSTALLATION_PATH)
+        findVisualStudio(
+            VERSION ${CMAKE_VS_VERSION_RANGE}
+            PRERELEASE ${CMAKE_VS_VERSION_PRERELEASE}
+            PRODUCTS ${CMAKE_VS_PRODUCTS}
+            PROPERTIES
+                installationVersion VS_INSTALLATION_VERSION
+                installationPath VS_INSTALLATION_PATH
+        )
+    endif()
 endif()
 
 message(VERBOSE "VS_INSTALLATION_VERSION = ${VS_INSTALLATION_VERSION}")
