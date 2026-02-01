@@ -62,11 +62,6 @@ cmake_minimum_required(VERSION 3.20)
 
 include_guard()
 
-# If `CMAKE_HOST_SYSTEM_NAME` is not 'Windows', there's nothing to do.
-if(NOT (CMAKE_HOST_SYSTEM_NAME STREQUAL Windows))
-    return()
-endif()
-
 option(TOOLCHAIN_UPDATE_PROGRAM_PATH "Whether the toolchain should update CMAKE_PROGRAM_PATH." ON)
 option(TOOLCHAIN_ADD_VS_NINJA_PATH "Whether the toolchain should add the path to the VS Ninja to the CMAKE_SYSTEM_PROGRAM_PATH." ON)
 
@@ -147,6 +142,11 @@ if(NOT VS_INSTALLATION_PATH)
                 installationPath VS_INSTALLATION_PATH
         )
     endif()
+
+    if((CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND (EXISTS "/usr/bin/wslpath"))
+        # Path properties returned by VSWhere are Windows-style paths. Convert to WSL-style paths on WSL.
+        toolchain_to_wsl_path("${VS_INSTALLATION_PATH}" VS_INSTALLATION_PATH)
+    endif()
 endif()
 
 message(VERBOSE "VS_INSTALLATION_VERSION = ${VS_INSTALLATION_VERSION}")
@@ -177,13 +177,23 @@ set(VS_TOOLSET_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC/${CMAKE_VS_PLATFORM_T
 
 # Map CMAKE_SYSTEM_PROCESSOR values to CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE that identifies the tools that should
 # be used to produce code for the CMAKE_SYSTEM_PROCESSOR.
-if(CMAKE_SYSTEM_PROCESSOR STREQUAL AMD64)
-    set(CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE x64)
-elseif((CMAKE_SYSTEM_PROCESSOR STREQUAL ARM)
-    OR (CMAKE_SYSTEM_PROCESSOR STREQUAL ARM64)
-    OR (CMAKE_SYSTEM_PROCESSOR STREQUAL X86))
-    set(CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
-else()
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
+    if(CMAKE_SYSTEM_PROCESSOR STREQUAL AMD64)
+        set(CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE x64)
+    elseif((CMAKE_SYSTEM_PROCESSOR STREQUAL ARM)
+        OR (CMAKE_SYSTEM_PROCESSOR STREQUAL ARM64)
+        OR (CMAKE_SYSTEM_PROCESSOR STREQUAL X86))
+        set(CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE ${CMAKE_SYSTEM_PROCESSOR})
+    endif()
+elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
+    if(CMAKE_SYSTEM_PROCESSOR STREQUAL aarch64)
+        set(CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE ARM64)
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL x86_64)
+        set(CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE x64)
+    endif()
+endif()
+
+if(NOT CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE)
     message(FATAL_ERROR "Unable identify compiler architecture for CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
@@ -233,6 +243,13 @@ foreach(LANG C CXX)
         set(CMAKE_${LANG}_FLAGS_INIT "${CMAKE_${LANG}_FLAGS_INIT} /X")
     endif()
 endforeach()
+
+# If not compiling on Windows, set the clang compiler target to Windows.
+if(NOT (CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows"))
+    foreach(LANG C CXX)
+        set(CMAKE_${LANG}_COMPILER_TARGET "${CMAKE_SYSTEM_PROCESSOR}-windows-msvc")
+    endforeach()
+endif()
 
 if(VS_USE_SPECTRE_MITIGATION_ATLMFC_RUNTIME)
     # Ensure that the necessary folder and files are present before adding the 'link_directories'

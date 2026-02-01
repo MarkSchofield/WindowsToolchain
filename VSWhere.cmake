@@ -23,6 +23,8 @@
 #----------------------------------------------------------------------------------------------------------------------
 include_guard()
 
+include("${CMAKE_CURRENT_LIST_DIR}/WSL.cmake")
+
 #[[====================================================================================================================
     toolchain_validate_vs_files
     ---------------------------
@@ -79,12 +81,21 @@ function(findVisualStudio)
 
     cmake_parse_arguments(PARSE_ARGV 0 FIND_VS "${OPTIONS}" "${ONE_VALUE_KEYWORDS}" "${MULTI_VALUE_KEYWORDS}")
 
+    set(VSWHERE_HINT_PATH "$ENV{ProgramFiles\(x86\)}/Microsoft Visual Studio/Installer")
+
+    # Accommodate WSL
+    if((CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux") AND (EXISTS "/usr/bin/wslpath"))
+        toolchain_read_reg_string("HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion" "ProgramFilesDir (x86)" PROGRAM_FILES_X86_PATH)
+        set(VSWHERE_HINT_PATH "${PROGRAM_FILES_X86_PATH}\\Microsoft Visual Studio\\Installer")
+        toolchain_to_wsl_path("${VSWHERE_HINT_PATH}" VSWHERE_HINT_PATH)
+    endif()
+
     find_program(VSWHERE_PATH
         NAMES vswhere vswhere.exe
-        HINTS "$ENV{ProgramFiles\(x86\)}/Microsoft Visual Studio/Installer"
+        HINTS ${VSWHERE_HINT_PATH}
     )
 
-    if(VSWHERE_PATH STREQUAL "VSWHERE_PATH-NOTFOUND")
+    if(NOT VSWHERE_PATH)
         message(FATAL_ERROR "'vswhere' isn't found.")
     endif()
 

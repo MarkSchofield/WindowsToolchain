@@ -22,6 +22,7 @@
     {
       "name": "windows",
       "inherits": ["default"],
+      "condition": { "lhs": "${hostSystemName}", "type": "equals", "rhs": "Windows" },
       "hidden": true
     },
     {
@@ -167,6 +168,46 @@
         "CMAKE_GENERATOR_PLATFORM": "ARM64,version=10.0.26100.0",
         "CMAKE_SYSTEM_PROCESSOR": "ARM64"
       }
+    },
+    {
+      "name": "linux-windows",
+      "inherits": ["default"],
+      "description": "Cross-compiling to Windows from Linux",
+      "condition": { "lhs": "${hostSystemName}", "type": "equals", "rhs": "Linux" },
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_SYSTEM_NAME": "Windows"
+      }
+    },
+    {
+      "name": "linux-windows-ninja-clang",
+      "inherits": ["linux-windows"],
+      "generator": "Ninja Multi-Config",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "../Windows.Clang.toolchain.cmake",
+        "CMAKE_C_COMPILER": "clang-20",
+        "CMAKE_CXX_COMPILER": "clang++-20",
+        "CMAKE_LINKER_TYPE": "lld",
+        "CMAKE_MT": "llvm-mt-20",
+        "CMAKE_RC_COMPILER": "llvm-rc-20",
+        "CMAKE_C_USING_LINKER_lld": "-fuse-ld=lld",
+        "CMAKE_CXX_USING_LINKER_lld": "-fuse-ld=lld"
+      }
+    },
+    {
+      "name": "linux-windows-ninja-clang-arm64",
+      "inherits": ["linux-windows-ninja-clang"],
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "aarch64"
+      }
+    },
+    {
+      "name": "linux-windows-ninja-clang-x64",
+      "inherits": ["linux-windows-ninja-clang"],
+      "cacheVariables": {
+        "CMAKE_SYSTEM_PROCESSOR": "x86_64"
+      }
     }
   ],
   "buildPresets": [
@@ -213,6 +254,14 @@
     {
       "name": "windows-vs2022-arm64",
       "configurePreset": "windows-vs2022-arm64"
+    },
+    {
+      "name": "linux-windows-ninja-clang-arm64",
+      "configurePreset": "linux-windows-ninja-clang-arm64"
+    },
+    {
+      "name": "linux-windows-ninja-clang-x64",
+      "configurePreset": "linux-windows-ninja-clang-x64"
     }
   ]
 }
