@@ -72,6 +72,10 @@ option(TOOLCHAIN_ADD_VS_NINJA_PATH "Whether the toolchain should add the path to
 
 set(UNUSED ${CMAKE_TOOLCHAIN_FILE}) # Note: only to prevent cmake unused variable warninig
 list(APPEND CMAKE_TRY_COMPILE_PLATFORM_VARIABLES
+    CMAKE_C_COMPILER
+    CMAKE_CXX_COMPILER
+    CMAKE_MT
+    CMAKE_RC_COMPILER
     CMAKE_SYSTEM_PROCESSOR
     CMAKE_VS_PLATFORM_TOOLSET_HOST_ARCHITECTURE
     CMAKE_VS_PRODUCTS
@@ -183,31 +187,35 @@ else()
     message(FATAL_ERROR "Unable identify compiler architecture for CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
-set(TOOLCHAIN_C_COMPILER_EXE clang.exe)
-if(CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL MSVC)
-    set(TOOLCHAIN_C_COMPILER_EXE clang-cl.exe)
+if(NOT CMAKE_C_COMPILER)
+    set(TOOLCHAIN_C_COMPILER_EXE clang.exe)
+    if(CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL MSVC)
+        set(TOOLCHAIN_C_COMPILER_EXE clang-cl.exe)
+    endif()
+
+    find_program(CMAKE_C_COMPILER
+        ${TOOLCHAIN_C_COMPILER_EXE}
+        HINTS
+            "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/x64/bin"
+            "$ENV{ProgramFiles}/LLVM/bin"
+        REQUIRED
+    )
 endif()
 
-find_program(CMAKE_C_COMPILER
-    ${TOOLCHAIN_C_COMPILER_EXE}
-    HINTS
-        "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/x64/bin"
-        "$ENV{ProgramFiles}/LLVM/bin"
-    REQUIRED
-)
+if(NOT CMAKE_CXX_COMPILER)
+    set(TOOLCHAIN_CXX_COMPILER_EXE clang++.exe)
+    if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL MSVC)
+        set(TOOLCHAIN_CXX_COMPILER_EXE clang-cl.exe)
+    endif()
 
-set(TOOLCHAIN_CXX_COMPILER_EXE clang++.exe)
-if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL MSVC)
-    set(TOOLCHAIN_CXX_COMPILER_EXE clang-cl.exe)
+    find_program(CMAKE_CXX_COMPILER
+        ${TOOLCHAIN_CXX_COMPILER_EXE}
+        HINTS
+            "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/x64/bin"
+            "$ENV{ProgramFiles}/LLVM/bin"
+        REQUIRED
+    )
 endif()
-
-find_program(CMAKE_CXX_COMPILER
-    ${TOOLCHAIN_CXX_COMPILER_EXE}
-    HINTS
-        "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/x64/bin"
-        "$ENV{ProgramFiles}/LLVM/bin"
-    REQUIRED
-)
 
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL ARM)
     set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /EHsc")
