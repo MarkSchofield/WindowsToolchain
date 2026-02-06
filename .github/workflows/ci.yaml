@@ -27,7 +27,6 @@ jobs:
   build:
     name: Build Examples
     strategy:
-      max-parallel: 8
       fail-fast: false
       matrix:
         configuration:
@@ -46,12 +45,19 @@ jobs:
           - windows-fastbuild-msvc-x64
           - windows-vs2022-x64
           - windows-vs2022-arm64
+          - windows-vs2026-x64
+          - windows-vs2026-arm64
         include:
+          - runner: windows-2025
+          - buildPreset: windows-vs2026-x64
+            runner: windows-2025-vs2026
+          - buildPreset: windows-vs2026-arm64
+            runner: windows-2025-vs2026
           - buildPreset: windows-ninja-msvc-x64
             cuda: true
           - buildPreset: windows-fastbuild-msvc-x64
             fastbuild: true
-    runs-on: windows-latest
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6

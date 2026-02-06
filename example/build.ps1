@@ -10,7 +10,8 @@ param (
         'windows-ninja-clang-x64', 'windows-ninja-clang-arm64',
         'windows-ninja-clangcl-x64', 'windows-ninja-clangcl-arm64',
         'windows-fastbuild-msvc-x64',
-        'windows-vs2022-x64', 'windows-vs2022-arm64'
+        'windows-vs2022-x64', 'windows-vs2022-arm64',
+        'windows-vs2026-x64', 'windows-vs2026-arm64'
         )]
     $Presets = @('windows-ninja-msvc-host'),
 
