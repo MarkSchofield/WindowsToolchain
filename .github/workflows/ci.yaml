@@ -42,14 +42,14 @@ jobs:
           - windows-ninja-clang-x64
           - windows-ninja-clangcl-x64
           - windows-fastbuild-msvc-x64
-          - windows-vs2022-x64
-          - windows-vs2022-arm64
+          - windows-vs2026-x64
+          - windows-vs2026-arm64
         include:
           - buildPreset: windows-ninja-msvc-x64
             cuda: true
           - buildPreset: windows-fastbuild-msvc-x64
             fastbuild: true
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     steps:
       - name: Checkout
         uses: actions/checkout@v6
