@@ -213,6 +213,15 @@ foreach(LANG C CXX)
     endif()
 endforeach()
 
+# Look for clang/clang-cl.
+#
+# The Visual Studio-distributed clang tools are preferred, followed by the default installation location.
+set(TOOLCHAIN_CLANG_HINTS_PATHS "$ENV{ProgramFiles}/LLVM/bin")
+list(PREPEND TOOLCHAIN_CLANG_HINTS_PATHS "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/x64/bin")
+if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL ARM64)
+    list(PREPEND TOOLCHAIN_CLANG_HINTS_PATHS "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/arm64/bin")
+endif()
+
 if(NOT CMAKE_C_COMPILER)
     set(TOOLCHAIN_C_COMPILER_EXE clang.exe)
     if(CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL MSVC)
@@ -222,8 +231,7 @@ if(NOT CMAKE_C_COMPILER)
     find_program(CMAKE_C_COMPILER
         ${TOOLCHAIN_C_COMPILER_EXE}
         HINTS
-            "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/x64/bin"
-            "$ENV{ProgramFiles}/LLVM/bin"
+            ${TOOLCHAIN_CLANG_HINTS_PATHS}
         REQUIRED
     )
 endif()
@@ -237,11 +245,11 @@ if(NOT CMAKE_CXX_COMPILER)
     find_program(CMAKE_CXX_COMPILER
         ${TOOLCHAIN_CXX_COMPILER_EXE}
         HINTS
-            "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/x64/bin"
-            "$ENV{ProgramFiles}/LLVM/bin"
+            ${TOOLCHAIN_CLANG_HINTS_PATHS}
         REQUIRED
     )
 endif()
+unset(TOOLCHAIN_CLANG_HINTS_PATHS)
 
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL ARM)
     set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /EHsc")
