@@ -6,9 +6,12 @@
 [CmdletBinding()]
 param (
     [ValidateSet('windows-ninja-msvc-x64', 'windows-ninja-msvc-x64-spectre', 'windows-ninja-msvc-x86',
-        'windows-ninja-msvc-arm64', 'windows-ninja-msvc-host', 'windows-ninja-clang-x64',
-        'windows-ninja-clangcl-x64', 'windows-fastbuild-msvc-x64', 'windows-vs2022-x64',
-        'windows-vs2022-arm64')]
+        'windows-ninja-msvc-arm64', 'windows-ninja-msvc-host',
+        'windows-ninja-clang-x64', 'windows-ninja-clang-arm64',
+        'windows-ninja-clangcl-x64', 'windows-ninja-clangcl-arm64',
+        'windows-fastbuild-msvc-x64',
+        'windows-vs2022-x64', 'windows-vs2022-arm64'
+        )]
     $Presets = @('windows-ninja-msvc-host'),
 
     [ValidateSet('Debug', 'Release', 'RelWithDebInfo')]

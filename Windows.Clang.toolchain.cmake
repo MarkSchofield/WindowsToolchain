@@ -197,6 +197,22 @@ if(NOT CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE)
     message(FATAL_ERROR "Unable identify compiler architecture for CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR}")
 endif()
 
+# Map CMAKE_SYSTEM_PROCESSOR values to CMAKE_<LANG>_COMPILER_TARGET values that identifies the target architecture
+# for the compiler.
+foreach(LANG C CXX)
+    if(CMAKE_SYSTEM_PROCESSOR STREQUAL X86)
+        set(CMAKE_${LANG}_COMPILER_TARGET "i686-pc-windows-msvc")
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL AMD64)
+        set(CMAKE_${LANG}_COMPILER_TARGET "x86_64-pc-windows-msvc")
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL ARM)
+        set(CMAKE_${LANG}_COMPILER_TARGET "armv7a-pc-windows-msvc")
+    elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL ARM64)
+        set(CMAKE_${LANG}_COMPILER_TARGET "aarch64-pc-windows-msvc")
+    else()
+        message(FATAL_ERROR "Unable identify compiler architecture for CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR}")
+    endif()
+endforeach()
+
 if(NOT CMAKE_C_COMPILER)
     set(TOOLCHAIN_C_COMPILER_EXE clang.exe)
     if(CMAKE_C_COMPILER_FRONTEND_VARIANT STREQUAL MSVC)
