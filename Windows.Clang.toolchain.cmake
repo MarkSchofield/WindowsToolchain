@@ -199,19 +199,28 @@ endif()
 
 # Map CMAKE_SYSTEM_PROCESSOR values to CMAKE_<LANG>_COMPILER_TARGET values that identifies the target architecture
 # for the compiler.
-foreach(LANG C CXX)
+if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
     if(CMAKE_SYSTEM_PROCESSOR STREQUAL X86)
-        set(CMAKE_${LANG}_COMPILER_TARGET "i686-pc-windows-msvc")
+        set(TOOLCHAIN_TARGET "i686-pc-windows-msvc")
     elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL AMD64)
-        set(CMAKE_${LANG}_COMPILER_TARGET "x86_64-pc-windows-msvc")
+        set(TOOLCHAIN_TARGET "x86_64-pc-windows-msvc")
     elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL ARM)
-        set(CMAKE_${LANG}_COMPILER_TARGET "armv7a-pc-windows-msvc")
+        set(TOOLCHAIN_TARGET "armv7a-pc-windows-msvc")
     elseif(CMAKE_SYSTEM_PROCESSOR STREQUAL ARM64)
-        set(CMAKE_${LANG}_COMPILER_TARGET "aarch64-pc-windows-msvc")
-    else()
-        message(FATAL_ERROR "Unable identify compiler architecture for CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR}")
+        set(TOOLCHAIN_TARGET "aarch64-pc-windows-msvc")
     endif()
+else()
+    set(TOOLCHAIN_TARGET "${CMAKE_SYSTEM_PROCESSOR}-pc-windows-msvc")
+endif()
+
+if(NOT TOOLCHAIN_TARGET)
+    message(FATAL_ERROR "Unable identify compiler architecture for CMAKE_SYSTEM_PROCESSOR ${CMAKE_SYSTEM_PROCESSOR}")
+endif()
+
+foreach(LANG C CXX)
+    set(CMAKE_${LANG}_COMPILER_TARGET ${TOOLCHAIN_TARGET})
 endforeach()
+unset(TOOLCHAIN_TARGET)
 
 # Look for clang/clang-cl.
 #
@@ -267,13 +276,6 @@ foreach(LANG C CXX)
         set(CMAKE_${LANG}_FLAGS_INIT "${CMAKE_${LANG}_FLAGS_INIT} /X")
     endif()
 endforeach()
-
-# If not compiling on Windows, set the clang compiler target to Windows.
-if(NOT (CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows"))
-    foreach(LANG C CXX)
-        set(CMAKE_${LANG}_COMPILER_TARGET "${CMAKE_SYSTEM_PROCESSOR}-windows-msvc")
-    endforeach()
-endif()
 
 if(VS_USE_SPECTRE_MITIGATION_ATLMFC_RUNTIME)
     # Ensure that the necessary folder and files are present before adding the 'link_directories'
