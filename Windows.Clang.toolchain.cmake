@@ -43,6 +43,7 @@
 # | TOOLCHAIN_LLVM_HINT_PATH                    | A 'hint path' to LLVM. If set, it will be used to find clang/clang-cl in the 'bin' folder.                               |
 # | TOOLCHAIN_UPDATE_PROGRAM_PATH               | Whether the toolchain should update CMAKE_PROGRAM_PATH. Defaults to 'ON'.                                                |
 # | VS_INSTALLATION_PATH                        | The location of the root of the Visual Studio installation. If not specified VSWhere will be used to search for one.     |
+# | VS_PLATFORM_TOOLSET_VERSION                 | The version of the MSVC toolset to use. Supports exact (e.g. 14.29.30133) or prefix (e.g. 14.29) matching. Defaults to the highest available. |
 #
 # The toolchain file will set the following variables:
 #
@@ -168,10 +169,22 @@ set(VS_MSVC_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC")
 # Use 'VS_PLATFORM_TOOLSET_VERSION' to resolve 'CMAKE_VS_PLATFORM_TOOLSET_VERSION'
 #
 if(NOT VS_PLATFORM_TOOLSET_VERSION)
+    # VS_PLATFORM_TOOLSET_VERSION was not set, discover the highest version by globbing candidates and sorting.
     file(GLOB VS_PLATFORM_TOOLSET_VERSIONS RELATIVE ${VS_MSVC_PATH} ${VS_MSVC_PATH}/*)
     list(SORT VS_PLATFORM_TOOLSET_VERSIONS COMPARE NATURAL ORDER DESCENDING)
     list(POP_FRONT VS_PLATFORM_TOOLSET_VERSIONS VS_PLATFORM_TOOLSET_VERSION)
     unset(VS_PLATFORM_TOOLSET_VERSIONS)
+elseif(NOT VS_PLATFORM_TOOLSET_VERSION MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+$")
+    # VS_PLATFORM_TOOLSET_VERSION was set, but not a fully-qualified version - assume it's a prefix.
+    set(_VS_PLATFORM_TOOLSET_VERSION_PREFIX ${VS_PLATFORM_TOOLSET_VERSION})
+    file(GLOB VS_PLATFORM_TOOLSET_VERSIONS RELATIVE ${VS_MSVC_PATH} "${VS_MSVC_PATH}/${_VS_PLATFORM_TOOLSET_VERSION_PREFIX}.*")
+    list(SORT VS_PLATFORM_TOOLSET_VERSIONS COMPARE NATURAL ORDER DESCENDING)
+    list(POP_FRONT VS_PLATFORM_TOOLSET_VERSIONS VS_PLATFORM_TOOLSET_VERSION)
+    if(NOT VS_PLATFORM_TOOLSET_VERSION)
+        message(FATAL_ERROR "Unable to find MSVC toolset version matching '${_VS_PLATFORM_TOOLSET_VERSION_PREFIX}'")
+    endif()
+    unset(VS_PLATFORM_TOOLSET_VERSIONS)
+    unset(_VS_PLATFORM_TOOLSET_VERSION_PREFIX)
 endif()
 
 set(CMAKE_VS_PLATFORM_TOOLSET_VERSION ${VS_PLATFORM_TOOLSET_VERSION})
