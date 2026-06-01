@@ -204,6 +204,12 @@ foreach(LANG C CXX)
     set(CMAKE_${LANG}_FLAGS_INIT "${CMAKE_${LANG}_FLAGS_INIT} /X")
 endforeach()
 
+# Configure linker flags for Release builds to generate PDB files
+foreach(TGT EXE SHARED MODULE)
+    set(CMAKE_${TGT}_LINKER_FLAGS_RELEASE_INIT
+        "/machine:${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE} /DEBUG /OPT:REF /OPT:ICF")
+endforeach()
+
 if(VS_USE_SPECTRE_MITIGATION_ATLMFC_RUNTIME)
     # Ensure that the necessary folder and files are present before adding the 'link_directories'
     toolchain_validate_vs_files(
