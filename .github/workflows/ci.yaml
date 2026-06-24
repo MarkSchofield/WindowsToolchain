@@ -65,7 +65,7 @@ jobs:
         if: ${{ matrix.cuda }}
         shell: pwsh
         run: |
-          winget install Nvidia.CUDA --silent --accept-source-agreements --accept-package-agreements |
+          winget install Nvidia.CUDA --source winget --silent --accept-source-agreements --accept-package-agreements |
             Select-String -NotMatch '^   [\\\-/|] $'
 
           # The installation sets the CUDA_PATH environment variable - use 'Update-SessionEnvironment' to pull it into
