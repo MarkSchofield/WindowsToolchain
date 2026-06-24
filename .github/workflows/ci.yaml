@@ -79,8 +79,9 @@ jobs:
         run: |
           ./example/Scripts/updateCMake.ps1
 
-          $DownloadFolder = ./example/Scripts/installFASTBuild.ps1
+          $DownloadFolder = ./example/Scripts/installFASTBuild.ps1 -Verbose
           echo $DownloadFolder >> $env:GITHUB_PATH
+          exit 0
       - name: Build - ${{ matrix.buildPreset }}, ${{ matrix.configuration }}
         shell: pwsh
         run: |
