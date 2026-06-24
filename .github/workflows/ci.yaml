@@ -53,6 +53,10 @@ jobs:
             runner: windows-2025-vs2026
           - buildPreset: windows-vs2026-arm64
             runner: windows-2025-vs2026
+          - buildPreset: windows-vs2022-x64
+            runner: windows-2022
+          - buildPreset: windows-vs2022-arm64
+            runner: windows-2022
           - buildPreset: windows-ninja-msvc-x64
             cuda: true
           - buildPreset: windows-fastbuild-msvc-x64
