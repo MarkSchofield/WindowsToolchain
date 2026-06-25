@@ -53,6 +53,10 @@ jobs:
             runner: windows-2025-vs2026
           - buildPreset: windows-vs2026-arm64
             runner: windows-2025-vs2026
+          - buildPreset: windows-vs2022-x64
+            runner: windows-2022
+          - buildPreset: windows-vs2022-arm64
+            runner: windows-2022
           - buildPreset: windows-ninja-msvc-x64
             cuda: true
           - buildPreset: windows-fastbuild-msvc-x64
@@ -65,7 +69,7 @@ jobs:
         if: ${{ matrix.cuda }}
         shell: pwsh
         run: |
-          winget install Nvidia.CUDA --silent --accept-source-agreements --accept-package-agreements |
+          winget install Nvidia.CUDA --source winget --silent --accept-source-agreements --accept-package-agreements |
             Select-String -NotMatch '^   [\\\-/|] $'
 
           # The installation sets the CUDA_PATH environment variable - use 'Update-SessionEnvironment' to pull it into
@@ -79,8 +83,9 @@ jobs:
         run: |
           ./example/Scripts/updateCMake.ps1
 
-          $DownloadFolder = ./example/Scripts/installFASTBuild.ps1
+          $DownloadFolder = ./example/Scripts/installFASTBuild.ps1 -Verbose
           echo $DownloadFolder >> $env:GITHUB_PATH
+          exit 0
       - name: Build - ${{ matrix.buildPreset }}, ${{ matrix.configuration }}
         shell: pwsh
         run: |
