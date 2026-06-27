@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install 'cmakelang[YAML]'
         shell: pwsh
         run: |
@@ -64,7 +64,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install NVIDIA Cuda Toolkit
         if: ${{ matrix.cuda }}
         shell: pwsh
