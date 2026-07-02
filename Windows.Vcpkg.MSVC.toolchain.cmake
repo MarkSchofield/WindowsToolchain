@@ -50,5 +50,5 @@ if(NOT _VCPKG_ROOT_DIR)
     endif()
 endif()
 
-include("${_VCPKG_ROOT_DIR}/scripts/toolchains/windows.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/Windows.MSVC.toolchain.cmake")
+include("${_VCPKG_ROOT_DIR}/scripts/toolchains/windows.cmake")

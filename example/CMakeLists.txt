@@ -52,3 +52,9 @@ if((CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") AND VS_EXPERIMENTAL_MODULE)
         add_subdirectory(CommandLineModule)
     endif()
 endif()
+
+#If 'VCPKG_TARGET_TRIPLET' is defined, then we are building with vcpkg and we should build the CommandLineVcpkg project
+#
+if(DEFINED VCPKG_TARGET_TRIPLET)
+    add_subdirectory(CommandLineVcpkg)
+endif()

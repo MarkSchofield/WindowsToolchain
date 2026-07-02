@@ -55,5 +55,5 @@ endif()
 set(CMAKE_C_COMPILER_FRONTEND_VARIANT MSVC)
 set(CMAKE_CXX_COMPILER_FRONTEND_VARIANT MSVC)
 
-include("${_VCPKG_ROOT_DIR}/scripts/toolchains/windows.cmake")
 include("${CMAKE_CURRENT_LIST_DIR}/Windows.Clang.toolchain.cmake")
+include("${_VCPKG_ROOT_DIR}/scripts/toolchains/windows.cmake")

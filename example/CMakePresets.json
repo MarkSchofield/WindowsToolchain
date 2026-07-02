@@ -250,6 +250,46 @@
       "cacheVariables": {
         "CMAKE_SYSTEM_PROCESSOR": "x86_64"
       }
+    },
+    {
+      "name": "windows-ninja-msvc-x64-vcpkg",
+      "inherits": ["windows-ninja-msvc-x64"],
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/Build/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/../Windows.MSVC.toolchain.cmake",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/Build/Triplets",
+        "VCPKG_TARGET_TRIPLET": "x64-windows"
+      }
+    },
+    {
+      "name": "windows-ninja-msvc-arm64-vcpkg",
+      "inherits": ["windows-ninja-msvc-arm64"],
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/Build/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/../Windows.MSVC.toolchain.cmake",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/Build/Triplets",
+        "VCPKG_TARGET_TRIPLET": "arm64-windows"
+      }
+    },
+    {
+      "name": "windows-ninja-clangcl-x64-vcpkg",
+      "inherits": ["windows-ninja-clangcl-x64"],
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/Build/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/../Windows.Clang.toolchain.cmake",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/Build/Triplets",
+        "VCPKG_TARGET_TRIPLET": "x64-windows"
+      }
+    },
+    {
+      "name": "windows-ninja-clangcl-arm64-vcpkg",
+      "inherits": ["windows-ninja-clangcl-arm64"],
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/Build/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/../Windows.Clang.toolchain.cmake",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/Build/Triplets",
+        "VCPKG_TARGET_TRIPLET": "arm64-windows"
+      }
     }
   ],
   "buildPresets": [
@@ -320,6 +360,22 @@
     {
       "name": "linux-windows-ninja-clang-x64",
       "configurePreset": "linux-windows-ninja-clang-x64"
+    },
+    {
+      "name": "windows-ninja-msvc-x64-vcpkg",
+      "configurePreset": "windows-ninja-msvc-x64-vcpkg"
+    },
+    {
+      "name": "windows-ninja-msvc-arm64-vcpkg",
+      "configurePreset": "windows-ninja-msvc-arm64-vcpkg"
+    },
+    {
+      "name": "windows-ninja-clangcl-x64-vcpkg",
+      "configurePreset": "windows-ninja-clangcl-x64-vcpkg"
+    },
+    {
+      "name": "windows-ninja-clangcl-arm64-vcpkg",
+      "configurePreset": "windows-ninja-clangcl-arm64-vcpkg"
     }
   ]
 }

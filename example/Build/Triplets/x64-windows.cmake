@@ -1,0 +1,6 @@
+set(VCPKG_TARGET_ARCHITECTURE x64)
+set(VCPKG_CRT_LINKAGE dynamic)
+set(VCPKG_LIBRARY_LINKAGE dynamic)
+
+set(MANIFEST_ROOT "${VCPKG_ROOT_DIR}/../..")
+set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${MANIFEST_ROOT}/../Windows.Vcpkg.Clang.toolchain.cmake")
