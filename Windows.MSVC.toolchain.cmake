@@ -67,7 +67,9 @@
 # Resources:
 #   <https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html>
 #
-cmake_minimum_required(VERSION 3.20)
+if(CMAKE_VERSION VERSION_LESS 3.20)
+    message(FATAL_ERROR "WindowsToolchain requires at least CMake 3.20, but CMake ${CMAKE_VERSION} is in use.")
+endif()
 
 include_guard()
 
