@@ -4,7 +4,7 @@ A CMake toolchain file describes the set of tools and utilities for compiling co
 toolchains that describes how to compile using MSVC and Clang in CMake, with the goal of making Windows CMake builds more
 canonical to reduce the 'barrier-to-entry' to build code for Windows.
 
-This repo contains three toolchains:
+This repo contains three general-purpose toolchains:
 
 1. [Windows.MSVC.toolchain.cmake](./Windows.MSVC.toolchain.cmake) - Uses the MSVC compiler from an installed Visual Studio
 instance.
@@ -60,7 +60,9 @@ VCPkg - <https://github.com/microsoft/vcpkg> - is a Package Manager for C++. Whe
 
 1. The `vcpkg.cmake` script must be specified as the toolchain for CMake builds - as per [the VCPkg documentation](https://github.com/microsoft/vcpkg#getting-started).
 
-2. The path to the WindowsToolchain file - `Windows.MSVC.toolchain.cmake` - should be specified as the `VCPKG_CHAINLOAD_TOOLCHAIN_FILE`. The VCPkg toolchain will load the specified `VCPKG_CHAINLOAD_TOOLCHAIN_FILE`.
+2. The path to a vcpkg-specific WindowsToolchain file - `Windows.Vcpkg.MSVC.toolchain.cmake` or
+`Windows.Vcpkg.Clang.toolchain.cmake` - should be specified as the `VCPKG_CHAINLOAD_TOOLCHAIN_FILE`. The wrapper will
+load vcpkg's Windows toolchain first, then load the matching WindowsToolchain compiler wrapper.
 
 Note:
 
