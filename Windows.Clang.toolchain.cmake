@@ -29,7 +29,8 @@
 #
 # | CMake Variable                              | Description                                                                                                              |
 # |---------------------------------------------|--------------------------------------------------------------------------------------------------------------------------|
-# | CLANG_TIDY_CHECKS                           | List of rules clang-tidy should check. Defaults not set.                                                                 |
+# | CLANG_TIDY_ARGS                             | List of additional arguments for clang-tidy. Note that if set, then CLANG_TIDY_CHECKS will be ignored. Defaults not set. |
+# | CLANG_TIDY_CHECKS                           | List of rules clang-tidy should check. Ignored if CLANG_TIDY_ARGS is set. Defaults not set.                              |
 # | CMAKE_SYSTEM_PROCESSOR                      | The processor to compiler for. One of 'X86', 'AMD64', 'ARM', 'ARM64'. Defaults to ${CMAKE_HOST_SYSTEM_PROCESSOR}.        |
 # | CMAKE_C_COMPILER_FRONTEND_VARIANT           | If set to 'MSVC', configures Clang to use the MSVC-compatible compiler driver for C.                                     |
 # | CMAKE_CXX_COMPILER_FRONTEND_VARIANT         | If set to 'MSVC', configures Clang to use the MSVC-compatible compiler driver for C++.                                   |
@@ -47,8 +48,9 @@
 # | CMake Variable                              | Description                                                                                           |
 # |---------------------------------------------|-------------------------------------------------------------------------------------------------------|
 # | CMAKE_C_COMPILER                            | The path to the C compiler to use.                                                                    |
-# | CMAKE_CXX_CLANG_TIDY                        | The commandline clang-tidy is used if CLANG_TIDY_CHECKS was set.                                      |
+# | CMAKE_C_CLANG_TIDY                          | The commandline clang-tidy is used for C if CLANG_TIDY_ARGS or CLANG_TIDY_CHECKS was set.             |
 # | CMAKE_CXX_COMPILER                          | The path to the C++ compiler to use.                                                                  |
+# | CMAKE_CXX_CLANG_TIDY                        | The commandline clang-tidy is used for C++ if CLANG_TIDY_ARGS or CLANG_TIDY_CHECKS was set.           |
 # | CMAKE_MT                                    | The path to the 'mt.exe' tool to use.                                                                 |
 # | CMAKE_RC_COMPILER                           | The path tp the 'rc.exe' tool to use.                                                                 |
 # | CMAKE_SYSTEM_NAME                           | "Windows", when cross-compiling                                                                       |
@@ -307,9 +309,17 @@ endif()
 
 link_directories("${VS_TOOLSET_PATH}/lib/x86/store/references")
 
-if(CLANG_TIDY_CHECKS)
-    get_filename_component(CLANG_PATH ${CMAKE_CXX_COMPILER} DIRECTORY CACHE)
-    set(CMAKE_CXX_CLANG_TIDY "${CLANG_PATH}/clang-tidy.exe;-checks=${CLANG_TIDY_CHECKS}")
+if(CLANG_TIDY_ARGS OR CLANG_TIDY_CHECKS)
+    get_filename_component(CLANG_C_PATH ${CMAKE_C_COMPILER} DIRECTORY CACHE)
+    get_filename_component(CLANG_CXX_PATH ${CMAKE_CXX_COMPILER} DIRECTORY CACHE)
+
+    if(CLANG_TIDY_ARGS)
+        set(CMAKE_C_CLANG_TIDY "${CLANG_C_PATH}/clang-tidy.exe;${CLANG_TIDY_ARGS}")
+        set(CMAKE_CXX_CLANG_TIDY "${CLANG_CXX_PATH}/clang-tidy.exe;${CLANG_TIDY_ARGS}")
+    elseif(CLANG_TIDY_CHECKS)
+        set(CMAKE_C_CLANG_TIDY "${CLANG_C_PATH}/clang-tidy.exe;-checks=${CLANG_TIDY_CHECKS}")
+        set(CMAKE_CXX_CLANG_TIDY "${CLANG_CXX_PATH}/clang-tidy.exe;-checks=${CLANG_TIDY_CHECKS}")
+    endif()
 endif()
 
 # Windows Kits
