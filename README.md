@@ -54,17 +54,17 @@ or [Windows.EWDK.toolchain.cmake](./Windows.EWDK.toolchain.cmake)) has details o
 that can be used to configure the build. And [the example folder](./example) provides a CMake project that builds a
 variety of Windows projects, using each of the toolchain files.
 
-## WindowsToolchain and VCPkg
+## WindowsToolchain and vcpkg
 
-VCPkg - <https://github.com/microsoft/vcpkg> - is a Package Manager for C++. When using WindowsToolchain with VCPkg:
+vcpkg - <https://github.com/microsoft/vcpkg> - is a Package Manager for C++. When using WindowsToolchain with vcpkg:
 
-1. The `vcpkg.cmake` script must be specified as the toolchain for CMake builds - as per [the VCPkg documentation](https://github.com/microsoft/vcpkg#getting-started).
+1. The `vcpkg.cmake` script must be specified as the toolchain for CMake builds - as per [the vcpkg documentation](https://github.com/microsoft/vcpkg#getting-started).
 
-2. The path to the WindowsToolchain file - `Windows.MSVC.toolchain.cmake` - should be specified as the `VCPKG_CHAINLOAD_TOOLCHAIN_FILE`. The VCPkg toolchain will load the specified `VCPKG_CHAINLOAD_TOOLCHAIN_FILE`.
+2. The path to the WindowsToolchain file - `Windows.MSVC.toolchain.cmake` - should be specified as the `VCPKG_CHAINLOAD_TOOLCHAIN_FILE`. The vcpkg toolchain will load the specified `VCPKG_CHAINLOAD_TOOLCHAIN_FILE`.
 
 Note:
 
-* VCPkg has default functionality to copy runtime dependencies from VCPkg-based packages during a CMake build. The functionality - implemented in [`applocal.ps1`](https://github.com/microsoft/vcpkg/blob/0ba60bfef5dea4cb2599daa7ad8364e309835a68/scripts/buildsystems/msbuild/applocal.ps1) - requires that `dumpbin`, `llvm-objdump` or `objdump` be found by PowerShell's `Get-Command`. On Windows, `applocal.ps1` is typically executed so that it would find `dumpbin` through the `PATH` environment variable, but since WindowsToolchain doesn't configure the `PATH` environment variable `applocal.ps1` fails.
+* vcpkg has default functionality to copy runtime dependencies from vcpkg-based packages during a CMake build. The functionality - implemented in [`applocal.ps1`](https://github.com/microsoft/vcpkg/blob/0ba60bfef5dea4cb2599daa7ad8364e309835a68/scripts/buildsystems/msbuild/applocal.ps1) - requires that `dumpbin`, `llvm-objdump` or `objdump` be found by PowerShell's `Get-Command`. On Windows, `applocal.ps1` is typically executed so that it would find `dumpbin` through the `PATH` environment variable, but since WindowsToolchain doesn't configure the `PATH` environment variable `applocal.ps1` fails.
 
   To disable this behavior, `VCPKG_APPLOCAL_DEPS` to `OFF` in your `CMakePresets.json`, on the CMake configuration command-line, or before the top-level `project()` call. If dependencies need to be copied during a build, use custom commands to copy them. For example, the following CMake snippet will copy dependencies for a target called `CommandLine`, for dependencies that support the `$<TARGET_RUNTIME_DLLS:tgt>` generator expression:
 
@@ -85,7 +85,7 @@ WindowsToolchain uses [`cmakelang`][cmakelang] for linting the CMake files in th
 [.cmake-format.yaml](./.cmake-format.yaml) file describes the formatting style for the codebase. To run the linting
 tools:
 
-1. Install [`cmakelang`][cmakelang] following [the installation instuctions](https://cmake-format.readthedocs.io/en/latest/installation.html).
+1. Install [`cmakelang`][cmakelang] following [the installation instructions](https://cmake-format.readthedocs.io/en/latest/installation.html).
 Note: Since WindowsToolchain uses a `.yaml` file for configuration, make sure to install the `cmakelang[YAML]` package.
 
 2. Run [`./analyze.ps1`](./analyze.ps1)
