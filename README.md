@@ -25,10 +25,10 @@ The CMake scripts for Windows-specific build tasks that used to be in this repos
 
 Yes, but you're probably either:
 
-  1. using a "Visual Studio Generator". In which case, CMake will emit - and then build - a Visual Studio Solution file
+  1. Using a "Visual Studio Generator". In which case, CMake will emit - and then build - a Visual Studio Solution file
      that knows how to find the build tools and utilities.
 
-  2. running from a Visual Studio "Command Prompt". In which case, the command prompt is hard-coded to use a set of
+  2. Running from a Visual Studio "Command Prompt". In which case, the command prompt is hard-coded to use a set of
      tools and utilities, which means that you always need to initialize your command prompt before getting started.
 
 By using a Toolchain file to describe the tools and utilities to build in CMake-terms, you can use other generators
