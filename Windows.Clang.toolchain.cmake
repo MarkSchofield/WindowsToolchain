@@ -40,6 +40,7 @@
 # | CMAKE_VS_VERSION_RANGE                      | A verson range for VS instances to find. For example, '[16.0,17.0)' will find versions '16.*'. Defaults to '[16.0,17.0)' |
 # | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                               |
 # | TOOLCHAIN_ADD_VS_NINJA_PATH                 | Whether the toolchain should add the path to the VS Ninja to the CMAKE_SYSTEM_PROGRAM_PATH. Defaults to 'ON'.            |
+# | TOOLCHAIN_LLVM_HINT_PATH                    | A 'hint path' to LLVM. If set, it will be used to find clang/clang-cl in the 'bin' folder.                               |
 # | TOOLCHAIN_UPDATE_PROGRAM_PATH               | Whether the toolchain should update CMAKE_PROGRAM_PATH. Defaults to 'ON'.                                                |
 # | VS_INSTALLATION_PATH                        | The location of the root of the Visual Studio installation. If not specified VSWhere will be used to search for one.     |
 #
@@ -228,12 +229,23 @@ unset(TOOLCHAIN_TARGET)
 
 # Look for clang/clang-cl.
 #
-# The Visual Studio-distributed clang tools are preferred, followed by the default installation location.
-set(TOOLCHAIN_CLANG_HINTS_PATHS "$ENV{ProgramFiles}/LLVM/bin")
-list(PREPEND TOOLCHAIN_CLANG_HINTS_PATHS "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/x64/bin")
-if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL ARM64)
-    list(PREPEND TOOLCHAIN_CLANG_HINTS_PATHS "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/arm64/bin")
+# The following paths are considered in order:
+#   1) 'TOOLCHAIN_LLVM_HINT_PATH' if set.
+#   2) '${VS_INSTALLATION_PATH}/VC/Tools/Llvm/arm64' if the host is ARM64.
+#   3) '${VS_INSTALLATION_PATH}/VC/Tools/Llvm/x64'.
+#   4) '$ENV{ProgramFiles}/LLVM'
+#
+set(TOOLCHAIN_CLANG_HINTS_PATHS)
+if(TOOLCHAIN_LLVM_HINT_PATH)
+    list(APPEND TOOLCHAIN_CLANG_HINTS_PATHS "${TOOLCHAIN_LLVM_HINT_PATH}/bin")
 endif()
+
+if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL ARM64)
+    list(APPEND TOOLCHAIN_CLANG_HINTS_PATHS "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/arm64/bin")
+endif()
+
+list(APPEND TOOLCHAIN_CLANG_HINTS_PATHS "${VS_INSTALLATION_PATH}/VC/Tools/Llvm/x64/bin")
+list(APPEND TOOLCHAIN_CLANG_HINTS_PATHS "$ENV{ProgramFiles}/LLVM/bin")
 
 if(NOT CMAKE_C_COMPILER)
     set(TOOLCHAIN_C_COMPILER_EXE clang.exe)
