@@ -41,7 +41,6 @@
 # | CMake Variable                              | Description                                                                                           |
 # |---------------------------------------------|-------------------------------------------------------------------------------------------------------|
 # | CMAKE_SYSTEM_VERSION                        | The version of the operating system for which CMake is to build. Defaults to the host version.        |
-# | VS_EXPERIMENTAL_MODULE                      | Whether experimental module support should be enabled.                                                |
 # | VS_USE_SPECTRE_MITIGATION_RUNTIME           | Whether the compiler should link with a runtime that uses 'Spectre' mitigations. Defaults to 'OFF'.   |
 #
 # The toolchain file will set the following variables:
