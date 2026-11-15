@@ -280,11 +280,42 @@ if(CMAKE_SYSTEM_PROCESSOR STREQUAL ARM)
     set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /EHsc")
 endif()
 
+#[[====================================================================================================================
+    toolchain_get_clang_major_version
+    ---------------------------------
+
+    Note: Not supported for consumption outside of the toolchain files.
+
+    Gets the major version of the clang compiler.
+
+        toolchain_get_clang_major_version(
+            <COMPILER_PATH>
+            <VERSION_OUTPUT>
+        )
+====================================================================================================================]]#
+function(toolchain_get_clang_major_version COMPILER_PATH VERSION_OUTPUT)
+    execute_process(
+        COMMAND "${COMPILER_PATH}" --version
+        OUTPUT_VARIABLE COMPILER_OUTPUT
+    )
+
+    if(COMPILER_OUTPUT MATCHES [=[clang version ([0-9]+)\.]=])
+        set(CLANG_MAJOR_VERSION ${CMAKE_MATCH_1})
+    endif()
+
+    set (${VERSION_OUTPUT} "${CLANG_MAJOR_VERSION}" PARENT_SCOPE)
+endfunction()
+
+toolchain_get_clang_major_version("${CMAKE_CXX_COMPILER}" CLANG_MAJOR_VERSION)
+
 # Compiler
 foreach(LANG C CXX RC)
+    list(APPEND CMAKE_${LANG}_STANDARD_INCLUDE_DIRECTORIES "${TOOLCHAIN_LLVM_HINT_PATH}/lib/clang/${CLANG_MAJOR_VERSION}/include")
     list(APPEND CMAKE_${LANG}_STANDARD_INCLUDE_DIRECTORIES "${VS_TOOLSET_PATH}/ATLMFC/include")
     list(APPEND CMAKE_${LANG}_STANDARD_INCLUDE_DIRECTORIES "${VS_TOOLSET_PATH}/include")
 endforeach()
+
+unset(CLANG_MAJOR_VERSION)
 
 foreach(LANG C CXX)
     if(CMAKE_${LANG}_COMPILER_FRONTEND_VARIANT STREQUAL MSVC)
