@@ -38,7 +38,6 @@
 # | CMAKE_WINDOWS_KITS_10_DIR                   | The location of the root of the Windows Kits 10 directory.                                                               |
 # | TOOLCHAIN_ADD_VS_NINJA_PATH                 | Whether the toolchain should add the path to the VS Ninja to the CMAKE_SYSTEM_PROGRAM_PATH. Defaults to 'ON'.            |
 # | TOOLCHAIN_UPDATE_PROGRAM_PATH               | Whether the toolchain should update CMAKE_PROGRAM_PATH. Defaults to 'ON'.                                                |
-# | VS_EXPERIMENTAL_MODULE                      | Whether experimental module support should be enabled.                                                                   |
 # | VS_INSTALLATION_PATH                        | The location of the root of the Visual Studio installation. If not specified VSWhere will be used to search for one.     |
 # | VS_PLATFORM_TOOLSET_VERSION                 | The version of the MSVC toolset to use. For example, 14.29.30133. Defaults to the highest available.                     |
 # | VS_USE_SPECTRE_MITIGATION_ATLMFC_RUNTIME    | Whether the compiler should link with the ATLMFC runtime that uses 'Spectre' mitigations. Defaults to 'OFF'.             |
@@ -50,6 +49,7 @@
 # |---------------------------------------------|-------------------------------------------------------------------------------------------------------|
 # | CMAKE_C_COMPILER                            | The path to the C compiler to use.                                                                    |
 # | CMAKE_CXX_COMPILER                          | The path to the C++ compiler to use.                                                                  |
+# | CMAKE_CXX_STDLIB_MODULES_JSON               | The path to the 'modules.json' file for the selected toolchain.                                       |
 # | CMAKE_MT                                    | The path to the 'mt.exe' tool to use.                                                                 |
 # | CMAKE_RC_COMPILER                           | The path tp the 'rc.exe' tool to use.                                                                 |
 # | CMAKE_SYSTEM_NAME                           | "Windows", when cross-compiling                                                                       |
@@ -176,6 +176,12 @@ set(VS_TOOLSET_PATH "${VS_INSTALLATION_PATH}/VC/Tools/MSVC/${CMAKE_VS_PLATFORM_T
 # Set the tooling variables, include_directories and link_directories
 #
 
+# Set 'CMAKE_CXX_STDLIB_MODULES_JSON' to describe the modules available in the selected toolchain.
+# Since 'modules.json' first shipped in 14.36, require that version or higher.
+if(CMAKE_VS_PLATFORM_TOOLSET_VERSION VERSION_GREATER_EQUAL 14.36)
+    set(CMAKE_CXX_STDLIB_MODULES_JSON ${VS_TOOLSET_PATH}/modules/modules.json)
+endif()
+
 # Map CMAKE_SYSTEM_PROCESSOR values to CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE that identifies the tools that should
 # be used to produce code for the CMAKE_SYSTEM_PROCESSOR.
 if(CMAKE_SYSTEM_PROCESSOR STREQUAL AMD64)
@@ -233,12 +239,6 @@ else()
 endif()
 
 link_directories("${VS_TOOLSET_PATH}/lib/x86/store/references")
-
-# Module support
-if(VS_EXPERIMENTAL_MODULE)
-    set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /experimental:module")
-    set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} /stdIfcDir \"${VS_TOOLSET_PATH}/ifc/${CMAKE_VS_PLATFORM_TOOLSET_ARCHITECTURE}\"")
-endif()
 
 # Windows Kits
 include("${CMAKE_CURRENT_LIST_DIR}/Windows.Kits.cmake")
